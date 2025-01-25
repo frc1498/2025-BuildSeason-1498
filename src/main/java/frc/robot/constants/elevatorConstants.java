@@ -1,6 +1,6 @@
 package frc.robot.constants;
 
-public class elevatorConstants {
+public class ElevatorConstants {
     public static final int kElevatorDriveFrontCANID = 10;
     public static final int kElevatorDriveBackCANID = 11;
 
