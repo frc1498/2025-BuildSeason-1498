@@ -50,8 +50,13 @@ public class RobotContainer {
     public Elevator elevator = new Elevator(elevatorConfig);
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake();
+<<<<<<< HEAD
     public Wrist wrist = new Wrist();
     public Arm arm = new Arm();
+=======
+    public Arm arm = new Arm();
+    
+>>>>>>> fc89556e0e9980b1e66c37ad51ac95c71b9a7241
 
     public RobotContainer() {
         configureBindings();
@@ -91,6 +96,7 @@ public class RobotContainer {
         driver.povRight().onTrue(elevator.elevatorHome());
         driver.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return driver.getRightTriggerAxis() * 2;}));
 
+<<<<<<< HEAD
         driver.leftBumper().whileTrue(intake.rollerSuck());
 
         //Operator Commands
@@ -101,6 +107,10 @@ public class RobotContainer {
                     Parallel(arm.armPosition(ArmConstants.kL4Coral), wrist.CommandGoToPosition(WristConstants.kL4Coral)))
             );
 
+=======
+        joystick.leftBumper().whileTrue(intake.rollerSuck());
+        joystick.start().onTrue(arm.GoToStow());
+>>>>>>> fc89556e0e9980b1e66c37ad51ac95c71b9a7241
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
