@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.config.ElevatorConfig;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
@@ -35,7 +35,9 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final Elevator elevator = new Elevator();
+
+    public final ElevatorConfig elevatorConfig= new ElevatorConfig();
+    public Elevator elevator = new Elevator(elevatorConfig);
 
     public RobotContainer() {
         configureBindings();
@@ -67,6 +69,13 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        //Elevator Simulation Practice Commands
+        joystick.povDown().onTrue(elevator.elevatorL1());
+        joystick.povLeft().onTrue(elevator.elevatorL2());
+        joystick.povUp().onTrue(elevator.elevatorL3());
+        joystick.povRight().onTrue(elevator.elevatorHome());
+        joystick.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return joystick.getRightTriggerAxis() * 2;}));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
