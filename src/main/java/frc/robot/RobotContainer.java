@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Elevator;
@@ -42,6 +43,8 @@ public class RobotContainer {
     public Elevator elevator = new Elevator(elevatorConfig);
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake();
+    public Arm arm = new Arm();
+    
 
     public RobotContainer() {
         configureBindings();
@@ -82,7 +85,7 @@ public class RobotContainer {
         joystick.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return joystick.getRightTriggerAxis() * 2;}));
 
         joystick.leftBumper().whileTrue(intake.rollerSuck());
-
+        joystick.start().onTrue(arm.GoToStow());
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
