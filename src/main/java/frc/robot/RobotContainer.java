@@ -14,9 +14,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Elevator;
 
 public class RobotContainer {
@@ -38,6 +40,8 @@ public class RobotContainer {
 
     public final ElevatorConfig elevatorConfig= new ElevatorConfig();
     public Elevator elevator = new Elevator(elevatorConfig);
+    public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
+    public CoralIntake intake = new CoralIntake();
 
     public RobotContainer() {
         configureBindings();
@@ -76,6 +80,8 @@ public class RobotContainer {
         joystick.povUp().onTrue(elevator.elevatorL3());
         joystick.povRight().onTrue(elevator.elevatorHome());
         joystick.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return joystick.getRightTriggerAxis() * 2;}));
+
+        joystick.leftBumper().whileTrue(intake.rollerSuck());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

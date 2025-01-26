@@ -1,13 +1,90 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.CoralIntakeConstants;
 
 public class CoralIntake extends SubsystemBase{
 
-    public CoralIntake() {
+    TalonFX intakePivot;
+    TalonFX intakeRoller;
 
+    VelocityVoltage rollerSpit;
+    VelocityVoltage rollerSuck;
+
+    PositionVoltage pivot;
+
+    public CoralIntake() {
+        //Constructor.
+        intakePivot = new TalonFX(CoralIntakeConstants.kIntakePivotCANID, "canivore");
+        intakeRoller = new TalonFX(CoralIntakeConstants.kIntakeRollerCANID, "canivore");
+        rollerSpit = new VelocityVoltage(CoralIntakeConstants.kSpitSpeed);
+        rollerSuck = new VelocityVoltage(CoralIntakeConstants.kSuckSpeed);
+        pivot = new PositionVoltage(CoralIntakeConstants.kIntakeStowPosition);
     }
+
+    private void suck() {
+        intakeRoller.setControl(rollerSuck);
+    }
+
+    private void spit() {
+        intakeRoller.setControl(rollerSpit);
+    }
+
+    private void goToPosition(double position) {
+        intakePivot.setControl(pivot.withPosition(position));
+    }
+    
+    private double getPivotPosition() {
+        return intakePivot.getPosition().getValueAsDouble();
+    }
+
+    private boolean isIntakeAtPosition(double position) {
+        return ((position - CoralIntakeConstants.kDeadband) <= this.getPivotPosition()) && ((position + CoralIntakeConstants.kDeadband) <= this.getPivotPosition());
+    }
+
+    public Command rollerSuck() {
+        return run(
+            () -> {this.suck();}
+        );
+    }
+
+    public Command rollerSpit() {
+        return run(
+            () -> {this.spit();}
+        );
+    }
+
+    public Command intakeStow() {
+        return run(
+            () -> {this.goToPosition(CoralIntakeConstants.kIntakeStowPosition);}
+        );
+    }
+
+    public Command intakeRaised() {
+        return run(
+            () -> {this.goToPosition(CoralIntakeConstants.kIntakeRaisedPosition);}
+        );
+    }
+
+    public Command intakeFloor() {
+        return run(
+            () -> {this.goToPosition(CoralIntakeConstants.kIntakeFloorPosition);}
+        );
+    }
+
+    public Trigger isIntakeStowed= new Trigger(() -> {return this.isIntakeAtPosition(CoralIntakeConstants.kIntakeStowPosition);});
+
+    public Trigger isIntakeRaised= new Trigger(() -> {return this.isIntakeAtPosition(CoralIntakeConstants.kIntakeRaisedPosition);});
+
+    public Trigger isIntakeFloored= new Trigger(() -> {return this.isIntakeAtPosition(CoralIntakeConstants.kIntakeFloorPosition);});
     
     @Override
     public void initSendable(SendableBuilder builder) {
