@@ -35,6 +35,7 @@ public class Elevator extends SubsystemBase {
         posControl = new PositionVoltage(0);
     }
 
+    //=================Private Commands======================
     private void elevatorDriveToPosition(double position) {
         elevatorDriveFront.setControl(posControl.withPosition(position));
     }
@@ -46,36 +47,85 @@ public class Elevator extends SubsystemBase {
     private boolean isElevatorAtPosition(double position) {
         return (position - ElevatorConstants.kDeadband) <= this.getCurrentPosition() && (position + ElevatorConstants.kDeadband) >= this.getCurrentPosition();
     }
+
+    //=====================Public Commands==================================
+    public Command elevatorCoralStow() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralStow);}
+        ).until(this.isElevatorCoralStow);
+    }
+
+    public Command elevatorCoralLoadFloor() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralLoadFloor);}
+        ).until(this.isElevatorCoralLoadFloor);
+    }
+
+    public Command elevatorCoralLoadHuman() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralLoadHuman);}
+        ).until(this.isElevatorCoralLoadHuman);
+    }
+
+    public Command elevatorCoralL1() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL1);}
+        ).until(this.isElevatorCoralL1);
+    }
+
+    public Command elevatorCoralL2() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL2);}
+        ).until(this.isElevatorCoralL2);
+    }
     
-    public Command elevatorHome() {
+    public Command elevatorCoralL3() {
         return run(
-            () -> {this.elevatorDriveToPosition(ElevatorConstants.kHome);}
-            ).until(this.isElevatorHome);
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL3);}
+        ).until(this.isElevatorCoralL3);
     }
 
-    public Command elevatorL1() {
+    public Command elevatorCoralL4() {
         return run(
-            () -> {this.elevatorDriveToPosition(ElevatorConstants.kL1Position);}
-        ).until(this.isElevatorL1);
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL4);}
+        ).until(this.isElevatorCoralL4);
     }
 
-    public Command elevatorL2() {
+    public Command elevatorAlgaeStow() {
         return run(
-            () -> {this.elevatorDriveToPosition(ElevatorConstants.kL2Position);}
-        ).until(this.isElevatorL2);
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeStow);}
+        ).until(this.isElevatorAlgaeStow);
+    }
+
+    public Command elevatorAlgaeLoadFloor() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeLoadFloor);}
+        ).until(this.isElevatorAlgaeLoadFloor);
+    }
+
+    public Command elevatorAlgaeL2() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeL2);}
+        ).until(this.isElevatorAlgaeL2);
     }
     
-    public Command elevatorL3() {
+    public Command elevatorAlgaeL3() {
         return run(
-            () -> {this.elevatorDriveToPosition(ElevatorConstants.kL3Position);}
-        ).until(this.isElevatorL3);
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeL3);}
+        ).until(this.isElevatorAlgaeL3);
+    }
+    
+    public Command elevatorAlgaeBarge() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeBarge);}
+        ).until(this.isElevatorAlgaeBarge);
     }
 
-    public Command elevatorL4() {
+    public Command elevatorAlgaeProcessor() {
         return run(
-            () -> {this.elevatorDriveToPosition(ElevatorConstants.kL4Position);}
-        ).until(this.isElevatorL4);
-    }
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeProcessor);}
+        ).until(this.isElevatorAlgaeProcessor);
+
 
     //This *feels* too complicated, but it works.
     public Command elevatorPosition(Supplier<Double> position) {
@@ -84,15 +134,22 @@ public class Elevator extends SubsystemBase {
         );
     }
 
-    public final Trigger isElevatorHome = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kHome);});
+    //========Triggers for Elevator Coral=========
+    public final Trigger isElevatorCoralStow = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralStow);});
+    public final Trigger isElevatorCoralLoadFloor = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralLoadFloor);});
+    public final Trigger isElevatorCoralLoadHuman = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralLoadHuman);});
+    public final Trigger isElevatorCoralL1 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL1);});
+    public final Trigger isElevatorCoralL2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL2);});
+    public final Trigger isElevatorCoralL3 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL3);});
+    public final Trigger isElevatorCoralL4 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL4);});
 
-    public final Trigger isElevatorL1 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kL1Position);});
-
-    public final Trigger isElevatorL2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kL2Position);});
-
-    public final Trigger isElevatorL3 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kL3Position);});
-
-    public final Trigger isElevatorL4 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kL4Position);});
+    //=========Triggers for Elevator Algae========
+    public final Trigger isElevatorAlgaeStow = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeStow);});
+    public final Trigger isElevatorAlgaeLoadFloor = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeLoadFloor);});
+    public final Trigger isElevatorAlgaeL2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeL2);});
+    public final Trigger isElevatorAlgaeL3 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeL3);});
+    public final Trigger isElevatorAlgaeBarge = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeBarge);});
+    public final Trigger isElevatorAlgaeProcessor = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeProcessor);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

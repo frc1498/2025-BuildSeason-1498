@@ -16,96 +16,120 @@ public class Arm extends SubsystemBase{
     CANcoder armRotateEncoder;
     PositionVoltage RotateControl;
 
-
-
     public Arm() {
         //Constructor.
         ArmRotate = new TalonFX(ArmConstants.kArmRotateCANID, "canivore");
         armRotateEncoder = new CANcoder(ArmConstants.kEncoderCANID,"canivore");
-        RotateControl = new PositionVoltage(ArmConstants.kStowCoral);
-
+        RotateControl = new PositionVoltage(ArmConstants.kCoralStow);
     }
-    private void GoToPosition(double position) {
+
+    private void armDriveToPosition(double position) {
             ArmRotate.setControl(RotateControl.withPosition(position));
-
     }
-    private boolean IsArmAtPosition(double position) {
+
+    private boolean isArmAtPosition(double position) {
             return ((position-ArmConstants.kDeadband) <= GetArmPosition()) && ((position+ArmConstants.kDeadband) >= GetArmPosition());
     }
+
     private double GetArmPosition(){
             return ArmRotate.getPosition().getValueAsDouble();
-    
     }
-    public Command GoToStow(){
-        return run(
-            () -> {this.GoToPosition(ArmConstants.kStowCoral);}
-        );
-        
-    }
-    public Command GoToL1(){
-        return run(
-            () -> {this.GoToPosition(ArmConstants.kL1Coral);}
-        );
-        
-    }
-    public Command GoToLoad(){
-        return run(
-            () -> {this.GoToPosition(ArmConstants.kLoadCoral);}
-        );
-        
-    }
-    public Command GoToL2(){
-        return run(
-            () -> {this.GoToPosition(ArmConstants.kL2Coral);}
-        );
-        
-    }
-    public Command GoToL3(){
-        return run(
-            () -> {this.GoToPosition(ArmConstants.kL3Coral);}
-        );
-        
-    }
-    public Command GoToL4(){
-        return run(
-            () -> {this.GoToPosition(ArmConstants.kL4Coral);}
-        );
-        
-    }
-    public Command GoToBarge(){
-        return run(
-            () -> {this.GoToPosition(ArmConstants.kBargeCoral);}
-        );
-        
-    }
-   public Trigger IsArmStow = new Trigger(() ->{
-    return this.IsArmAtPosition(ArmConstants.kStowCoral);
-   });
-   
-   public Trigger IsArmLoad = new Trigger(() ->{
-    return this.IsArmAtPosition(ArmConstants.kLoadCoral);
-   });
 
-   public Trigger IsArmL1 = new Trigger(() ->{
-    return this.IsArmAtPosition(ArmConstants.kL1Coral);
-   });
+//=====================Public Commands===============    
+public Command armCoralStow() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kCoralStow);}
+    ).until(this.isArmCoralStow);
+}
 
-   public Trigger IsArmL2 = new Trigger(() ->{
-    return this.IsArmAtPosition(ArmConstants.kL2Coral);
-   });
-   
-   public Trigger IsArmL3 = new Trigger(() ->{
-    return this.IsArmAtPosition(ArmConstants.kL3Coral);
-   });
+public Command armCoralLoadFloor() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kCoralLoadFloor);}
+    ).until(this.isArmCoralLoadFloor);
+}
 
-   public Trigger IsArmL4 = new Trigger(() ->{
-    return this.IsArmAtPosition(ArmConstants.kL4Coral);
-   });
+public Command armCoralLoadHuman() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kCoralLoadHuman);}
+    ).until(this.isArmCoralLoadHuman);
+}
 
-   public Trigger IsArmBarge = new Trigger(() ->{
-    return this.IsArmAtPosition(ArmConstants.kBargeCoral);
-   });
+public Command armCoralL1() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kCoralL1);}
+    ).until(this.isArmCoralL1);
+}
 
+public Command armCoralL2() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kCoralL2);}
+    ).until(this.isArmCoralL2);
+}
+
+public Command armCoralL3() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kCoralL3);}
+    ).until(this.isArmCoralL3);
+}
+
+public Command armCoralL4() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kCoralL4);}
+    ).until(this.isArmCoralL4);
+}
+
+public Command armAlgaeStow() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kAlgaeStow);}
+    ).until(this.isArmAlgaeStow);
+}
+
+public Command armAlgaeLoadFloor() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadFloor);}
+    ).until(this.isArmAlgaeLoadFloor);
+}
+
+public Command armAlgaeL2() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL2);}
+    ).until(this.isArmAlgaeL2);
+}
+
+public Command armAlgaeL3() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL3);}
+    ).until(this.isArmAlgaeL3);
+}
+
+public Command armAlgaeBarge() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kAlgaeBarge);}
+    ).until(this.isArmAlgaeBarge);
+}
+
+public Command armAlgaeProcessor() {
+    return run(
+        () -> {this.armDriveToPosition(ArmConstants.kAlgaeProcessor);}
+    ).until(this.isArmAlgaeProcessor);
+}
+
+//===============Coral Triggers===============
+    public Trigger isArmCoralStow = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralStow);});
+    public Trigger isArmCoralLoadFloor = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralLoadFloor);});
+    public Trigger isArmCoralLoadHuman = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralLoadHuman);});
+    public Trigger isArmCoralL1 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL1);});
+    public Trigger isArmCoralL2 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL2);});
+    public Trigger isArmCoralL3 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL3);});
+    public Trigger isArmCoralL4 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL4);});
+
+    //===============Algae Triggers==============
+    public final Trigger isArmAlgaeStow = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeStow);});
+    public final Trigger isArmAlgaeLoadFloor = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadFloor);});
+    public final Trigger isArmAlgaeL2 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadL2);});
+    public final Trigger isArmAlgaeL3 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadL3);});
+    public final Trigger isArmAlgaeBarge = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeBarge);});
+    public final Trigger isArmAlgaeProcessor = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeProcessor);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

@@ -50,13 +50,8 @@ public class RobotContainer {
     public Elevator elevator = new Elevator(elevatorConfig);
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake();
-<<<<<<< HEAD
     public Wrist wrist = new Wrist();
     public Arm arm = new Arm();
-=======
-    public Arm arm = new Arm();
-    
->>>>>>> fc89556e0e9980b1e66c37ad51ac95c71b9a7241
 
     public RobotContainer() {
         configureBindings();
@@ -96,23 +91,88 @@ public class RobotContainer {
         driver.povRight().onTrue(elevator.elevatorHome());
         driver.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return driver.getRightTriggerAxis() * 2;}));
 
-<<<<<<< HEAD
         driver.leftBumper().whileTrue(intake.rollerSuck());
-
-        //Operator Commands
-        //A sends arm to Coral Score level 4
-        operator1.a().onTrue(
-            elevator.elevatorPosition(ElevatorConstants.kL4Coral).until(
-                elevator.isPastL4SafeZone).andThen(
-                    Parallel(arm.armPosition(ArmConstants.kL4Coral), wrist.CommandGoToPosition(WristConstants.kL4Coral)))
-            );
-
-=======
-        joystick.leftBumper().whileTrue(intake.rollerSuck());
         joystick.start().onTrue(arm.GoToStow());
->>>>>>> fc89556e0e9980b1e66c37ad51ac95c71b9a7241
+
+        //====================Operator Commands========================
+        //Button Correlation Table
+        //===========
+        //Operator 1
+        //povDown -
+        //povLeft -
+        //povUp -
+        //povRight -
+        //rightTrigger -
+        //leftTrigger -
+        //rightBumper -
+        //leftBumper -
+        //A -
+        //B -
+        //Y -
+        //X -
+        //===========
+        //Operator 2
+        //povDown -
+        //povLeft -
+        //povUp -
+        //povRight -
+        //rightTrigger -
+        //leftTrigger -
+        //rightBumper -
+        //leftBumper -
+        //A -
+        //B -
+        //Y -
+        //X -
+        //
+        //=====Operator Tasks====
+        //Scoring
+        //L4 / Barge
+        //L3
+        //L2
+        //L1
+        //
+        //Pickup
+        //Coral Floor
+        //Coral Human
+        //Algae L3
+        //Algae L2
+        //Algae Floor
+        //
+        //Descore
+        //Algae L2
+        //Algae L3
+        //
+        //Climber
+        //Climber Load
+        //Climb
+        //
+        //Stow
+
+        operator1.a().onTrue();
+        operator1.b().onTrue();
+        operator1.y().onTrue();
+        operator1.x().onTrue();
+        operator1.povDown().ontrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+        operator1.a().onTrue();
+
         drivetrain.registerTelemetry(logger::telemeterize);
     }
+
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
