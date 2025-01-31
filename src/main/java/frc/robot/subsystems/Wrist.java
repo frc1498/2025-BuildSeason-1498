@@ -78,6 +78,7 @@ public class Wrist extends SubsystemBase{
         wristRotateConfig.Voltage.PeakForwardVoltage = WristConstants.kRotateMaxForwardVoltage;
         wristRotateConfig.Voltage.PeakReverseVoltage = WristConstants.kRotateMaxReverseVoltage;
         wristRotateConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
         //Configure Gains and Motion Magic Items
         Slot0Configs slot0 = wristRotateConfig.Slot0;
         slot0.kP = WristConstants.kRotateProportional;

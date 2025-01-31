@@ -100,56 +100,28 @@ public class RobotContainer {
         //Button Correlation Table
         //===========
         //Operator 1
-        //povDown -
-        //povLeft -
-        //povUp -
-        //povRight -
-        //rightTrigger -
-        //leftTrigger -
-        //rightBumper -
-        //leftBumper -
-        //A -
-        //B -
-        //Y -
-        //X -
+        //A - DS 1 - Pickup: Algae Floor
+        //B - DS 2 - 
+        //X - DS 3 - Pickup: Algae L2
+        //Y - DS 4 - Socre: Coral L1
+        //leftBumper - DS 5 - Pikcup: Algae L3 
+        //rightBumper - DS 6  - Score: Coral L2
+        // Select - DS 7 - Pickup: Coral Human
+        // Start - DS 8  - Score: Coral L3
+        // Left Stick Press - DS 9 - Pickup: Coral Floor
+        // Right Stick Press - DS 10 - Score: Coral L4 / Barge
         //===========
         //Operator 2
-        //povDown -
-        //povLeft -
-        //povUp -
-        //povRight -
-        //rightTrigger -
-        //leftTrigger -
-        //rightBumper -
-        //leftBumper -
-        //A -
-        //B -
-        //Y -
-        //X -
-        //
-        //=====Operator Tasks====
-        //Scoring
-        //L4 / Barge
-        //L3
-        //L2
-        //L1
-        //
-        //Pickup
-        //Coral Floor
-        //Coral Human
-        //Algae L3
-        //Algae L2
-        //Algae Floor
-        //
-        //Descore
-        //Algae L2
-        //Algae L3
-        //
-        //Climber
-        //Climber Load
-        //Climb
-        //
-        //Stow
+        //A - DS 1 - 
+        //B - DS 2 - Stow
+        //X - DS 3 - 
+        //Y - DS 4 - 
+        //leftBumper - DS 5  - 
+        //rightBumper - DS 6  - 
+        // Select - DS 7 - Climber - Load
+        // Start - DS 8  - Descore: Algae L2
+        // Left Stick Press - DS 9 - Climber - Load
+        // Right Stick Press - DS 10 - Descore: Algae L3
 
         /*
         operator1.a().onTrue();
@@ -164,8 +136,8 @@ public class RobotContainer {
         operator1.start().onTrue();
         operator1.rightBumper().onTrue();
         operator1.leftBumper().onTrue();
-        operator1.leftTrigger().onTrue();
-        operator1.rightTrigger().onTrue();
+        operator1.leftStick().onTrue();
+        operator1.rightStick().onTrue();
 
         operator2.a().onTrue();
         operator2.b().onTrue();
@@ -179,8 +151,8 @@ public class RobotContainer {
         operator2.start().onTrue();
         operator2.rightBumper().onTrue();
         operator2.leftBumper().onTrue();
-        operator2.leftTrigger().onTrue();
-        operator2.rightTrigger().onTrue();
+        operator2.leftStick().onTrue();
+        operator2.rightStick().onTrue();
 */
 
         drivetrain.registerTelemetry(logger::telemeterize);
