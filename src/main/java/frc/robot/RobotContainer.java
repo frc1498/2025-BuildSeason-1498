@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
+import frc.robot.config.WristConfig;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.WristConstants;
@@ -45,12 +46,15 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-
-    public final ElevatorConfig elevatorConfig= new ElevatorConfig();
+    public final ElevatorConfig elevatorConfig = new ElevatorConfig();
     public Elevator elevator = new Elevator(elevatorConfig);
+ 
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake();
-    public Wrist wrist = new Wrist();
+
+    public final WristConfig wristConfig = new WristConfig();
+    public Wrist wrist = new Wrist(wristConfig);
+ 
     public Arm arm = new Arm();
 
     public RobotContainer() {
@@ -68,7 +72,6 @@ public class RobotContainer {
                     .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-
         driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driver.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
@@ -85,14 +88,13 @@ public class RobotContainer {
         driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //Elevator Simulation Practice Commands
-        driver.povDown().onTrue(elevator.elevatorL1());
-        driver.povLeft().onTrue(elevator.elevatorL2());
-        driver.povUp().onTrue(elevator.elevatorL3());
-        driver.povRight().onTrue(elevator.elevatorHome());
+        driver.povDown().onTrue(elevator.elevatorCoralL1());
+        driver.povLeft().onTrue(elevator.elevatorCoralL2());
+        driver.povUp().onTrue(elevator.elevatorCoralL3());
+        //driver.povRight().onTrue(elevator.elevatorHome());
         driver.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return driver.getRightTriggerAxis() * 2;}));
 
         driver.leftBumper().whileTrue(intake.rollerSuck());
-        joystick.start().onTrue(arm.GoToStow());
 
         //====================Operator Commands========================
         //Button Correlation Table
@@ -149,26 +151,37 @@ public class RobotContainer {
         //
         //Stow
 
+        /*
         operator1.a().onTrue();
         operator1.b().onTrue();
         operator1.y().onTrue();
         operator1.x().onTrue();
         operator1.povDown().ontrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
-        operator1.a().onTrue();
+        operator1.povLeft().onTrue();
+        operator1.povUp().onTrue();
+        operator1.povRight().onTrue();
+        operator1.back().onTrue();
+        operator1.start().onTrue();
+        operator1.rightBumper().onTrue();
+        operator1.leftBumper().onTrue();
+        operator1.leftTrigger().onTrue();
+        operator1.rightTrigger().onTrue();
+
+        operator2.a().onTrue();
+        operator2.b().onTrue();
+        operator2.y().onTrue();
+        operator2.x().onTrue();
+        operator2.povDown().ontrue();
+        operator2.povLeft().onTrue();
+        operator2.povUp().onTrue();
+        operator2.povRight().onTrue();
+        operator2.back().onTrue();
+        operator2.start().onTrue();
+        operator2.rightBumper().onTrue();
+        operator2.leftBumper().onTrue();
+        operator2.leftTrigger().onTrue();
+        operator2.rightTrigger().onTrue();
+*/
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

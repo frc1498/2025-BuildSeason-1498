@@ -14,4 +14,7 @@ public class CoralIntakeConstants {
 
     //Units are in rotations.
     public static final double kDeadband = 0.05;
+
+    
+
 }

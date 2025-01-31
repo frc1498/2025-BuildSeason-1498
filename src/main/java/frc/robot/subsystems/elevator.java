@@ -125,7 +125,7 @@ public class Elevator extends SubsystemBase {
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeProcessor);}
         ).until(this.isElevatorAlgaeProcessor);
-
+    }
 
     //This *feels* too complicated, but it works.
     public Command elevatorPosition(Supplier<Double> position) {
