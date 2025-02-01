@@ -51,10 +51,12 @@ public static final double kAlgaeProcessor = 0.9;
 //==============General===============
 public static final double kDeadband = 0.05;
 
-
-
-
-
-
+//==================Sim Values================
+public static final double kArmRotateGearing = 1.0;
+public static final double kArmRotateMomentOfInertia = 0.01; //kg-m^2
+public static final double kArmLength = 2.0; //meters
+public static final double kArmMinAngle = 0.0; //radians
+public static final double kArmMaxAngle = 6.28; //2*pi in radians
+public static final double kArmStartingAngle = 0.0; //radians
 
 }

@@ -1,12 +1,18 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.led.CANdle;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.LEDConstants;
 
 public class LED extends SubsystemBase{
 
+    CANdle lighting;
+    
     public LED() {
         //Constructor.
+        lighting = new CANdle(LEDConstants.kCANdleCANID, "Canivore");
     }
     
     @Override

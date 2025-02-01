@@ -14,12 +14,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.config.ArmConfig;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.config.WristConfig;
-import frc.robot.constants.ArmConstants;
-import frc.robot.constants.ElevatorConstants;
-import frc.robot.constants.WristConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -50,12 +48,13 @@ public class RobotContainer {
     public Elevator elevator = new Elevator(elevatorConfig);
  
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
-    public CoralIntake intake = new CoralIntake();
+    public CoralIntake intake = new CoralIntake(intakeConfig);
 
     public final WristConfig wristConfig = new WristConfig();
     public Wrist wrist = new Wrist(wristConfig);
- 
-    public Arm arm = new Arm();
+    
+    public final ArmConfig armConfig = new ArmConfig();
+    public Arm arm = new Arm(armConfig);
 
     public RobotContainer() {
         configureBindings();
@@ -95,6 +94,8 @@ public class RobotContainer {
         driver.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return driver.getRightTriggerAxis() * 2;}));
 
         driver.leftBumper().whileTrue(intake.rollerSuck());
+
+        driver.leftTrigger(0.1).onTrue(wrist.wristCoralL1()).onFalse(wrist.wristCoralL2());
 
         //====================Operator Commands========================
         //Button Correlation Table

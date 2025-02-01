@@ -1,14 +1,11 @@
 package frc.robot.subsystems;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -16,22 +13,20 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
-import frc.robot.config.ElevatorConfig;
 import frc.robot.config.WristConfig;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
-import frc.robot.sim.ElleySim;
 import frc.robot.sim.WristSim;
 
 public class Wrist extends SubsystemBase{
     TalonFX wristRotate;
+    TalonFX wristRoller;
     CANcoder wristRotateEncoder;
     PositionVoltage rotateControl;
 
     PositionVoltage posControl;
     
-    TalonFXSimState wristDriveFrontSim = wristRotate.getSimState();
+    TalonFXSimState wristRotateSim;
+    TalonFXSimState wristRollerSim;
 
     WristConfig config;
     WristSim sim;
@@ -40,6 +35,7 @@ public class Wrist extends SubsystemBase{
     public Wrist(WristConfig config) {
         //Constructor
         wristRotate = new TalonFX(WristConstants.kWristRotateCANID, "canivore");
+        wristRoller = new TalonFX(WristConstants.kWristRollerCANID, "canivore");
         wristRotateEncoder = new CANcoder(WristConstants.kWristEncoderCANID,"canivore");
         //rotateControl = new PositionVoltage(WristConstants.kCoralStow);
 
@@ -47,6 +43,12 @@ public class Wrist extends SubsystemBase{
         this.config = config;
         //sim = new WristSim(config, wristDriveFrontSim);
         posControl = new PositionVoltage(0);
+        rotateControl = new PositionVoltage(0);
+
+        wristRotateSim = wristRotate.getSimState();
+        wristRollerSim = wristRoller.getSimState();
+
+        sim = new WristSim(config, wristRotateSim, wristRollerSim); 
     }
     
     //=============================================================
@@ -206,9 +208,13 @@ public class Wrist extends SubsystemBase{
     public void periodic() {
         // This method will be called once per scheduler run
     }
-  
+    
+    public void simulationInit() {
+        sim = new WristSim(config, wristRotateSim, wristRollerSim);
+    }
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
+        sim.simulationPeriodic();
     }
 }

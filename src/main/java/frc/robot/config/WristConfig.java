@@ -11,7 +11,7 @@ public class WristConfig {
 
     public WristConfig() {
 
-        WristConfig.Slot0.kP = 10;
+        WristConfig.Slot0.kP = 0.003;
         WristConfig.Slot0.kI = 0.0;
         WristConfig.Slot0.kD = 0.0;
 

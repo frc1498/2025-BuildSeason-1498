@@ -1,14 +1,18 @@
 package frc.robot.subsystems;
 
+
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.config.ArmConfig;
 import frc.robot.constants.ArmConstants;
+import frc.robot.sim.ArmSim;
 
 public class Arm extends SubsystemBase{
 
@@ -16,11 +20,19 @@ public class Arm extends SubsystemBase{
     CANcoder armRotateEncoder;
     PositionVoltage RotateControl;
 
-    public Arm() {
+    TalonFXSimState armSim;
+
+    ArmSim sim;
+
+    public Arm(ArmConfig config) {
         //Constructor.
         ArmRotate = new TalonFX(ArmConstants.kArmRotateCANID, "canivore");
         armRotateEncoder = new CANcoder(ArmConstants.kEncoderCANID,"canivore");
         RotateControl = new PositionVoltage(ArmConstants.kCoralStow);
+
+        armSim = ArmRotate.getSimState();
+
+        sim = new ArmSim(config, armSim);
     }
 
     private void armDriveToPosition(double position) {
@@ -144,5 +156,6 @@ public Command armAlgaeProcessor() {
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
+        sim.simulationPeriodic();
     }
 }
