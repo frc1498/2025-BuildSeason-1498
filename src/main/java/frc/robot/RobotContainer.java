@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.config.ArmConfig;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.config.WristConfig;
@@ -40,6 +41,7 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    //Instantiate 
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator1 = new CommandXboxController(1);
     private final CommandXboxController operator2 = new CommandXboxController(2);
@@ -50,12 +52,13 @@ public class RobotContainer {
     public Elevator elevator = new Elevator(elevatorConfig);
  
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
-    public CoralIntake intake = new CoralIntake();
+    public CoralIntake intake = new CoralIntake(intakeConfig);
 
     public final WristConfig wristConfig = new WristConfig();
     public Wrist wrist = new Wrist(wristConfig);
- 
-    public Arm arm = new Arm();
+    
+    public final ArmConfig armConfig = new ArmConfig();
+    public Arm arm = new Arm(armConfig);
 
     public RobotContainer() {
         configureBindings();
