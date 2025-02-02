@@ -1,7 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -9,56 +14,94 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import frc.robot.Constants;
+
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.constants.CoralIntakeConstants;
 import frc.robot.sim.CoralIntakeSim;
 
 public class CoralIntake extends SubsystemBase{
-
-    TalonFX intakePivot;
-    TalonFX intakeRoller;
-
+    //Create Variables
+    TalonFX rotateMotor;
+    TalonFX spinMotor;
+    CANcoder rotateCANcoder;
+  
     TalonFXSimState intakePivotSim;
     TalonFXSimState intakeRollerSim;
 
-    VelocityVoltage rollerSpit;
-    VelocityVoltage rollerSuck;
-
-    PositionVoltage pivot;
-
+    VelocityVoltage spinMotorMode;
+    PositionVoltage rotateMotorMode;
+  
     CoralIntakeSim sim;
-
+  
     public CoralIntake(CoralIntakeConfig config) {
-        //Constructor.
-        intakePivot = new TalonFX(CoralIntakeConstants.kIntakePivotCANID, "canivore");
-        intakeRoller = new TalonFX(CoralIntakeConstants.kIntakeRollerCANID, "canivore");
-        rollerSpit = new VelocityVoltage(CoralIntakeConstants.kSpitSpeed);
-        rollerSuck = new VelocityVoltage(CoralIntakeConstants.kSuckSpeed);
-        pivot = new PositionVoltage(CoralIntakeConstants.kIntakeStowPosition);
+        //Constructor - only runs once
 
+        //Instantiate
+        rotateMotor = new TalonFX(config.kRotateCANID, "canivore");
+        spinMotor = new TalonFX(config.kSpinCANID, "canivore");
+        rotateCANcoder = new CANcoder(config.kRotateCANcoderID);
+        spinMotorMode = new VelocityVoltage(CoralIntakeConstants.kSuckSpeed);
+        rotateMotorMode = new PositionVoltage(CoralIntakeConstants.kIntakeStowPosition);
+
+        //Fill in the Instantiation
+        this.configureMechanism(spinMotor);
+        this.configureMechanism(rotateMotor);
+        this.configureCancoder(rotateCANcoder);
+      
         intakePivotSim = intakePivot.getSimState();
         intakeRollerSim = intakeRoller.getSimState();
 
         sim = new CoralIntakeSim(config, intakePivotSim, intakeRollerSim);
     }
 
+    public void configureCancoder(CANcoder coralIntakeRotate){       
+        //Start Configuring Climber Motor
+        CANcoderConfiguration coralIntakeRotateConfig = new CANcoderConfiguration();
+        StatusCode coralIntakeRotateStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            coralIntakeRotateStatus = coralIntakeRotate.getConfigurator().apply(coralIntakeRotateConfig);
+            if (coralIntakeRotateStatus.isOK()) break;
+        }
+        if (!coralIntakeRotateStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + coralIntakeRotateStatus.toString());
+        }
+    }
+
+    public void configureMechanism(TalonFX mechanism){     
+        //Start Configuring Climber Motor
+        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
+        StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            if (mechanismStatus.isOK()) break;
+        }
+        if (!mechanismStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + mechanismStatus.toString());
+        }
+
+    }
+
     private void suck() {
-        intakeRoller.setControl(rollerSuck);
+        spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSuckSpeed));
     }
 
     private void spit() {
-        intakeRoller.setControl(rollerSpit);
+        spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSpitSpeed));
     }
 
     private void goToPosition(double position) {
-        intakePivot.setControl(pivot.withPosition(position));
+        rotateMotor.setControl(rotateMotorMode.withPosition(position));
     }
     
     private double getPivotPosition() {
-        return intakePivot.getPosition().getValueAsDouble();
+        return rotateMotor.getPosition().getValueAsDouble();
     }
 
-    private boolean isIntakeAtPosition(double position) {
+    private boolean isRotateMotorAtPosition(double position) {
         return ((position - CoralIntakeConstants.kDeadband) <= this.getPivotPosition()) && ((position + CoralIntakeConstants.kDeadband) <= this.getPivotPosition());
     }
 
@@ -92,11 +135,9 @@ public class CoralIntake extends SubsystemBase{
         );
     }
 
-    public Trigger isIntakeStowed= new Trigger(() -> {return this.isIntakeAtPosition(CoralIntakeConstants.kIntakeStowPosition);});
-
-    public Trigger isIntakeRaised= new Trigger(() -> {return this.isIntakeAtPosition(CoralIntakeConstants.kIntakeRaisedPosition);});
-
-    public Trigger isIntakeFloored= new Trigger(() -> {return this.isIntakeAtPosition(CoralIntakeConstants.kIntakeFloorPosition);});
+    public Trigger isIntakeStowed= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeStowPosition);});
+    public Trigger isIntakeRaised= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeRaisedPosition);});
+    public Trigger isIntakeFloored= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeFloorPosition);});
     
     @Override
     public void initSendable(SendableBuilder builder) {

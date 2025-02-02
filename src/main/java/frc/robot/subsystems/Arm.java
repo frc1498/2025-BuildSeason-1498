@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -15,28 +18,63 @@ import frc.robot.constants.ArmConstants;
 import frc.robot.sim.ArmSim;
 
 public class Arm extends SubsystemBase{
+    //Declare Variables
+    TalonFX armRotate;
+    PositionVoltage rotateControl;
 
-    TalonFX ArmRotate;
     CANcoder armRotateEncoder;
-    PositionVoltage RotateControl;
 
     TalonFXSimState armSim;
 
     ArmSim sim;
 
     public Arm(ArmConfig config) {
-        //Constructor.
-        ArmRotate = new TalonFX(ArmConstants.kArmRotateCANID, "canivore");
-        armRotateEncoder = new CANcoder(ArmConstants.kEncoderCANID,"canivore");
-        RotateControl = new PositionVoltage(ArmConstants.kCoralStow);
+        //Constructor - only runs once
 
-        armSim = ArmRotate.getSimState();
+        //Instantiate
+        armRotate = new TalonFX(config.kArmRotateCANID, "canivore");
+        armRotateEncoder = new CANcoder(config.kEncoderCANID,"canivore");
+        rotateControl = new PositionVoltage(ArmConstants.kCoralStow);
+
+        //Fill In Instatiations
+        this.configureMechanism(armRotate);
+        this.configureCancoder(armRotateEncoder);
+  
+        armSim = armRotate.getSimState();
 
         sim = new ArmSim(config, armSim);
     }
 
+    public void configureCancoder(CANcoder coralIntakeRotate){       
+        //Start Configuring Climber Motor
+        CANcoderConfiguration coralIntakeRotateConfig = new CANcoderConfiguration();
+        StatusCode coralIntakeRotateStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            coralIntakeRotateStatus = coralIntakeRotate.getConfigurator().apply(coralIntakeRotateConfig);
+            if (coralIntakeRotateStatus.isOK()) break;
+        }
+        if (!coralIntakeRotateStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + coralIntakeRotateStatus.toString());
+        }
+    }
+
+    public void configureMechanism(TalonFX mechanism){     
+        //Start Configuring Climber Motor
+        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
+        StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            if (mechanismStatus.isOK()) break;
+        }
+        if (!mechanismStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + mechanismStatus.toString());
+        }
+    }
+
     private void armDriveToPosition(double position) {
-            ArmRotate.setControl(RotateControl.withPosition(position));
+            armRotate.setControl(rotateControl.withPosition(position));
     }
 
     private boolean isArmAtPosition(double position) {
@@ -44,7 +82,7 @@ public class Arm extends SubsystemBase{
     }
 
     private double GetArmPosition(){
-            return ArmRotate.getPosition().getValueAsDouble();
+            return armRotate.getPosition().getValueAsDouble();
     }
 
 //=====================Public Commands===============    

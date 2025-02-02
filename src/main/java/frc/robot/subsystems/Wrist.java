@@ -1,9 +1,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -19,11 +21,13 @@ import frc.robot.sim.WristSim;
 
 public class Wrist extends SubsystemBase{
     TalonFX wristRotate;
-    TalonFX wristRoller;
-    CANcoder wristRotateEncoder;
+
+    CANcoder wristRotateCancoder;
+
     PositionVoltage rotateControl;
 
-    PositionVoltage posControl;
+    TalonFX wristSpin;
+    VelocityVoltage spinControl;
     
     TalonFXSimState wristRotateSim;
     TalonFXSimState wristRollerSim;
@@ -33,24 +37,53 @@ public class Wrist extends SubsystemBase{
 
    
     public Wrist(WristConfig config) {
-        //Constructor
-        wristRotate = new TalonFX(WristConstants.kWristRotateCANID, "canivore");
-        wristRoller = new TalonFX(WristConstants.kWristRollerCANID, "canivore");
-        wristRotateEncoder = new CANcoder(WristConstants.kWristEncoderCANID,"canivore");
-        //rotateControl = new PositionVoltage(WristConstants.kCoralStow);
-
-        wristRotate.getConfigurator().apply(config.WristConfig);
+        
         this.config = config;
-        //sim = new WristSim(config, wristDriveFrontSim);
-        posControl = new PositionVoltage(0);
-        rotateControl = new PositionVoltage(0);
 
+        wristRotate = new TalonFX(config.kRotateCANID, "canivore");
+        wristRotateCancoder = new CANcoder(config.kEncoderCANID,"canivore");
+        rotateControl = new PositionVoltage(WristConstants.kCoralStow);
+
+        wristSpin = new TalonFX(config.kSpinCANID, "canivore");
+        spinControl = new VelocityVoltage(WristConstants.kCoralStop);
+
+        this.configureMechanism(wristSpin);  //Fill in framework
+        this.configureMechanism(wristRotate);  //Fill in framework
+        this.configureCancoder(wristRotateCancoder);  //Fill in framework
+      
         wristRotateSim = wristRotate.getSimState();
-        wristRollerSim = wristRoller.getSimState();
-
+        wristRollerSim = wristSpin.getSimState();
         sim = new WristSim(config, wristRotateSim, wristRollerSim); 
     }
     
+    public void configureCancoder(CANcoder coralIntakeRotate){       
+        //Start Configuring Climber Motor
+        CANcoderConfiguration coralIntakeRotateConfig = new CANcoderConfiguration();
+        StatusCode coralIntakeRotateStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            coralIntakeRotateStatus = coralIntakeRotate.getConfigurator().apply(coralIntakeRotateConfig);
+            if (coralIntakeRotateStatus.isOK()) break;
+        }
+        if (!coralIntakeRotateStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + coralIntakeRotateStatus.toString());
+        }
+    }
+
+    public void configureMechanism(TalonFX mechanism){     
+        //Start Configuring Climber Motor
+        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
+        StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            if (mechanismStatus.isOK()) break;
+        }
+        if (!mechanismStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + mechanismStatus.toString());
+        }
+    }
+
     //=============================================================
     //====================Private Methods==========================
     //=============================================================
@@ -64,44 +97,6 @@ public class Wrist extends SubsystemBase{
 
     private double getWristPosition(){
             return wristRotate.getPosition().getValueAsDouble();       
-    }
-
-    //===================================================
-    //=====================Public Methods===============
-    //===================================================    
-    public void configureWristRotate(TalonFX wristRotate){
-        //Start Configuring Wrist Motor
-        TalonFXConfiguration wristRotateConfig = new TalonFXConfiguration();
-
-        wristRotateConfig.MotorOutput.Inverted = WristConstants.kRotateDirection;
-        wristRotateConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        wristRotateConfig.CurrentLimits.SupplyCurrentLimit = WristConstants.kRotateSupplyCurrentLimit;
-        wristRotateConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = WristConstants.kRotateVoltageClosedLoopRampPeriod;
-        wristRotateConfig.Voltage.PeakForwardVoltage = WristConstants.kRotateMaxForwardVoltage;
-        wristRotateConfig.Voltage.PeakReverseVoltage = WristConstants.kRotateMaxReverseVoltage;
-        wristRotateConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-        //Configure Gains and Motion Magic Items
-        Slot0Configs slot0 = wristRotateConfig.Slot0;
-        slot0.kP = WristConstants.kRotateProportional;
-        slot0.kI = WristConstants.kRotateIntegral;
-        slot0.kD = WristConstants.kRotateDerivative;
-        //slot0.GravityType = ;  //We probably don't need this for the wrist
-        slot0.kV = WristConstants.kRotateVelocityFeedFoward;
-        //slot0.kS = WristConstants.kClimberStaticFeedFoward;  //Probably don't need this for the wrist?
-
-        //Setting the config option that allows playing music on the motor during disabled.
-        wristRotateConfig.Audio.AllowMusicDurDisable = true;
- 
-        StatusCode wristRotateStatus = StatusCode.StatusCodeNotInitialized;
-        for(int i = 0; i < 5; ++i) {
-            wristRotateStatus = wristRotate.getConfigurator().apply(wristRotateConfig);
-            if (wristRotateStatus.isOK()) break;
-        }
-        if (!wristRotateStatus.isOK()) {
-            System.out.println("Could not configure device. Error: " + wristRotateStatus.toString());
-        }
-        //m_LeftClimb.setPosition(0);
     }
 
     public Command wristCoralStow() {

@@ -2,7 +2,10 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -14,25 +17,52 @@ import frc.robot.config.ElevatorConfig;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.sim.ElleySim;
 
-public class elevator extends SubsystemBase {
-    TalonFX elevatorDriveFront = new TalonFX(ElevatorConstants.kElevatorDriveFrontCANID, "canivore");
-    TalonFX elevatorDriveBack = new TalonFX(ElevatorConstants.kElevatorDriveBackCANID, "canivore");
-
-    TalonFXSimState elevatorDriveFrontSim = elevatorDriveFront.getSimState();
-    TalonFXSimState elevatorDriveBackSim = elevatorDriveBack.getSimState();
-
+public class Elevator extends SubsystemBase {
+    //Declare Variables
+    TalonFX elevatorDriveFront;
+    TalonFX elevatorDriveRear;
+  
+    TalonFXSimState elevatorDriveFrontSim;
+    TalonFXSimState elevatorDriveBackSim;
+  
     PositionVoltage posControl;
-    
+
     ElevatorConfig config;
     ElleySim sim;
 
-    public elevator(ElevatorConfig config) {
+    public Elevator(ElevatorConfig config) {
         //Constructor.
-        elevatorDriveFront.getConfigurator().apply(config.frontConfig);
-        elevatorDriveBack.getConfigurator().apply(config.backConfig);
+
+        //Instantiate
+        elevatorDriveFront = new TalonFX(config.kElevatorDriveFrontCANID, "canivore");
+        elevatorDriveRear = new TalonFX(config.kElevatorDriveBackCANID, "canivore");
+
+        //Fill In the Instantiation
+        this.configureMechanism(elevatorDriveFront);
+        this.configureMechanism(elevatorDriveRear);
+
         this.config = config;
-        sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveBackSim);
+      
+        elevatorDriveFrontSim = elevatorDriveFront.getSimState();
+        elevatorDriveRearSim = elevatorDriveRear.getSimState();
+      
+        sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveRearSim);
+      
         posControl = new PositionVoltage(0);
+    }
+
+   public void configureMechanism(TalonFX mechanism){     
+        //Start Configuring Climber Motor
+        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
+        StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            if (mechanismStatus.isOK()) break;
+        }
+        if (!mechanismStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + mechanismStatus.toString());
+        }
     }
 
     //=================Private Commands======================
@@ -162,7 +192,7 @@ public class elevator extends SubsystemBase {
     }
 
     public void simulationInit() {
-        sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveBackSim);
+        sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveRearSim);
     }
 
     @Override

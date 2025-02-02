@@ -1,8 +1,7 @@
 package frc.robot.constants;
 
 public class ElevatorConstants {
-    public static final int kElevatorDriveFrontCANID = 11;
-    public static final int kElevatorDriveBackCANID = 12;
+    
 
     //Numbers are for simulation for now.
     //Positions are in meters.  Heights are based off the manual, so not quite practical for actual scoring.

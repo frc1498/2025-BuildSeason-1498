@@ -1,12 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -16,31 +14,46 @@ import frc.robot.constants.ClimberConstants;
 import frc.robot.sim.ClimberSim;
 
 public class Climber extends SubsystemBase{
+    //Declare Variables
     TalonFX climberRotate;
-    CANcoder climberRotateEncoder;
     PositionVoltage rotateControl;
-
-    PositionVoltage posControl;
     
+    TalonFX climberSpin;
+    VelocityVoltage spinControl;
+
     TalonFXSimState climberDriveFrontSim = climberRotate.getSimState();
-
-    ClimberConfig config;
     ClimberSim sim;
-
    
     public Climber(ClimberConfig config) {
         //Constructor
-        //rotateControl = new PositionVoltage(ClimberConstants.kCoralStow);
 
-        climberRotate.getConfigurator().apply(config.ClimberConfig);
-        this.config = config;
-        //sim = new ClimberSim(config, climberDriveFrontSim);
-        posControl = new PositionVoltage(0);
+        //Instantiate
+        climberRotate = new TalonFX(config.kclimberRotateCANID, "canivore");
+        rotateControl = new PositionVoltage(ClimberConstants.kClimberStow);
+
+        climberSpin = new TalonFX(config.kclimberRotateCANID, "canivore");
+        spinControl = new VelocityVoltage(ClimberConstants.kClimberStop);
+
+        //Fill in Instantiation
+        this.configureMechanism(climberRotate);
+        this.configureMechanism(climberSpin);
     }
-    
-    //=============================================================
-    //====================Private Methods==========================
-    //=============================================================
+   
+    public void configureMechanism(TalonFX mechanism){     
+        //Start Configuring Climber Motor
+        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
+        StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
+
+        for(int i = 0; i < 5; ++i) {
+            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            if (mechanismStatus.isOK()) break;
+        }
+        if (!mechanismStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + mechanismStatus.toString());
+        }
+    }
+
+
     private void climberDriveToPosition(double position) {
             climberRotate.setControl(rotateControl.withPosition(position));
     }
@@ -51,43 +64,6 @@ public class Climber extends SubsystemBase{
 
     private double getClimberPosition(){
             return climberRotate.getPosition().getValueAsDouble();       
-    }
-
-    //===================================================
-    //=====================Public Methods===============
-    //===================================================    
-    public void configureClimberRotate(TalonFX climberRotate){
-        //Start Configuring Climber Motor
-        TalonFXConfiguration climberRotateConfig = new TalonFXConfiguration();
-
-        climberRotateConfig.MotorOutput.Inverted = ClimberConstants.kRotateDirection;
-        climberRotateConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        climberRotateConfig.CurrentLimits.SupplyCurrentLimit = ClimberConstants.kRotateSupplyCurrentLimit;
-        climberRotateConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = ClimberConstants.kRotateVoltageClosedLoopRampPeriod;
-        climberRotateConfig.Voltage.PeakForwardVoltage = ClimberConstants.kRotateMaxForwardVoltage;
-        climberRotateConfig.Voltage.PeakReverseVoltage = ClimberConstants.kRotateMaxReverseVoltage;
-        climberRotateConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        //Configure Gains and Motion Magic Items
-        Slot0Configs slot0 = climberRotateConfig.Slot0;
-        slot0.kP = ClimberConstants.kRotateProportional;
-        slot0.kI = ClimberConstants.kRotateIntegral;
-        slot0.kD = ClimberConstants.kRotateDerivative;
-        //slot0.GravityType = ;  //We probably don't need this for the climber
-        slot0.kV = ClimberConstants.kRotateVelocityFeedFoward;
-        //slot0.kS = ClimberConstants.kClimberStaticFeedFoward;  //Probably don't need this for the climber?
-
-        //Setting the config option that allows playing music on the motor during disabled.
-        climberRotateConfig.Audio.AllowMusicDurDisable = true;
- 
-        StatusCode climberRotateStatus = StatusCode.StatusCodeNotInitialized;
-        for(int i = 0; i < 5; ++i) {
-            climberRotateStatus = climberRotate.getConfigurator().apply(climberRotateConfig);
-            if (climberRotateStatus.isOK()) break;
-        }
-        if (!climberRotateStatus.isOK()) {
-            System.out.println("Could not configure device. Error: " + climberRotateStatus.toString());
-        }
-        //m_LeftClimb.setPosition(0);
     }
 
     @Override

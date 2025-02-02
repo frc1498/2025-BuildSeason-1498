@@ -1,8 +1,6 @@
 package frc.robot.constants;
 
 public class CoralIntakeConstants {
-    public static final int kIntakePivotCANID = 9;
-    public static final int kIntakeRollerCANID = 10;
 
     //These numbers are completely made up.
     public static final double kIntakeStowPosition = 0.0;
