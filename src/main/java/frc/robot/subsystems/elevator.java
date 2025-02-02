@@ -21,15 +21,14 @@ public class Elevator extends SubsystemBase {
     //Declare Variables
     TalonFX elevatorDriveFront;
     TalonFX elevatorDriveRear;
+  
+    TalonFXSimState elevatorDriveFrontSim;
+    TalonFXSimState elevatorDriveBackSim;
+  
     PositionVoltage posControl;
 
     ElevatorConfig config;
     ElleySim sim;
-
-    //Sim
-    TalonFXSimState elevatorDriveFrontSim = elevatorDriveFront.getSimState();
-    TalonFXSimState elevatorDriveRearSim = elevatorDriveRear.getSimState();
-
 
     public Elevator(ElevatorConfig config) {
         //Constructor.
@@ -43,7 +42,12 @@ public class Elevator extends SubsystemBase {
         this.configureMechanism(elevatorDriveRear);
 
         this.config = config;
+      
+        elevatorDriveFrontSim = elevatorDriveFront.getSimState();
+        elevatorDriveRearSim = elevatorDriveRear.getSimState();
+      
         sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveRearSim);
+      
         posControl = new PositionVoltage(0);
     }
 

@@ -3,9 +3,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ArmConfig;
 import frc.robot.constants.ArmConstants;
+import frc.robot.sim.ArmSim;
 
 public class Arm extends SubsystemBase{
     //Declare Variables
@@ -20,6 +23,10 @@ public class Arm extends SubsystemBase{
     PositionVoltage rotateControl;
 
     CANcoder armRotateEncoder;
+
+    TalonFXSimState armSim;
+
+    ArmSim sim;
 
     public Arm(ArmConfig config) {
         //Constructor - only runs once
@@ -32,6 +39,10 @@ public class Arm extends SubsystemBase{
         //Fill In Instatiations
         this.configureMechanism(armRotate);
         this.configureCancoder(armRotateEncoder);
+  
+        armSim = armRotate.getSimState();
+
+        sim = new ArmSim(config, armSim);
     }
 
     public void configureCancoder(CANcoder coralIntakeRotate){       
@@ -183,5 +194,6 @@ public Command armAlgaeProcessor() {
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
+        sim.simulationPeriodic();
     }
 }

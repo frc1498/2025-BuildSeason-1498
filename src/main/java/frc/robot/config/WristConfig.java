@@ -55,7 +55,6 @@ public class WristConfig {
         rotate.Slot0.kV = 0;  // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
         rotate.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-
         //Fuse the Cancoder here
         rotate.Feedback.FeedbackRemoteSensorID = 0;
         rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;

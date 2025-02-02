@@ -18,14 +18,12 @@ import frc.robot.config.ArmConfig;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.config.WristConfig;
-import frc.robot.constants.ArmConstants;
-import frc.robot.constants.ElevatorConstants;
-import frc.robot.constants.WristConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralIntake;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.elevator;
 import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
@@ -49,7 +47,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final ElevatorConfig elevatorConfig = new ElevatorConfig();
-    public Elevator elevator = new Elevator(elevatorConfig);
+    public elevator elevator = new elevator(elevatorConfig);
  
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake(intakeConfig);
@@ -59,6 +57,10 @@ public class RobotContainer {
     
     public final ArmConfig armConfig = new ArmConfig();
     public Arm arm = new Arm(armConfig);
+
+    //Very important, the vision subsystem has to be created after the drivetrain.
+    //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
+    public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
 
     public RobotContainer() {
         configureBindings();
@@ -98,6 +100,8 @@ public class RobotContainer {
         driver.rightTrigger(0.1).whileTrue(elevator.elevatorPosition(() -> {return driver.getRightTriggerAxis() * 2;}));
 
         driver.leftBumper().whileTrue(intake.rollerSuck());
+
+        driver.leftTrigger(0.1).onTrue(wrist.wristCoralL1()).onFalse(wrist.wristCoralL2());
 
         //====================Operator Commands========================
         //Button Correlation Table

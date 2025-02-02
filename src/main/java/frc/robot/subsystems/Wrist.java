@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -10,7 +8,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -18,31 +15,31 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
-import frc.robot.config.ElevatorConfig;
 import frc.robot.config.WristConfig;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
-import frc.robot.sim.ElleySim;
 import frc.robot.sim.WristSim;
 
 public class Wrist extends SubsystemBase{
     TalonFX wristRotate;
+
     CANcoder wristRotateCancoder;
+
     PositionVoltage rotateControl;
 
     TalonFX wristSpin;
     VelocityVoltage spinControl;
     
-    TalonFXSimState wristDriveSim = wristRotate.getSimState();
-    TalonFXSimState wristSpinSim = wristSpin.getSimState();
+    TalonFXSimState wristRotateSim;
+    TalonFXSimState wristRollerSim;
 
     WristConfig config;
     WristSim sim;
 
    
     public Wrist(WristConfig config) {
-        //Constructor
+        
+        this.config = config;
+
         wristRotate = new TalonFX(config.kRotateCANID, "canivore");
         wristRotateCancoder = new CANcoder(config.kEncoderCANID,"canivore");
         rotateControl = new PositionVoltage(WristConstants.kCoralStow);
@@ -53,6 +50,10 @@ public class Wrist extends SubsystemBase{
         this.configureMechanism(wristSpin);  //Fill in framework
         this.configureMechanism(wristRotate);  //Fill in framework
         this.configureCancoder(wristRotateCancoder);  //Fill in framework
+      
+        wristRotateSim = wristRotate.getSimState();
+        wristRollerSim = wristSpin.getSimState();
+        sim = new WristSim(config, wristRotateSim, wristRollerSim); 
     }
     
     public void configureCancoder(CANcoder coralIntakeRotate){       
@@ -202,9 +203,13 @@ public class Wrist extends SubsystemBase{
     public void periodic() {
         // This method will be called once per scheduler run
     }
-  
+    
+    public void simulationInit() {
+        sim = new WristSim(config, wristRotateSim, wristRollerSim);
+    }
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
+        sim.simulationPeriodic();
     }
 }
