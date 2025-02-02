@@ -11,7 +11,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 public class CoralIntakeConfig {
     public final int kRotateCANID = 9;
     public final int kSpinCANID = 10;
-    public final int kRotateCANcoderID = 0;
+    public final int kRotateCANcoderID = 31;
 
     public CANcoderConfiguration coralIntakeCANcoderConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration coralIntakeRotateConfig;  //Create variable of type CANcoderConfiguration
@@ -32,7 +32,7 @@ public class CoralIntakeConfig {
     public void configureCoralIntakeRotate(TalonFXConfiguration rotate){
 
         //configure motor
-        rotate.CurrentLimits.SupplyCurrentLimit = 0;
+        rotate.CurrentLimits.SupplyCurrentLimit = 40;
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         rotate.MotionMagic.MotionMagicAcceleration = 0;
         rotate.MotionMagic.MotionMagicCruiseVelocity = 0;
@@ -43,7 +43,7 @@ public class CoralIntakeConfig {
         rotate.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         //Slot 0 Configs
-        rotate.Slot0.kP = 0;  // An error of 1 rotation per second results in 2V output
+        rotate.Slot0.kP = 2;  // An error of 1 rotation per second results in 2V output
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
         rotate.Slot0.kD = 0;  // A change of 1 rotation per second squared results in 0.01 volts output
         rotate.Slot0.kG = 0;
@@ -52,7 +52,7 @@ public class CoralIntakeConfig {
 
 
         //Fuse the Cancoder here
-        rotate.Feedback.FeedbackRemoteSensorID = 0;
+        rotate.Feedback.FeedbackRemoteSensorID = 31;
         rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         rotate.Feedback.SensorToMechanismRatio = 0;
         rotate.Feedback.RotorToSensorRatio = 0;
@@ -62,7 +62,7 @@ public class CoralIntakeConfig {
     public void configureCoralIntakeSpin(TalonFXConfiguration spin){
         
         //Configure Motor
-        spin.CurrentLimits.SupplyCurrentLimit = 0;
+        spin.CurrentLimits.SupplyCurrentLimit = 40;
         spin.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         spin.Voltage.PeakForwardVoltage = -11;
         spin.Voltage.PeakReverseVoltage = 11;
@@ -71,7 +71,7 @@ public class CoralIntakeConfig {
         spin.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         //Slot 0 Configs
-        spin.Slot0.kP = 0; // An error of 1 rotation per second results in 2V output
+        spin.Slot0.kP = 2; // An error of 1 rotation per second results in 2V output
         spin.Slot0.kI = 0; // An error of 1 rotation per second increases output by 0.5V every second
         spin.Slot0.kD = 0; // A change of 1 rotation per second squared results in 0.01 volts output
         spin.Slot0.kV = 0; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second

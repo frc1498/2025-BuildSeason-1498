@@ -28,7 +28,7 @@ public class ArmConfig {
     public void configureCoralIntakeRotate(TalonFXConfiguration rotate){
 
         //configure motor
-        rotate.CurrentLimits.SupplyCurrentLimit = 0;
+        rotate.CurrentLimits.SupplyCurrentLimit = 40;
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         rotate.MotionMagic.MotionMagicAcceleration = 0;
         rotate.MotionMagic.MotionMagicCruiseVelocity = 0;
@@ -39,7 +39,7 @@ public class ArmConfig {
         rotate.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         //Slot 0 Configs
-        rotate.Slot0.kP = 0;  // An error of 1 rotation per second results in 2V output
+        rotate.Slot0.kP = 2;  // An error of 1 rotation per second results in 2V output
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
         rotate.Slot0.kD = 0;  // A change of 1 rotation per second squared results in 0.01 volts output
         rotate.Slot0.kG = 0;
@@ -48,7 +48,7 @@ public class ArmConfig {
 
 
         //Fuse the Cancoder here
-        rotate.Feedback.FeedbackRemoteSensorID = 0;
+        rotate.Feedback.FeedbackRemoteSensorID = 32;
         rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         rotate.Feedback.SensorToMechanismRatio = 0;
         rotate.Feedback.RotorToSensorRatio = 0;

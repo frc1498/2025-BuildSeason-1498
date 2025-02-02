@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.config.ClimberConfig;
 import frc.robot.constants.ClimberConstants;
@@ -35,17 +36,18 @@ public class Climber extends SubsystemBase{
         spinControl = new VelocityVoltage(ClimberConstants.kClimberStop);
 
         //Fill in Instantiation
-        this.configureMechanism(climberRotate);
-        this.configureMechanism(climberSpin);
+        this.configureMechanism(climberRotate, config.climberRotateConfig);
+        this.configureMechanism(climberSpin, config.climberSpinConfig);
+
+        SmartDashboard.putData("Climber", this);
     }
    
-    public void configureMechanism(TalonFX mechanism){     
+    public void configureMechanism(TalonFX mechanism, TalonFXConfiguration config){     
         //Start Configuring Climber Motor
-        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
         StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
-            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            mechanismStatus = mechanism.getConfigurator().apply(config);
             if (mechanismStatus.isOK()) break;
         }
         if (!mechanismStatus.isOK()) {

@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -32,31 +33,33 @@ public class Elevator extends SubsystemBase {
     public Elevator(ElevatorConfig config) {
         //Constructor.
 
+        //Potentially unneeded step.
+        //this.config = config;
+
         //Instantiate
         elevatorDriveFront = new TalonFX(config.kElevatorDriveFrontCANID, "canivore");
-        elevatorDriveRear = new TalonFX(config.kElevatorDriveBackCANID, "canivore");
+        elevatorDriveRear = new TalonFX(config.kElevatorDriveRearCANID, "canivore");
 
         //Fill In the Instantiation
-        this.configureMechanism(elevatorDriveFront);
-        this.configureMechanism(elevatorDriveRear);
+        this.configureMechanism(elevatorDriveFront, config.frontConfig);
+        this.configureMechanism(elevatorDriveRear, config.rearConfig);
 
-        this.config = config;
-      
         elevatorDriveFrontSim = elevatorDriveFront.getSimState();
         elevatorDriveRearSim = elevatorDriveRear.getSimState();
-      
+
+        posControl = new PositionVoltage(0);   
+
         sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveRearSim);
-      
-        posControl = new PositionVoltage(0);
+        
+        SmartDashboard.putData("Elevator", this);
     }
 
-   public void configureMechanism(TalonFX mechanism){     
+   public void configureMechanism(TalonFX mechanism, TalonFXConfiguration motorConfig){     
         //Start Configuring Climber Motor
-        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
         StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
-            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            mechanismStatus = mechanism.getConfigurator().apply(motorConfig);
             if (mechanismStatus.isOK()) break;
         }
         if (!mechanismStatus.isOK()) {

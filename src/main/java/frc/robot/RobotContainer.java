@@ -102,6 +102,7 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(intake.rollerSuck());
 
         driver.leftTrigger(0.1).onTrue(wrist.wristCoralL1()).onFalse(wrist.wristCoralL2());
+        driver.y().onTrue(arm.armCoralL1()).onFalse(arm.armCoralL2());
 
         //====================Operator Commands========================
         //Button Correlation Table
