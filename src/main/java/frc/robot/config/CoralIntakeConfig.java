@@ -1,23 +1,17 @@
 package frc.robot.config;
 
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import frc.robot.constants.CoralIntakeConstants;
-
 public class CoralIntakeConfig {
-    public static final int kRotateCANID = 9;
-    public static final int kSpinCANID = 10;
-    public static final int kRotateCANcoderID = 0;
+    public final int kRotateCANID = 9;
+    public final int kSpinCANID = 10;
+    public final int kRotateCANcoderID = 0;
 
     public CANcoderConfiguration coralIntakeCANcoderConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration coralIntakeRotateConfig;  //Create variable of type CANcoderConfiguration

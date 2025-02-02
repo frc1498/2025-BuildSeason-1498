@@ -1,8 +1,5 @@
 package frc.robot.constants;
 
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 public class WristConstants {
 
     //===============Coral Positions======================

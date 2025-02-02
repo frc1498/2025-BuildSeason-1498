@@ -6,8 +6,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ClimberConfig {
-    public static final int kclimberRotateCANID = 0;
-    public static final int kclimberSpinCANID = 0;
+    public final int kclimberRotateCANID = 0;
+    public final int kclimberSpinCANID = 0;
 
 
     public TalonFXConfiguration climberRotateConfig = new TalonFXConfiguration();

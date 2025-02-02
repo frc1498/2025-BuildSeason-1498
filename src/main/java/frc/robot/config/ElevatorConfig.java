@@ -9,8 +9,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ElevatorConfig {
 
-    public static final int kElevatorDriveFrontCANID = 11;
-    public static final int kElevatorDriveBackCANID = 12;
+    public final int kElevatorDriveFrontCANID = 11;
+    public final int kElevatorDriveBackCANID = 12;
 
     public TalonFXConfiguration frontConfig = new TalonFXConfiguration();
     public TalonFXConfiguration backConfig = new TalonFXConfiguration();

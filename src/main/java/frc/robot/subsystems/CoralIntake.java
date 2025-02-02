@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import frc.robot.Constants;
-
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.constants.CoralIntakeConstants;
 import frc.robot.sim.CoralIntakeSim;
@@ -50,8 +48,8 @@ public class CoralIntake extends SubsystemBase{
         this.configureMechanism(rotateMotor);
         this.configureCancoder(rotateCANcoder);
       
-        intakePivotSim = intakePivot.getSimState();
-        intakeRollerSim = intakeRoller.getSimState();
+        intakePivotSim = rotateMotor.getSimState();
+        intakeRollerSim = spinMotor.getSimState();
 
         sim = new CoralIntakeSim(config, intakePivotSim, intakeRollerSim);
     }

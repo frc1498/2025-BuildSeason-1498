@@ -23,7 +23,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.elevator;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
@@ -47,7 +47,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final ElevatorConfig elevatorConfig = new ElevatorConfig();
-    public elevator elevator = new elevator(elevatorConfig);
+    public Elevator elevator = new Elevator(elevatorConfig);
  
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake(intakeConfig);

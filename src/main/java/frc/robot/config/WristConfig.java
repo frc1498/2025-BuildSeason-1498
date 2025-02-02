@@ -1,7 +1,6 @@
 package frc.robot.config;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -10,9 +9,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 public class WristConfig {
-    public static final int kRotateCANID = 13;  //Rotate Motor
-    public static final int kEncoderCANID = 32;  //Throughbore encoder
-    public static final int kSpinCANID = 13;  //Rotate Motor
+    public final int kRotateCANID = 13;  //Rotate Motor
+    public final int kEncoderCANID = 32;  //Throughbore encoder
+    public final int kSpinCANID = 13;  //Rotate Motor
 
     public CANcoderConfiguration wristRotateCANcoderConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration wristRotateConfig;  //Create variable of type CANcoderConfiguration

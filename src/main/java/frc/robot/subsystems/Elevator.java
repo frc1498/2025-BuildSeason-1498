@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -23,7 +22,7 @@ public class Elevator extends SubsystemBase {
     TalonFX elevatorDriveRear;
   
     TalonFXSimState elevatorDriveFrontSim;
-    TalonFXSimState elevatorDriveBackSim;
+    TalonFXSimState elevatorDriveRearSim;
   
     PositionVoltage posControl;
 
