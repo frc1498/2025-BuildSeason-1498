@@ -14,7 +14,7 @@ import frc.robot.config.ElevatorConfig;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.sim.ElleySim;
 
-public class Elevator extends SubsystemBase {
+public class elevator extends SubsystemBase {
     TalonFX elevatorDriveFront = new TalonFX(ElevatorConstants.kElevatorDriveFrontCANID, "canivore");
     TalonFX elevatorDriveBack = new TalonFX(ElevatorConstants.kElevatorDriveBackCANID, "canivore");
 
@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
     ElevatorConfig config;
     ElleySim sim;
 
-    public Elevator(ElevatorConfig config) {
+    public elevator(ElevatorConfig config) {
         //Constructor.
         elevatorDriveFront.getConfigurator().apply(config.frontConfig);
         elevatorDriveBack.getConfigurator().apply(config.backConfig);

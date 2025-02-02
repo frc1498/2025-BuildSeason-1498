@@ -8,7 +8,7 @@ import frc.robot.config.WristConfig;
 
 public class EndEffector extends SubsystemBase{
     ElevatorConfig elevatorConfig;
-    Elevator elevator;
+    elevator elevator;
     ArmConfig armConfig;
     Arm arm;
     WristConfig wristConfig;
@@ -16,7 +16,7 @@ public class EndEffector extends SubsystemBase{
 
     public EndEffector() {
         elevatorConfig = new ElevatorConfig();
-        elevator = new Elevator(elevatorConfig);
+        elevator = new elevator(elevatorConfig);
         armConfig = new ArmConfig();
         arm = new Arm(armConfig);
         wristConfig = new WristConfig();
