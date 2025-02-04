@@ -9,14 +9,16 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 public class ArmConfig {
-    public final int kArmRotateCANID = 13;
-    public final int kEncoderCANID = 32;
+    //Contants
+    public static final int kArmRotateCANID = 13;
+    public static final int kEncoderCANID = 32;
 
+    //Variables
     public CANcoderConfiguration armRotateCANcoderConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration armRotateConfig;  //Create variable of type TalonFXConfiguration
 
     //Constructor    
-    public ArmConfig(){
+    public ArmConfig(){   
         armRotateConfig = new TalonFXConfiguration();  //Instantiate - make a framework
         this.configureCoralIntakeRotate(armRotateConfig);  //Fill in framework 
 
