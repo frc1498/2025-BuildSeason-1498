@@ -12,10 +12,14 @@ public class CoralIntakeConfig {
     public final int kRotateCANID = 9;
     public final int kSpinCANID = 10;
     public final int kRotateCANcoderID = 0;
+    public final int kBeamBreakIntake=0;  //Intake Beambreak DIO
+
 
     public CANcoderConfiguration coralIntakeCANcoderConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration coralIntakeRotateConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration coralIntakeSpinConfig;  //Create variable of type CANcoderConfiguration
+
+
 
     //Constructor
     public CoralIntakeConfig() {

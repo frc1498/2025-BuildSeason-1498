@@ -8,9 +8,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ClimberConfig;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.WristConstants;
 import frc.robot.sim.ClimberSim;
 
 public class Climber extends SubsystemBase{
@@ -39,6 +42,10 @@ public class Climber extends SubsystemBase{
         this.configureMechanism(climberSpin);
     }
    
+    //===========================================================
+    //====================Configuration==========================
+    //===========================================================
+
     public void configureMechanism(TalonFX mechanism){     
         //Start Configuring Climber Motor
         TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
@@ -53,7 +60,9 @@ public class Climber extends SubsystemBase{
         }
     }
 
-
+    //===========================================================
+    //=======================Private=============================
+    //===========================================================
     private void climberDriveToPosition(double position) {
             climberRotate.setControl(rotateControl.withPosition(position));
     }
@@ -65,6 +74,32 @@ public class Climber extends SubsystemBase{
     private double getClimberPosition(){
             return climberRotate.getPosition().getValueAsDouble();       
     }
+
+    //===============================================================
+    //=====================Commands==================================
+    //===============================================================
+    public Command climberStow() {
+        return run(
+            () -> {this.wristDriveToPosition(WristConstants.kCoralStow);}
+        ).until(this.isWristCoralStow);
+    }
+
+    public Command climberReady() {
+        return run(
+            () -> {this.wristDriveToPosition(WristConstants.kCoralStow);}
+        ).until(this.isWristCoralStow);
+    }
+
+    public Command climberClimb() {
+        return run(
+            () -> {this.wristDriveToPosition(WristConstants.kCoralStow);}
+        ).until(this.isWristCoralStow);
+    }
+    //===============================================================
+    //======================Triggers=================================
+    //===============================================================
+    public final Trigger isClimbComplete = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimbComplete);});
+    public final Trigger isClimbLoaded = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimbReady);});
 
     @Override
     public void initSendable(SendableBuilder builder) {
