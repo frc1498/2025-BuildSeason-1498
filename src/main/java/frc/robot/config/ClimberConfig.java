@@ -9,7 +9,7 @@ public class ClimberConfig {
     public final int kclimberRotateCANID = 18;
     public final int kclimberSpinCANID = 19;
 
-
+    //Variables
     public TalonFXConfiguration climberRotateConfig = new TalonFXConfiguration();
     public TalonFXConfiguration climberSpinConfig = new TalonFXConfiguration();
 

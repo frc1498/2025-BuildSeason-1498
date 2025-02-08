@@ -8,10 +8,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.wpilibj2.command.Command;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ClimberConfig;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.WristConstants;
 import frc.robot.sim.ClimberSim;
 
 public class Climber extends SubsystemBase{
@@ -30,7 +36,7 @@ public class Climber extends SubsystemBase{
 
         //Instantiate
         climberRotate = new TalonFX(config.kclimberRotateCANID, "canivore");
-        rotateControl = new PositionVoltage(ClimberConstants.kClimberStow);
+        rotateControl = new PositionVoltage(ClimberConstants.kClimberStowed);
 
         climberSpin = new TalonFX(config.kclimberRotateCANID, "canivore");
         spinControl = new VelocityVoltage(ClimberConstants.kClimberStop);
@@ -43,6 +49,11 @@ public class Climber extends SubsystemBase{
     }
    
     public void configureMechanism(TalonFX mechanism, TalonFXConfiguration config){     
+
+    //===========================================================
+    //====================Configuration==========================
+    //===========================================================  
+
         //Start Configuring Climber Motor
         StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
 
@@ -55,7 +66,9 @@ public class Climber extends SubsystemBase{
         }
     }
 
-
+    //===========================================================
+    //=======================Private=============================
+    //===========================================================
     private void climberDriveToPosition(double position) {
             climberRotate.setControl(rotateControl.withPosition(position));
     }
@@ -67,6 +80,34 @@ public class Climber extends SubsystemBase{
     private double getClimberPosition(){
             return climberRotate.getPosition().getValueAsDouble();       
     }
+
+    //===============================================================
+    //=====================Commands==================================
+    //===============================================================
+    public Command toClimberStow() {
+        return run(
+            () -> {this.climberDriveToPosition(WristConstants.kCoralStow);}
+        ).until(this.isClimberStowed);
+    }
+
+    public Command toClimberReady() {
+        return run(
+            () -> {this.climberDriveToPosition(WristConstants.kCoralStow);}
+        ).until(this.isClimberLoaded);
+    }
+
+    public Command toClimberCompleteb() {
+        return run(
+            () -> {this.climberDriveToPosition(WristConstants.kCoralStow);}
+        ).until(this.isClimberComplete);
+    }
+
+    //===============================================================
+    //======================Triggers=================================
+    //===============================================================
+    public final Trigger isClimberComplete = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimberComplete);});
+    public final Trigger isClimberStowed = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimberStowed);});
+    public final Trigger isClimberLoaded = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimberLoaded);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

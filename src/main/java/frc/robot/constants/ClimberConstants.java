@@ -3,8 +3,8 @@ package frc.robot.constants;
 public class ClimberConstants {
     
     //Climber rotate positions
-    public static final double kClimberStow = 0;
-    public static final double kClimberReady = 0;
+    public static final double kClimberStowed = 0;
+    public static final double kClimberLoaded = 0;
     public static final double kClimberComplete = 0;
 
     //Climber spin speeds

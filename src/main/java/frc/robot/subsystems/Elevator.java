@@ -57,6 +57,11 @@ public class Elevator extends SubsystemBase {
     }
 
    public void configureMechanism(TalonFX mechanism, TalonFXConfiguration motorConfig){     
+
+    //=====================================================
+    //================Configuration========================
+    //=====================================================  
+
         //Start Configuring Climber Motor
         StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
 
@@ -68,8 +73,9 @@ public class Elevator extends SubsystemBase {
             System.out.println("Could not configure device. Error: " + mechanismStatus.toString());
         }
     }
-
-    //=================Private Commands======================
+    //=======================================================
+    //==========================Private======================
+    //=======================================================
     private void elevatorDriveToPosition(double position) {
         this.desiredPosition = position;
         elevatorDriveFront.setControl(posControl.withPosition(position));
@@ -87,7 +93,9 @@ public class Elevator extends SubsystemBase {
         return (position - ElevatorConstants.kDeadband) <= this.getCurrentPosition() && (position + ElevatorConstants.kDeadband) >= this.getCurrentPosition();
     }
 
+    //======================================================================
     //=====================Public Commands==================================
+    //======================================================================
     public Command elevatorCoralStow() {
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralStow);}
@@ -173,7 +181,9 @@ public class Elevator extends SubsystemBase {
         );
     }
 
-    //========Triggers for Elevator Coral=========
+    //======================================================
+    //==============Triggers for Elevator Coral=============
+    //======================================================
     public final Trigger isElevatorCoralStow = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralStow);});
     public final Trigger isElevatorCoralLoadFloor = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralLoadFloor);});
     public final Trigger isElevatorCoralLoadHuman = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralLoadHuman);});
@@ -182,7 +192,9 @@ public class Elevator extends SubsystemBase {
     public final Trigger isElevatorCoralL3 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL3);});
     public final Trigger isElevatorCoralL4 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL4);});
 
-    //=========Triggers for Elevator Algae========
+    //=====================================================
+    //==============Triggers for Elevator Algae============
+    //=====================================================
     public final Trigger isElevatorAlgaeStow = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeStow);});
     public final Trigger isElevatorAlgaeLoadFloor = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeLoadFloor);});
     public final Trigger isElevatorAlgaeL2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeL2);});
