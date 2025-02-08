@@ -224,7 +224,9 @@ public class Wrist extends SubsystemBase{
         ).until(this.isWristAlgaeProcessor);
     }
 
-    //========Triggers for Wrist Coral=========
+    //=======================================================
+    //=================Triggers for Wrist Coral==============
+    //=======================================================
     public final Trigger isPartRearwardGripper = new Trigger(() -> {return this.isPartRearwardGripper();});
     public final Trigger isPartForwardGripper = new Trigger(() -> {return this.isPartForwardGripper();});
     public final Trigger isWristCoralStow = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralStow);});
@@ -235,7 +237,9 @@ public class Wrist extends SubsystemBase{
     public final Trigger isWristCoralL3 = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralL3);});
     public final Trigger isWristCoralL4 = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralL4);});
 
-    //=========Triggers for Wrist Algae========
+    //========================================================
+    //===================Triggers for Wrist Algae=============
+    //========================================================
     public final Trigger isWristAlgaeStow = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kAlgaeStow);});
     public final Trigger isWristAlgaeLoadFloor = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kAlgaeLoadFloor);});
     public final Trigger isWristAlgaeL2 = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kAlgaeL2);});

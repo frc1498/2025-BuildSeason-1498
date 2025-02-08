@@ -45,6 +45,9 @@ public class Arm extends SubsystemBase{
         sim = new ArmSim(config, armSim);
     }
 
+//=====================================================
+//===================Configuration=====================
+//=====================================================
     public void configureCancoder(CANcoder coralIntakeRotate){       
         //Start Configuring Climber Motor
         CANcoderConfiguration coralIntakeRotateConfig = new CANcoderConfiguration();
@@ -73,6 +76,9 @@ public class Arm extends SubsystemBase{
         }
     }
 
+    //===================================================
+    //=====================Private Methods===============
+    //===================================================
     private void armDriveToPosition(double position) {
             armRotate.setControl(rotateControl.withPosition(position));
     }
@@ -85,86 +91,89 @@ public class Arm extends SubsystemBase{
             return armRotate.getPosition().getValueAsDouble();
     }
 
-//=====================Public Commands===============    
-public Command armCoralStow() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kCoralStow);}
-    ).until(this.isArmCoralStow);
-}
+    //===================================================
+    //=====================Public Commands===============
+    //===================================================    
+    public Command armCoralStow() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralStow);}
+        ).until(this.isArmCoralStow);
+    }
 
-public Command armCoralLoadFloor() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kCoralLoadFloor);}
-    ).until(this.isArmCoralLoadFloor);
-}
+    public Command armCoralLoadFloor() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralLoadFloor);}
+        ).until(this.isArmCoralLoadFloor);
+    }
 
-public Command armCoralLoadHuman() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kCoralLoadHuman);}
-    ).until(this.isArmCoralLoadHuman);
-}
+    public Command armCoralLoadHuman() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralLoadHuman);}
+        ).until(this.isArmCoralLoadHuman);
+    }
 
-public Command armCoralL1() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kCoralL1);}
-    ).until(this.isArmCoralL1);
-}
+    public Command armCoralL1() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralL1);}
+        ).until(this.isArmCoralL1);
+    }
 
-public Command armCoralL2() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kCoralL2);}
-    ).until(this.isArmCoralL2);
-}
+    public Command armCoralL2() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralL2);}
+        ).until(this.isArmCoralL2);
+    }
 
-public Command armCoralL3() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kCoralL3);}
-    ).until(this.isArmCoralL3);
-}
+    public Command armCoralL3() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralL3);}
+        ).until(this.isArmCoralL3);
+    }
 
-public Command armCoralL4() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kCoralL4);}
-    ).until(this.isArmCoralL4);
-}
+    public Command armCoralL4() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralL4);}
+        ).until(this.isArmCoralL4);
+    }
 
-public Command armAlgaeStow() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kAlgaeStow);}
-    ).until(this.isArmAlgaeStow);
-}
+    public Command armAlgaeStow() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeStow);}
+        ).until(this.isArmAlgaeStow);
+    }
 
-public Command armAlgaeLoadFloor() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadFloor);}
-    ).until(this.isArmAlgaeLoadFloor);
-}
+    public Command armAlgaeLoadFloor() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadFloor);}
+        ).until(this.isArmAlgaeLoadFloor);
+    }
 
-public Command armAlgaeL2() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL2);}
-    ).until(this.isArmAlgaeL2);
-}
+    public Command armAlgaeL2() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL2);}
+        ).until(this.isArmAlgaeL2);
+    }
 
-public Command armAlgaeL3() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL3);}
-    ).until(this.isArmAlgaeL3);
-}
+    public Command armAlgaeL3() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL3);}
+        ).until(this.isArmAlgaeL3);
+    }
 
-public Command armAlgaeBarge() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kAlgaeBarge);}
-    ).until(this.isArmAlgaeBarge);
-}
+    public Command armAlgaeBarge() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeBarge);}
+        ).until(this.isArmAlgaeBarge);
+    }
 
-public Command armAlgaeProcessor() {
-    return run(
-        () -> {this.armDriveToPosition(ArmConstants.kAlgaeProcessor);}
-    ).until(this.isArmAlgaeProcessor);
-}
-
-//===============Coral Triggers===============
+    public Command armAlgaeProcessor() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeProcessor);}
+        ).until(this.isArmAlgaeProcessor);
+    }
+    //============================================
+    //===============Coral Triggers===============
+    //============================================
     public Trigger isArmCoralStow = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralStow);});
     public Trigger isArmCoralLoadFloor = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralLoadFloor);});
     public Trigger isArmCoralLoadHuman = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralLoadHuman);});
@@ -173,7 +182,9 @@ public Command armAlgaeProcessor() {
     public Trigger isArmCoralL3 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL3);});
     public Trigger isArmCoralL4 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL4);});
 
+    //===========================================
     //===============Algae Triggers==============
+    //===========================================
     public final Trigger isArmAlgaeStow = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeStow);});
     public final Trigger isArmAlgaeLoadFloor = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadFloor);});
     public final Trigger isArmAlgaeL2 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadL2);});

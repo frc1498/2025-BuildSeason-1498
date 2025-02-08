@@ -38,6 +38,7 @@ public class LED extends SubsystemBase{
     public void configStatusLedBehavior(boolean offWhenActive) { m_candle.configStatusLedState(offWhenActive, 0); }
 
     public LED() {
+        //Constructor
         CANdleConfiguration configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = true;
         configAll.disableWhenLOS = false;
@@ -47,10 +48,15 @@ public class LED extends SubsystemBase{
         m_candle.configAllSettings(configAll, 100);
         m_candle.animate(larson);
     }
+    //====================================================================
+    //=========================Configuration==============================
+    //====================================================================
 
 
 
-    //==============================Methods for color modes================================
+    //=====================================================================
+    //==============================Private================================
+    //=====================================================================
     private void LED_Larson() {
         m_candle.clearAnimation(0);
         m_candle.animate(larson,0);
@@ -93,7 +99,9 @@ public class LED extends SubsystemBase{
         m_candle.setLEDs(255, 255, 255);  //LEDs go white
     }
     
-    //======================Commands for running the LEDs=================
+    //=====================================================
+    //======================Commands ======================
+    //=====================================================
     public Command LEDsOn() {
         return run(
             () -> {this.LEDon();}
@@ -105,6 +113,10 @@ public class LED extends SubsystemBase{
             () -> {this.LED_Larson();}  //We'll use Larson as the default when we aren't using the LEDs to signal
         );
     }
+
+    //============================================================
+    //=======================Triggers=============================
+    //============================================================
 
     @Override
     public void periodic() {
