@@ -120,6 +120,8 @@ public class RobotContainer {
         driver.povRight().onTrue(endEffector.toCoralStow());
         driver.rightBumper().onTrue(endEffector.toCoralSuck());
 
+        driver.leftBumper().onTrue(vision.addMegaTag2(() -> drivetrain));
+
         //====================Operator Commands========================
         //Button Correlation Table
         //===========
