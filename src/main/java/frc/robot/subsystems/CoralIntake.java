@@ -10,17 +10,21 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.Constants;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.constants.CoralIntakeConstants;
+import frc.robot.constants.ElevatorConstants;
 import frc.robot.sim.CoralIntakeSim;
 
 public class CoralIntake extends SubsystemBase{
-    //Create Variables
+    //Create Motor Variables
     TalonFX rotateMotor;
     TalonFX spinMotor;
     CANcoder rotateCANcoder;
@@ -30,7 +34,14 @@ public class CoralIntake extends SubsystemBase{
 
     VelocityVoltage spinMotorMode;
     PositionVoltage rotateMotorMode;
+
+    CoralIntakeConfig coralIntakeConfig;
+
+    //Open sensors
+    DigitalInput m_BeamBreakIntakeDigital = new DigitalInput(coralIntakeConfig.kBeamBreakIntake);
+    Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
   
+    //Required for sim
     CoralIntakeSim sim;
   
     public CoralIntake(CoralIntakeConfig config) {
@@ -53,6 +64,10 @@ public class CoralIntake extends SubsystemBase{
 
         sim = new CoralIntakeSim(config, intakePivotSim, intakeRollerSim);
     }
+
+    //====================================================================
+    //=========================Configs====================================
+    //====================================================================
 
     public void configureCancoder(CANcoder coralIntakeRotate){       
         //Start Configuring Climber Motor
@@ -83,6 +98,10 @@ public class CoralIntake extends SubsystemBase{
 
     }
 
+    //================================================================
+    //=====================Private Methods============================
+    //================================================================
+
     private void suck() {
         spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSuckSpeed));
     }
@@ -102,6 +121,21 @@ public class CoralIntake extends SubsystemBase{
     private boolean isRotateMotorAtPosition(double position) {
         return ((position - CoralIntakeConstants.kDeadband) <= this.getPivotPosition()) && ((position + CoralIntakeConstants.kDeadband) <= this.getPivotPosition());
     }
+
+    private boolean isPartPresent() {
+        //If ANY beam break is made, we have a part.
+        if (m_Debouncer.calculate(m_BeamBreakIntakeDigital.get()))
+        {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    //=============================================================
+    //====================== Commands==============================
+    //=============================================================
 
     public Command rollerSuck() {
         return run(
@@ -133,6 +167,10 @@ public class CoralIntake extends SubsystemBase{
         );
     }
 
+    //=======================================================================
+    //=========================Triggers======================================
+    //=======================================================================
+    public Trigger isPartPresent = new Trigger(() -> {return this.isPartPresent();});
     public Trigger isIntakeStowed= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeStowPosition);});
     public Trigger isIntakeRaised= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeRaisedPosition);});
     public Trigger isIntakeFloored= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeFloorPosition);});

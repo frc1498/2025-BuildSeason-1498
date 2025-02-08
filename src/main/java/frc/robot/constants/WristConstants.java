@@ -23,6 +23,9 @@ public class WristConstants {
     public static final double kCoralStop = 0.0;  //Stow Position 
     public static final double kCoralSuck = 0.1;  //  Load Coral Floor Position
     public static final double kCoralSpit = 0.1;  //  Load Coral Floor Position 
+    public final static double kCoralSlowBackward = -0.1; //Move coral slowly in gripper forward
+    public final static double kCoralSlowForward = -0.1; //Move coral slowly in gripper backward
+
 
     //=======================General======================
     public static final double kDeadband = 0.05;

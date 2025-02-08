@@ -25,6 +25,7 @@ import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.LED;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -57,6 +58,8 @@ public class RobotContainer {
     
     public final ArmConfig armConfig = new ArmConfig();
     public Arm arm = new Arm(armConfig);
+
+    public LED leds = new LED();
 
     //Very important, the vision subsystem has to be created after the drivetrain.
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
@@ -106,7 +109,7 @@ public class RobotContainer {
         //====================Operator Commands========================
         //Button Correlation Table
         //===========
-        //Operator 1
+        //Operator 1 - NOTE!  These numbers may be off one, I can't remember if the array starts at 0 or 1.
         //A - DS 1 - Pickup: Algae Floor
         //B - DS 2 - 
         //X - DS 3 - Pickup: Algae L2
@@ -160,7 +163,30 @@ public class RobotContainer {
         operator2.leftBumper().onTrue();
         operator2.leftStick().onTrue();
         operator2.rightStick().onTrue();
-*/
+         */  
+
+
+
+         //=======================Candle Control==========================
+         /* 
+        new JoystickButton(joy, Constants.BlockButton).onTrue(new RunCommand(m_candleSubsystem::setColors, m_candleSubsystem));
+        new JoystickButton(joy, Constants.IncrementAnimButton).onTrue(new RunCommand(m_candleSubsystem::incrementAnimation, m_candleSubsystem));
+        new JoystickButton(joy, Constants.DecrementAnimButton).onTrue(new RunCommand(m_candleSubsystem::decrementAnimation, m_candleSubsystem));
+
+        new POVButton(joy, Constants.MaxBrightnessAngle).onTrue(new CANdleConfigCommands.ConfigBrightness(m_candleSubsystem, 1.0));
+        new POVButton(joy, Constants.MidBrightnessAngle).onTrue(new CANdleConfigCommands.ConfigBrightness(m_candleSubsystem, 0.3));
+        new POVButton(joy, Constants.ZeroBrightnessAngle).onTrue(new CANdleConfigCommands.ConfigBrightness(m_candleSubsystem, 0));
+
+        new JoystickButton(joy, Constants.VbatButton).onTrue(new CANdlePrintCommands.PrintVBat(m_candleSubsystem));
+        new JoystickButton(joy, Constants.V5Button).onTrue(new CANdlePrintCommands.Print5V(m_candleSubsystem));
+        new JoystickButton(joy, Constants.CurrentButton).onTrue(new CANdlePrintCommands.PrintCurrent(m_candleSubsystem));
+        new JoystickButton(joy, Constants.TemperatureButton).onTrue(new CANdlePrintCommands.PrintTemperature(m_candleSubsystem));
+        */
+
+        // intake.coralgot.ontrue(new RunCommand(m_candleSubsystem::blinkLed, m_candleSubsystem));
+        // need a trigger in the intake that this can check
+      
+        intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
