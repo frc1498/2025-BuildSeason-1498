@@ -45,8 +45,8 @@ public class Wrist extends SubsystemBase{
     double wristDesiredPosition;
 
 
-    DigitalInput m_BeamBreakGripperFrontDigital = new DigitalInput(config.kBeamBreakGripperFront);
-    DigitalInput m_BeamBreakGripperRearDigital = new DigitalInput(config.kBeamBreakGripperRear);
+    DigitalInput m_BeamBreakGripperFrontDigital;
+    DigitalInput m_BeamBreakGripperRearDigital;
 
    
     Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
@@ -58,6 +58,9 @@ public class Wrist extends SubsystemBase{
         wristRotate = new TalonFX(config.kRotateCANID, "canivore");
         wristRotateCancoder = new CANcoder(config.kEncoderCANID,"canivore");
         rotateControl = new PositionVoltage(WristConstants.kCoralStow);
+
+        m_BeamBreakGripperFrontDigital = new DigitalInput(config.kBeamBreakGripperFront);
+        m_BeamBreakGripperRearDigital = new DigitalInput(config.kBeamBreakGripperRear);
 
         wristSpin = new TalonFX(config.kSpinCANID, "canivore");
         spinControl = new VelocityVoltage(WristConstants.kCoralStop);
@@ -111,6 +114,10 @@ public class Wrist extends SubsystemBase{
     private void wristDriveToPosition(double position) {
         this.wristDesiredPosition = position;
             wristRotate.setControl(rotateControl.withPosition(position));
+    }
+
+    private void wristSpin(double speed) {
+        wristSpin.setControl(spinControl.withVelocity(speed));
     }
 
     private boolean isWristAtPosition(double position) {
@@ -241,6 +248,24 @@ public class Wrist extends SubsystemBase{
         return run(
             () -> {this.positionCoral();}
         ).until(this.isWristAlgaeProcessor);
+    }
+
+    public Command suck() {
+        return run(
+            () -> {this.wristSpin(WristConstants.kCoralSuck);}
+        );
+    }
+
+    public Command spit() {
+        return run(
+            () -> {this.wristSpin(WristConstants.kCoralSpit);}
+        );
+    }
+
+    public Command stop() {
+        return run(
+            () -> {this.wristSpin(WristConstants.kCoralStop);}
+        );
     }
 
     //=======================================================

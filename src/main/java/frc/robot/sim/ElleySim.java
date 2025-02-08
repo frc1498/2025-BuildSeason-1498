@@ -47,9 +47,10 @@ public class ElleySim implements AutoCloseable{
             false, 
             ElevatorConstants.kElevatorStartingHeight);
 
-            elevator_vis = new Mechanism2d(20, 7);
+            elevator_vis = new Mechanism2d(20, 20);
             elevator_root = elevator_vis.getRoot("Elevator Root", 10, 0);
-            elevator_mech = elevator_root.append(new MechanismLigament2d("Elevator", elevate.getPositionMeters(), 90));
+            //Multiply elevator height by 5 to make it more visible.
+            elevator_mech = elevator_root.append(new MechanismLigament2d("Elevator", elevate.getPositionMeters() * 5, 90));
         
         SmartDashboard.putData("ELERVATER", elevator_vis);
     }

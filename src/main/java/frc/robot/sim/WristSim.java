@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.config.WristConfig;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
@@ -43,12 +44,18 @@ public class WristSim implements AutoCloseable{
     MechanismLigament2d wrist_rotate_mech;
     MechanismLigament2d wrist_roller_mech;
 
+    Color8Bit forwardColor;
+    Color8Bit reverseColor;
+    Color8Bit direction;
+
     public WristSim(WristConfig config, TalonFXSimState wristDrive, CANcoderSimState wristEncoder, TalonFXSimState wristRolly) {
         this.wristDrive = wristDrive;
         this.wristEncoder = wristEncoder;
         this.wristSpinny = wristRolly;
 
         rollerPosition = 0;
+        forwardColor = new Color8Bit(0, 255, 0);
+        reverseColor = new Color8Bit(255, 0, 0);
 
         this.wrist = new SingleJointedArmSim(
             wristGearbox, 
@@ -69,7 +76,8 @@ public class WristSim implements AutoCloseable{
 
         wrist_vis = new Mechanism2d(20, 20);
         wrist_root = wrist_vis.getRoot("Wrist Root", 10, 10);
-        wrist_rotate_mech = wrist_root.append(new MechanismLigament2d("Wrist", WristConstants.kWristLength, this.radToAngle(wrist.getAngleRads())));
+        //Multiply wrist length by 5 to make it more visible.
+        wrist_rotate_mech = wrist_root.append(new MechanismLigament2d("Wrist", WristConstants.kWristLength * 5, this.radToAngle(wrist.getAngleRads())));
         wrist_roller_mech = wrist_root.append(new MechanismLigament2d("Wrist Roller", 0.5, 0));
 
         SmartDashboard.putData("WREEST", wrist_vis);
@@ -114,7 +122,15 @@ public class WristSim implements AutoCloseable{
 
         wristSpinny.setRotorVelocity(rollerRotationsPerSec);
 
+        if (rollerRotationsPerSec >= 0.0) {
+            direction = forwardColor;
+        }
+        else {
+            direction = reverseColor;
+        }
+
         wrist_rotate_mech.setAngle(this.radToAngle(wrist.getAngleRads()));
+        wrist_roller_mech.setColor(direction);
         wrist_roller_mech.setAngle(rollerPosition);    
     }
 

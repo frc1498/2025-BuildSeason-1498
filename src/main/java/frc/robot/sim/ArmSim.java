@@ -49,7 +49,8 @@ public class ArmSim implements AutoCloseable{
 
         arm_vis = new Mechanism2d(20, 20);
         arm_root = arm_vis.getRoot("Arm Root", 10, 10);
-        arm_mech = arm_root.append(new MechanismLigament2d("Arm", ArmConstants.kArmLength, arm.getAngleRads()));
+        //Multiply arm length by 5 to make it more visible.
+        arm_mech = arm_root.append(new MechanismLigament2d("Arm", ArmConstants.kArmLength * 5, arm.getAngleRads()));
 
         SmartDashboard.putData("ARHM", arm_vis);
     }
