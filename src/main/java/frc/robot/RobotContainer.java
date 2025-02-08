@@ -24,6 +24,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.LED;
 
@@ -47,17 +48,21 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    /* Temporarily commented out to test placing the subsystems in an end effector system
     public final ElevatorConfig elevatorConfig = new ElevatorConfig();
     public Elevator elevator = new Elevator(elevatorConfig);
- 
-    public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
-    public CoralIntake intake = new CoralIntake(intakeConfig);
 
     public final WristConfig wristConfig = new WristConfig();
     public Wrist wrist = new Wrist(wristConfig);
     
     public final ArmConfig armConfig = new ArmConfig();
     public Arm arm = new Arm(armConfig);
+    */
+
+    public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
+    public CoralIntake intake = new CoralIntake(intakeConfig);
+
+    public EndEffector endEffector = new EndEffector();
 
     public LED leds = new LED();
 
@@ -95,6 +100,7 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+        /* SIMULATION PRACTICE COMMANDS
         //Elevator Simulation Practice Commands
         driver.povDown().onTrue(elevator.elevatorCoralL1());
         driver.povLeft().onTrue(elevator.elevatorCoralL2());
@@ -106,6 +112,13 @@ public class RobotContainer {
 
         driver.leftTrigger(0.1).onTrue(wrist.wristCoralL1()).onFalse(wrist.wristCoralL2());
         driver.y().onTrue(arm.armCoralL1()).onFalse(arm.armCoralL2());
+        */
+
+        driver.povDown().onTrue(endEffector.toCoralL1());
+        driver.povLeft().onTrue(endEffector.toCoralL2());
+        driver.povUp().onTrue(endEffector.toCoralL3());
+        driver.povRight().onTrue(endEffector.toCoralStow());
+        driver.rightBumper().onTrue(endEffector.toCoralSuck());
 
         //====================Operator Commands========================
         //Button Correlation Table

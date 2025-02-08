@@ -14,7 +14,7 @@ public class CoralIntakeConfig {
 
     public final int kRotateCANcoderID = 31;
 
-    public final int kBeamBreakIntake=0;  //Intake Beambreak DIO
+    public final int kBeamBreakIntake = 0;  //Intake Beambreak DIO
 
 
     public CANcoderConfiguration coralIntakeCANcoderConfig;  //Create variable of type CANcoderConfiguration

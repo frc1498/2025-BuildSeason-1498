@@ -42,8 +42,8 @@ public class CoralIntake extends SubsystemBase{
     CoralIntakeConfig coralIntakeConfig;
 
     //Open sensors
-    DigitalInput m_BeamBreakIntakeDigital = new DigitalInput(coralIntakeConfig.kBeamBreakIntake);
-    Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
+    DigitalInput m_BeamBreakIntakeDigital;
+    Debouncer m_Debouncer;
   
     //Required for sim
     CoralIntakeSim sim;
@@ -57,6 +57,9 @@ public class CoralIntake extends SubsystemBase{
         rotateCANcoder = new CANcoder(config.kRotateCANcoderID);
         spinMotorMode = new VelocityVoltage(CoralIntakeConstants.kSuckSpeed);
         rotateMotorMode = new PositionVoltage(CoralIntakeConstants.kIntakeStowPosition);
+
+        m_BeamBreakIntakeDigital = new DigitalInput(config.kBeamBreakIntake);
+        m_Debouncer = new Debouncer (0.05, Debouncer.DebounceType.kBoth);
 
         //Fill in the Instantiation
         this.configureMechanism(spinMotor, config.coralIntakeSpinConfig);

@@ -13,8 +13,8 @@ public class WristConfig {
     public final int kEncoderCANID = 33;  //Throughbore encoder
     public final int kSpinCANID = 15;  //Rotate Motor
 
-    public final int kBeamBreakGripperFront=1; //Gripper Front DIO
-    public final int kBeamBreakGripperRear=2; //Gripper Rear DIO
+    public final int kBeamBreakGripperFront = 1; //Gripper Front DIO
+    public final int kBeamBreakGripperRear = 2; //Gripper Rear DIO
 
     public CANcoderConfiguration wristRotateCANcoderConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration wristRotateConfig;  //Create variable of type CANcoderConfiguration
