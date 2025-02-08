@@ -7,11 +7,16 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj.DigitalInput;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -30,13 +35,19 @@ public class Wrist extends SubsystemBase{
     VelocityVoltage spinControl;
     
     TalonFXSimState wristRotateSim;
+    CANcoderSimState wristEncoderSim;
     TalonFXSimState wristRollerSim;
 
     WristConfig config;
     WristSim sim;
 
+
+    double wristDesiredPosition;
+
+
     DigitalInput m_BeamBreakGripperFrontDigital = new DigitalInput(config.kBeamBreakGripperFront);
     DigitalInput m_BeamBreakGripperRearDigital = new DigitalInput(config.kBeamBreakGripperRear);
+
    
     Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
 
@@ -51,25 +62,29 @@ public class Wrist extends SubsystemBase{
         wristSpin = new TalonFX(config.kSpinCANID, "canivore");
         spinControl = new VelocityVoltage(WristConstants.kCoralStop);
 
-        this.configureMechanism(wristSpin);  //Fill in framework
-        this.configureMechanism(wristRotate);  //Fill in framework
-        this.configureCancoder(wristRotateCancoder);  //Fill in framework
+        this.configureMechanism(wristSpin, config.wristSpinConfig);  //Fill in framework
+        this.configureMechanism(wristRotate, config.wristRotateConfig);  //Fill in framework
+        this.configureCancoder(wristRotateCancoder, config.wristRotateCANcoderConfig);  //Fill in framework
       
         wristRotateSim = wristRotate.getSimState();
+        wristEncoderSim = wristRotateCancoder.getSimState();
         wristRollerSim = wristSpin.getSimState();
-        sim = new WristSim(config, wristRotateSim, wristRollerSim); 
+        sim = new WristSim(config, wristRotateSim, wristEncoderSim, wristRollerSim);
+        
+        SmartDashboard.putData("Wrist", this);
     }
     
+    public void configureCancoder(CANcoder coralIntakeRotate, CANcoderConfiguration config){       
+
     //=====================================================================
     //=====================Motor Configure=================================
     //=====================================================================
-    public void configureCancoder(CANcoder coralIntakeRotate){       
+
         //Start Configuring Climber Motor
-        CANcoderConfiguration coralIntakeRotateConfig = new CANcoderConfiguration();
         StatusCode coralIntakeRotateStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
-            coralIntakeRotateStatus = coralIntakeRotate.getConfigurator().apply(coralIntakeRotateConfig);
+            coralIntakeRotateStatus = coralIntakeRotate.getConfigurator().apply(config);
             if (coralIntakeRotateStatus.isOK()) break;
         }
         if (!coralIntakeRotateStatus.isOK()) {
@@ -77,13 +92,12 @@ public class Wrist extends SubsystemBase{
         }
     }
 
-    public void configureMechanism(TalonFX mechanism){     
+    public void configureMechanism(TalonFX mechanism, TalonFXConfiguration config){     
         //Start Configuring Climber Motor
-        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
         StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
-            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            mechanismStatus = mechanism.getConfigurator().apply(config);
             if (mechanismStatus.isOK()) break;
         }
         if (!mechanismStatus.isOK()) {
@@ -95,11 +109,16 @@ public class Wrist extends SubsystemBase{
     //====================Private Methods==========================
     //=============================================================
     private void wristDriveToPosition(double position) {
+        this.wristDesiredPosition = position;
             wristRotate.setControl(rotateControl.withPosition(position));
     }
 
     private boolean isWristAtPosition(double position) {
             return ((position-WristConstants.kDeadband) <= getWristPosition()) && ((position+WristConstants.kDeadband) >= getWristPosition());
+    }
+
+    private double getDesiredPostion() {
+        return wristDesiredPosition;
     }
 
     private double getWristPosition(){
@@ -250,6 +269,7 @@ public class Wrist extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
+        builder.addDoubleProperty("Desired Position", this::getDesiredPostion, null);
     }  
 
     @Override
@@ -258,8 +278,8 @@ public class Wrist extends SubsystemBase{
     }
     
     public void simulationInit() {
-        sim = new WristSim(config, wristRotateSim, wristRollerSim);
     }
+
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation

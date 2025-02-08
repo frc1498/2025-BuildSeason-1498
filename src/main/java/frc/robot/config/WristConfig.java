@@ -9,9 +9,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 public class WristConfig {
-    public final int kRotateCANID = 13;  //Rotate Motor
-    public final int kEncoderCANID = 32;  //Throughbore encoder
-    public final int kSpinCANID = 13;  //Rotate Motor
+    public final int kRotateCANID = 14;  //Rotate Motor
+    public final int kEncoderCANID = 33;  //Throughbore encoder
+    public final int kSpinCANID = 15;  //Rotate Motor
 
     public final int kBeamBreakGripperFront=1; //Gripper Front DIO
     public final int kBeamBreakGripperRear=2; //Gripper Rear DIO
@@ -41,7 +41,7 @@ public class WristConfig {
     public void configureWristRotate(TalonFXConfiguration rotate){
 
         //configure motor
-        rotate.CurrentLimits.SupplyCurrentLimit = 0;
+        rotate.CurrentLimits.SupplyCurrentLimit = 40;
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         rotate.MotionMagic.MotionMagicAcceleration = 0;
         rotate.MotionMagic.MotionMagicCruiseVelocity = 0;
@@ -52,7 +52,7 @@ public class WristConfig {
         rotate.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         //Slot 0 Configs
-        rotate.Slot0.kP = 0;  // An error of 1 rotation per second results in 2V output
+        rotate.Slot0.kP = 2;  // An error of 1 rotation per second results in 2V output
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
         rotate.Slot0.kD = 0;  // A change of 1 rotation per second squared results in 0.01 volts output
         rotate.Slot0.kG = 0;
@@ -60,17 +60,17 @@ public class WristConfig {
         rotate.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
         //Fuse the Cancoder here
-        rotate.Feedback.FeedbackRemoteSensorID = 0;
+        rotate.Feedback.FeedbackRemoteSensorID = 33;
         rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        rotate.Feedback.SensorToMechanismRatio = 0;
-        rotate.Feedback.RotorToSensorRatio = 0;
+        rotate.Feedback.SensorToMechanismRatio = 1;
+        rotate.Feedback.RotorToSensorRatio = 1;
 
     }
 
     public void configureWristSpin(TalonFXConfiguration spin){
         
         //Configure Motor
-        spin.CurrentLimits.SupplyCurrentLimit = 0;
+        spin.CurrentLimits.SupplyCurrentLimit = 40;
         spin.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         spin.Voltage.PeakForwardVoltage = -11;
         spin.Voltage.PeakReverseVoltage = 11;
@@ -79,7 +79,7 @@ public class WristConfig {
         spin.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         //Slot 0 Configs
-        spin.Slot0.kP = 0; // An error of 1 rotation per second results in 2V output
+        spin.Slot0.kP = 2; // An error of 1 rotation per second results in 2V output
         spin.Slot0.kI = 0; // An error of 1 rotation per second increases output by 0.5V every second
         spin.Slot0.kD = 0; // A change of 1 rotation per second squared results in 0.01 volts output
         spin.Slot0.kV = 0; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second

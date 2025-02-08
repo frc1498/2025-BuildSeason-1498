@@ -11,10 +11,10 @@ public class ElevatorConstants {
     public static final double kCoralStow = 0;
     public static final double kCoralLoadFloor = 0.1;
     public static final double kCoralLoadHuman = 0.1;
-    public static final double kCoralL1 = 0.46;
-    public static final double kCoralL2 = 0.81;
-    public static final double kCoralL3 = 1.21;
-    public static final double kCoralL4 = 1.83;
+    public static final double kCoralL1 = 2.628; //0.46 meters
+    public static final double kCoralL2 = 4.628; //0.81 meters
+    public static final double kCoralL3 = 6.913; //1.21 meters
+    public static final double kCoralL4 = 10.455; //1.83 meters
 
     //=============Algae Positions=============
     public static final double kAlgaeStow = 0.0;
@@ -30,10 +30,10 @@ public class ElevatorConstants {
     //Currently, in meters.
     
     //==================Sim Values================
-    public static final double kElevatorGearing = 1.0;
-    public static final double kElevatorCarriageMass = 1.0; //kg
-    public static final double kElevatorDrumRadius = 1.0; //m
+    public static final double kElevatorGearing = 7.75;  //Assumes the form of X:1, so anything greater than 1 is a reduction.
+    public static final double kElevatorCarriageMass = 6.80; //kg - Estimating the arm and wrist together weigh ~15 lb., so ~ 6.8 kg.
+    public static final double kElevatorDrumRadius = 0.2159; //m - The 'drum' is linear, and it is 17 in tall, so estimate an 8.5 in. 'radius'
     public static final double kElevatorMinHeight = 0.0; //m
-    public static final double kElevatorMaxHeight = 3.0; //m
+    public static final double kElevatorMaxHeight = 1.2954; //m - Assume each stage is 17 in., and there are 3 stages.
     public static final double kElevatorStartingHeight = 0.0; //m
 }

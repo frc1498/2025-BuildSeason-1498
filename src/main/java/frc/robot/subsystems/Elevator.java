@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -26,40 +27,46 @@ public class Elevator extends SubsystemBase {
   
     PositionVoltage posControl;
 
+    private double desiredPosition;
+
     ElevatorConfig config;
     ElleySim sim;
 
     public Elevator(ElevatorConfig config) {
         //Constructor.
 
+        //Potentially unneeded step.
+        //this.config = config;
+
         //Instantiate
         elevatorDriveFront = new TalonFX(config.kElevatorDriveFrontCANID, "canivore");
-        elevatorDriveRear = new TalonFX(config.kElevatorDriveBackCANID, "canivore");
+        elevatorDriveRear = new TalonFX(config.kElevatorDriveRearCANID, "canivore");
 
         //Fill In the Instantiation
-        this.configureMechanism(elevatorDriveFront);
-        this.configureMechanism(elevatorDriveRear);
+        this.configureMechanism(elevatorDriveFront, config.frontConfig);
+        this.configureMechanism(elevatorDriveRear, config.rearConfig);
 
-        this.config = config;
-      
         elevatorDriveFrontSim = elevatorDriveFront.getSimState();
         elevatorDriveRearSim = elevatorDriveRear.getSimState();
-      
+
+        posControl = new PositionVoltage(0);   
+
         sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveRearSim);
-      
-        posControl = new PositionVoltage(0);
+        
+        SmartDashboard.putData("Elevator", this);
     }
+
+   public void configureMechanism(TalonFX mechanism, TalonFXConfiguration motorConfig){     
 
     //=====================================================
     //================Configuration========================
-    //=====================================================
-    public void configureMechanism(TalonFX mechanism){     
+    //=====================================================  
+
         //Start Configuring Climber Motor
-        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
         StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
-            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            mechanismStatus = mechanism.getConfigurator().apply(motorConfig);
             if (mechanismStatus.isOK()) break;
         }
         if (!mechanismStatus.isOK()) {
@@ -70,11 +77,16 @@ public class Elevator extends SubsystemBase {
     //==========================Private======================
     //=======================================================
     private void elevatorDriveToPosition(double position) {
+        this.desiredPosition = position;
         elevatorDriveFront.setControl(posControl.withPosition(position));
     }
 
     private double getCurrentPosition() {
         return elevatorDriveFront.getPosition().getValueAsDouble();
+    }
+
+    private double getDesiredPosition() {
+        return this.desiredPosition;
     }
 
     private boolean isElevatorAtPosition(double position) {
@@ -192,7 +204,12 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        //Sendable data for dashboard debugging will be added here.      
+        //Sendable data for dashboard debugging will be added here.
+        builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
+        builder.addDoubleProperty("Current Position", this::getCurrentPosition, null);
+        builder.addBooleanProperty("Is Elevator at Coral L1", isElevatorCoralL1, null);
+        builder.addBooleanProperty("Is Elevator at Coral L2", isElevatorCoralL2, null);    
+        builder.addBooleanProperty("Is Elevator at Coral L3", isElevatorCoralL3, null);  
     }
 
     @Override

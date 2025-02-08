@@ -7,9 +7,11 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -25,8 +27,11 @@ public class Arm extends SubsystemBase{
     CANcoder armRotateEncoder;
 
     TalonFXSimState armSim;
+    CANcoderSimState armEncoderSim;
 
     ArmSim sim;
+
+    private double desiredPosition;
 
     public Arm(ArmConfig config) {
         //Constructor - only runs once
@@ -37,38 +42,42 @@ public class Arm extends SubsystemBase{
         rotateControl = new PositionVoltage(ArmConstants.kCoralStow);
 
         //Fill In Instatiations
-        this.configureMechanism(armRotate);
-        this.configureCancoder(armRotateEncoder);
+        this.configureMechanism(armRotate, config.armRotateConfig);
+        this.configureCancoder(armRotateEncoder, config.armRotateCANcoderConfig);
   
         armSim = armRotate.getSimState();
+        armEncoderSim = armRotateEncoder.getSimState();
 
-        sim = new ArmSim(config, armSim);
+        sim = new ArmSim(config, armSim, armEncoderSim);
+
+        SmartDashboard.putData("Arm", this);
     }
+
+    public void configureCancoder(CANcoder coralIntakeRotate, CANcoderConfiguration config){       
 
 //=====================================================
 //===================Configuration=====================
-//=====================================================
-    public void configureCancoder(CANcoder coralIntakeRotate){       
+//=====================================================      
+
         //Start Configuring Climber Motor
-        CANcoderConfiguration coralIntakeRotateConfig = new CANcoderConfiguration();
         StatusCode coralIntakeRotateStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
-            coralIntakeRotateStatus = coralIntakeRotate.getConfigurator().apply(coralIntakeRotateConfig);
+            coralIntakeRotateStatus = coralIntakeRotate.getConfigurator().apply(config);
             if (coralIntakeRotateStatus.isOK()) break;
         }
+
         if (!coralIntakeRotateStatus.isOK()) {
             System.out.println("Could not configure device. Error: " + coralIntakeRotateStatus.toString());
         }
     }
 
-    public void configureMechanism(TalonFX mechanism){     
+    public void configureMechanism(TalonFX mechanism, TalonFXConfiguration config){     
         //Start Configuring Climber Motor
-        TalonFXConfiguration mechanismConfig = new TalonFXConfiguration();
         StatusCode mechanismStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
-            mechanismStatus = mechanism.getConfigurator().apply(mechanismConfig);
+            mechanismStatus = mechanism.getConfigurator().apply(config);
             if (mechanismStatus.isOK()) break;
         }
         if (!mechanismStatus.isOK()) {
@@ -80,11 +89,16 @@ public class Arm extends SubsystemBase{
     //=====================Private Methods===============
     //===================================================
     private void armDriveToPosition(double position) {
-            armRotate.setControl(rotateControl.withPosition(position));
+        this.desiredPosition = position;
+        armRotate.setControl(rotateControl.withPosition(position));
     }
 
     private boolean isArmAtPosition(double position) {
             return ((position-ArmConstants.kDeadband) <= GetArmPosition()) && ((position+ArmConstants.kDeadband) >= GetArmPosition());
+    }
+
+    private double getDesiredArmPosition() {
+        return this.desiredPosition;
     }
 
     private double GetArmPosition(){
@@ -195,6 +209,9 @@ public class Arm extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
+        builder.addDoubleProperty("Desired Position", this::getDesiredArmPosition, null);
+        builder.addDoubleProperty("Current Position", this::GetArmPosition, null);
+        builder.addBooleanProperty("Is Arm at L1 Position", isArmCoralL1, null);
     }
 
     @Override

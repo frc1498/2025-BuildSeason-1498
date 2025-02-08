@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.ElevatorConfig;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ElevatorConstants;
 
 /**
@@ -23,6 +24,10 @@ public class ElleySim implements AutoCloseable{
     ElevatorSim elevate;
 
     double motRotations;
+    private double outputRotations;
+    private double outputRotationsPerSec;
+    private double inputRotations;
+    private double inputRotationsPerSec;
 
     Mechanism2d elevator_vis;
     MechanismRoot2d elevator_root;
@@ -61,15 +66,36 @@ public class ElleySim implements AutoCloseable{
 
         //Update sensor positions.
 
-        //rotations = meters * gear ratio / drum radius
-        motRotations = (elevate.getPositionMeters() * ElevatorConstants.kElevatorGearing) / ElevatorConstants.kElevatorDrumRadius;
+        //Convert elevator position to output rotations.
+        outputRotations = elevate.getPositionMeters() / (2 * Math.PI * ElevatorConstants.kElevatorDrumRadius);
+        outputRotationsPerSec = elevate.getVelocityMetersPerSecond() / (2 * Math.PI * ElevatorConstants.kElevatorDrumRadius);
 
-        leftDrive.setRawRotorPosition(motRotations * ElevatorConstants.kElevatorGearing);
-        rightDrive.setRawRotorPosition(motRotations * ElevatorConstants.kElevatorGearing);
-        leftDrive.setRotorVelocity(motRotations * ElevatorConstants.kElevatorGearing);
-        rightDrive.setRotorVelocity(motRotations * ElevatorConstants.kElevatorGearing);
+        //Convert output rotations to input rotations
+        inputRotations = this.outputRotToInputRot(outputRotations, ElevatorConstants.kElevatorGearing);
+        inputRotationsPerSec = this.outputRotToInputRot(outputRotationsPerSec, ElevatorConstants.kElevatorGearing);
+
+        leftDrive.setRawRotorPosition(inputRotations);
+        rightDrive.setRawRotorPosition(inputRotations);
+        leftDrive.setRotorVelocity(inputRotationsPerSec);
+        rightDrive.setRotorVelocity(inputRotationsPerSec);
 
         elevator_mech.setLength(elevate.getPositionMeters());
+    }
+
+    private double radToDeg(double radians) {
+        return radians / (2 * Math.PI) * 360.0;
+    }
+
+    private double degToRot(double degrees) {
+        return degrees / 360.0;
+    }
+
+    private double inputRotToOutputRot(double inputRotations, double gearing) {
+        return inputRotations / gearing;
+    }
+
+    private double outputRotToInputRot(double outputRotations, double gearing) {
+        return outputRotations * gearing;
     }
 
     @Override

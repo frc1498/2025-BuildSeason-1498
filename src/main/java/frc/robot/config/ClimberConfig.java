@@ -6,9 +6,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ClimberConfig {
-    //Constants
-    public static final int kclimberRotateCANID = 0;
-    public static final int kclimberSpinCANID = 0;
+    public final int kclimberRotateCANID = 18;
+    public final int kclimberSpinCANID = 19;
 
     //Variables
     public TalonFXConfiguration climberRotateConfig = new TalonFXConfiguration();
@@ -27,7 +26,7 @@ public class ClimberConfig {
 
     public void configureClimberRotate(TalonFXConfiguration rotate) {
         //configure motor
-        rotate.CurrentLimits.SupplyCurrentLimit = 0;
+        rotate.CurrentLimits.SupplyCurrentLimit = 40;
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         rotate.MotionMagic.MotionMagicAcceleration = 0;
         rotate.MotionMagic.MotionMagicCruiseVelocity = 0;
@@ -48,7 +47,7 @@ public class ClimberConfig {
 
     public void configureClimberSpin(TalonFXConfiguration spin) {
         //configure motor
-        spin.CurrentLimits.SupplyCurrentLimit = 0;
+        spin.CurrentLimits.SupplyCurrentLimit = 40;
         spin.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         spin.MotionMagic.MotionMagicAcceleration = 0;
         spin.MotionMagic.MotionMagicCruiseVelocity = 0;

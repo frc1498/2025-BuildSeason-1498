@@ -1,5 +1,6 @@
 package frc.robot.sim;
 
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -14,19 +15,27 @@ import frc.robot.constants.ArmConstants;
 public class ArmSim implements AutoCloseable{
 
     TalonFXSimState armPivot;
+    CANcoderSimState armEncoder;
 
     DCMotor armGearbox = DCMotor.getKrakenX60Foc(1);
     
     SingleJointedArmSim arm;
 
     double motRotations;
+    double outputDegrees;
+    double outputDegreesPerSec;
+    double outputRotations;
+    double outputRotationsPerSec;
+    double inputRotations;
+    double inputRotationsPerSec;
 
     Mechanism2d arm_vis;
     MechanismRoot2d arm_root;
     MechanismLigament2d arm_mech;
 
-    public ArmSim(ArmConfig config, TalonFXSimState armPivot) {
+    public ArmSim(ArmConfig config, TalonFXSimState armPivot, CANcoderSimState armEncoder) {
         this.armPivot = armPivot;
+        this.armEncoder = armEncoder;
 
         this.arm = new SingleJointedArmSim(
             armGearbox, 
@@ -35,7 +44,7 @@ public class ArmSim implements AutoCloseable{
             ArmConstants.kArmLength, 
             ArmConstants.kArmMinAngle, 
             ArmConstants.kArmMaxAngle, 
-            false, 
+            true, 
             ArmConstants.kArmStartingAngle);
 
         arm_vis = new Mechanism2d(20, 20);
@@ -48,6 +57,7 @@ public class ArmSim implements AutoCloseable{
     public void simulationPeriodic() {
         //Set motor and sensor voltage.
         armPivot.setSupplyVoltage(12);
+        armEncoder.setSupplyVoltage(12);
         
         //Run the simulation and update it.
         arm.setInput(armPivot.getMotorVoltage());
@@ -55,13 +65,41 @@ public class ArmSim implements AutoCloseable{
 
         //Update sensor positions.
 
-        //rotations = (radians / 2*pi) * gear ratio
-        motRotations = (arm.getAngleRads() * ArmConstants.kArmRotateGearing);
+        //Convert radians to degrees - at the output
+        outputDegrees = this.radToDeg(arm.getAngleRads());
+        outputDegreesPerSec = this.radToDeg(arm.getVelocityRadPerSec());
 
-        armPivot.setRawRotorPosition(motRotations * ArmConstants.kArmRotateGearing);
-        armPivot.setRotorVelocity(motRotations * ArmConstants.kArmRotateGearing);
+        //Convert degrees to rotations - at the output
+        outputRotations = this.degToRot(outputDegrees);
+        outputRotationsPerSec = this.degToRot(outputDegreesPerSec);
 
-        arm_mech.setAngle(arm.getAngleRads());     
+        //Convert output rotations to input rotations
+        inputRotations = this.outputRotToInputRot(outputRotations, ArmConstants.kArmRotateGearing);
+        inputRotationsPerSec = this.outputRotToInputRot(outputRotationsPerSec, ArmConstants.kArmRotateGearing);
+
+        armPivot.setRawRotorPosition(inputRotations);
+        armPivot.setRotorVelocity(inputRotationsPerSec);
+        //Assuming 1:1 with the motor position?
+        armEncoder.setRawPosition(inputRotations);
+        armEncoder.setVelocity(inputRotationsPerSec);
+
+        arm_mech.setAngle(outputDegrees);     
+    }
+
+    private double radToDeg(double radians) {
+        return radians / (2 * Math.PI) * 360.0;
+    }
+
+    private double degToRot(double degrees) {
+        return degrees / 360.0;
+    }
+
+    private double inputRotToOutputRot(double inputRotations, double gearing) {
+        return inputRotations / gearing;
+    }
+
+    private double outputRotToInputRot(double outputRotations, double gearing) {
+        return outputRotations * gearing;
     }
 
     @Override
