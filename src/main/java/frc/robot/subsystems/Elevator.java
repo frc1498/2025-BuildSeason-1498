@@ -27,6 +27,8 @@ public class Elevator extends SubsystemBase {
   
     PositionVoltage posControl;
 
+    private double desiredPosition;
+
     ElevatorConfig config;
     ElleySim sim;
 
@@ -69,11 +71,16 @@ public class Elevator extends SubsystemBase {
 
     //=================Private Commands======================
     private void elevatorDriveToPosition(double position) {
+        this.desiredPosition = position;
         elevatorDriveFront.setControl(posControl.withPosition(position));
     }
 
     private double getCurrentPosition() {
         return elevatorDriveFront.getPosition().getValueAsDouble();
+    }
+
+    private double getDesiredPosition() {
+        return this.desiredPosition;
     }
 
     private boolean isElevatorAtPosition(double position) {
@@ -185,7 +192,12 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        //Sendable data for dashboard debugging will be added here.      
+        //Sendable data for dashboard debugging will be added here.
+        builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
+        builder.addDoubleProperty("Current Position", this::getCurrentPosition, null);
+        builder.addBooleanProperty("Is Elevator at Coral L1", isElevatorCoralL1, null);
+        builder.addBooleanProperty("Is Elevator at Coral L2", isElevatorCoralL2, null);    
+        builder.addBooleanProperty("Is Elevator at Coral L3", isElevatorCoralL3, null);  
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -29,6 +30,7 @@ public class Wrist extends SubsystemBase{
     VelocityVoltage spinControl;
     
     TalonFXSimState wristRotateSim;
+    CANcoderSimState wristEncoderSim;
     TalonFXSimState wristRollerSim;
 
     WristConfig config;
@@ -53,8 +55,9 @@ public class Wrist extends SubsystemBase{
         this.configureCancoder(wristRotateCancoder, config.wristRotateCANcoderConfig);  //Fill in framework
       
         wristRotateSim = wristRotate.getSimState();
+        wristEncoderSim = wristRotateCancoder.getSimState();
         wristRollerSim = wristSpin.getSimState();
-        sim = new WristSim(config, wristRotateSim, wristRollerSim);
+        sim = new WristSim(config, wristRotateSim, wristEncoderSim, wristRollerSim);
         
         SmartDashboard.putData("Wrist", this);
     }
@@ -212,8 +215,8 @@ public class Wrist extends SubsystemBase{
     }
     
     public void simulationInit() {
-        sim = new WristSim(config, wristRotateSim, wristRollerSim);
     }
+
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation

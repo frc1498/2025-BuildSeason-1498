@@ -1,5 +1,6 @@
 package frc.robot.sim;
 
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -11,11 +12,13 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.WristConfig;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
 
 public class WristSim implements AutoCloseable{
 
     TalonFXSimState wristDrive;
+    CANcoderSimState wristEncoder;
     TalonFXSimState wristSpinny;
 
     DCMotor wristGearbox = DCMotor.getKrakenX60Foc(1);
@@ -26,16 +29,26 @@ public class WristSim implements AutoCloseable{
 
     double motRotations;
     double motSpeed;
-    double rollRotations;
+    private double rollerRotationsPerSec;
+    private double rollerPosition;
+    private double outputDegrees;
+    private double outputDegreesPerSec;
+    private double outputRotations;
+    private double outputRotationsPerSec;
+    private double inputRotations;
+    private double inputRotationsPerSec;
 
     Mechanism2d wrist_vis;
     MechanismRoot2d wrist_root;
     MechanismLigament2d wrist_rotate_mech;
     MechanismLigament2d wrist_roller_mech;
 
-    public WristSim(WristConfig config, TalonFXSimState wristDrive, TalonFXSimState wristRolly) {
+    public WristSim(WristConfig config, TalonFXSimState wristDrive, CANcoderSimState wristEncoder, TalonFXSimState wristRolly) {
         this.wristDrive = wristDrive;
+        this.wristEncoder = wristEncoder;
         this.wristSpinny = wristRolly;
+
+        rollerPosition = 0;
 
         this.wrist = new SingleJointedArmSim(
             wristGearbox, 
@@ -65,6 +78,7 @@ public class WristSim implements AutoCloseable{
     public void simulationPeriodic() {
         //Set motor and sensor voltage.
         wristDrive.setSupplyVoltage(12);
+        wristEncoder.setSupplyVoltage(12);
         wristSpinny.setSupplyVoltage(12);
         
         //Run the simulation and update it.
@@ -75,17 +89,49 @@ public class WristSim implements AutoCloseable{
 
         //Update sensor positions.
 
-        //rotations = (radians / 2*pi) * gear ratio
-        motRotations = this.radToAngle(wrist.getAngleRads()) / WristConstants.kWristRotateGearing;
-        motSpeed = this.radToAngle(wrist.getVelocityRadPerSec()) / WristConstants.kWristRotateGearing;
-        rollRotations = wristRoller.getAngularVelocityRPM() / 60;
+        //Convert radians to degrees - at the output
+        outputDegrees = this.radToDeg(wrist.getAngleRads());
+        outputDegreesPerSec = this.radToDeg(wrist.getVelocityRadPerSec());
 
-        wristDrive.setRawRotorPosition(motRotations);
-        wristDrive.setRotorVelocity(motSpeed);
-        wristSpinny.setRotorVelocity(rollRotations);
+        //Convert degrees to rotations - at the output
+        outputRotations = this.degToRot(outputDegrees);
+        outputRotationsPerSec = this.degToRot(outputDegreesPerSec);
+
+        //Convert output rotations to input rotations
+        inputRotations = this.outputRotToInputRot(outputRotations, WristConstants.kWristRotateGearing);
+        inputRotationsPerSec = this.outputRotToInputRot(outputRotationsPerSec, WristConstants.kWristRotateGearing);
+
+
+        rollerRotationsPerSec = wristRoller.getAngularVelocityRPM() / 60;
+        //Assuming an update every 20ms, find the distance traveled over 20ms and add it to the position.
+        rollerPosition += rollerRotationsPerSec * 0.02;
+
+        wristDrive.setRawRotorPosition(inputRotations);
+        wristDrive.setRotorVelocity(inputRotationsPerSec);
+        //Assuming 1-to-1 with the motor?
+        wristEncoder.setRawPosition(inputRotations);
+        wristEncoder.setVelocity(inputRotationsPerSec);
+
+        wristSpinny.setRotorVelocity(rollerRotationsPerSec);
 
         wrist_rotate_mech.setAngle(this.radToAngle(wrist.getAngleRads()));
-        wrist_roller_mech.setAngle(0);      
+        wrist_roller_mech.setAngle(rollerPosition);    
+    }
+
+    private double radToDeg(double radians) {
+        return radians / (2 * Math.PI) * 360.0;
+    }
+
+    private double degToRot(double degrees) {
+        return degrees / 360.0;
+    }
+
+    private double inputRotToOutputRot(double inputRotations, double gearing) {
+        return inputRotations / gearing;
+    }
+
+    private double outputRotToInputRot(double outputRotations, double gearing) {
+        return outputRotations * gearing;
     }
 
     @Override

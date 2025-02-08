@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -26,8 +27,11 @@ public class Arm extends SubsystemBase{
     CANcoder armRotateEncoder;
 
     TalonFXSimState armSim;
+    CANcoderSimState armEncoderSim;
 
     ArmSim sim;
+
+    private double desiredPosition;
 
     public Arm(ArmConfig config) {
         //Constructor - only runs once
@@ -42,8 +46,9 @@ public class Arm extends SubsystemBase{
         this.configureCancoder(armRotateEncoder, config.armRotateCANcoderConfig);
   
         armSim = armRotate.getSimState();
+        armEncoderSim = armRotateEncoder.getSimState();
 
-        sim = new ArmSim(config, armSim);
+        sim = new ArmSim(config, armSim, armEncoderSim);
 
         SmartDashboard.putData("Arm", this);
     }
@@ -76,11 +81,16 @@ public class Arm extends SubsystemBase{
     }
 
     private void armDriveToPosition(double position) {
-            armRotate.setControl(rotateControl.withPosition(position));
+        this.desiredPosition = position;
+        armRotate.setControl(rotateControl.withPosition(position));
     }
 
     private boolean isArmAtPosition(double position) {
             return ((position-ArmConstants.kDeadband) <= GetArmPosition()) && ((position+ArmConstants.kDeadband) >= GetArmPosition());
+    }
+
+    private double getDesiredArmPosition() {
+        return this.desiredPosition;
     }
 
     private double GetArmPosition(){
@@ -186,6 +196,9 @@ public Command armAlgaeProcessor() {
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
+        builder.addDoubleProperty("Desired Position", this::getDesiredArmPosition, null);
+        builder.addDoubleProperty("Current Position", this::GetArmPosition, null);
+        builder.addBooleanProperty("Is Arm at L1 Position", isArmCoralL1, null);
     }
 
     @Override

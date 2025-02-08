@@ -57,8 +57,8 @@ public class WristConfig {
         //Fuse the Cancoder here
         rotate.Feedback.FeedbackRemoteSensorID = 33;
         rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        rotate.Feedback.SensorToMechanismRatio = 0;
-        rotate.Feedback.RotorToSensorRatio = 0;
+        rotate.Feedback.SensorToMechanismRatio = 1;
+        rotate.Feedback.RotorToSensorRatio = 1;
 
     }
 

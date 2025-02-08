@@ -6,8 +6,8 @@ public class ArmConstants {
     public static final double kCoralStow = 0.0;  //Stow Position 
     public static final double kCoralLoadFloor = 0.1;  //  Load Coral Floor Position
     public static final double kCoralLoadHuman = 0.1;  //  Load Coral Floor Position 
-    public static final double kCoralL1 = 0.3; // Level 1 Score Coral Position
-    public static final double kCoralL2 = 0.4; // Level 2 Score Coral Position
+    public static final double kCoralL1 = 63; // Level 1 Score Coral Position
+    public static final double kCoralL2 = 86; // Level 2 Score Coral Position
     public static final double kCoralL3 = 0.5; // Level 3 Score Coral Position
     public static final double kCoralL4 = 0.6; // Level 4 Score Coral Position
 
@@ -20,14 +20,14 @@ public class ArmConstants {
     public static final double kAlgaeProcessor = 0.1; //Score position for Algae in the processor
 
     //=======================General======================
-    public static final double kDeadband = 0.05;
+    public static final double kDeadband = 2.0;
 
 //==================Sim Values================
 public static final double kArmRotateGearing = 126.0; //126:1 reduction
 public static final double kArmRotateMomentOfInertia = 0.01; //kg-m^2 - Absolutely no idea.
 public static final double kArmLength = 0.381; //meters - Guess that the arm is 15 in. long.
 public static final double kArmMinAngle = 0.0; //radians
-public static final double kArmMaxAngle = 6.28; //2*pi in radians - 360 degrees of movement.
+public static final double kArmMaxAngle = 8.0; //2*pi in radians - 360 degrees of movement.
 public static final double kArmStartingAngle = 0.0; //radians
 
 }
