@@ -54,24 +54,11 @@ public class EndEffector {
     //======================Private=============================
     //==========================================================
 
-    private void setEndEffectorMode(String mode) {
-        this.endEffectorMode = mode;
-    }
 
-    private boolean isEndEffectorAlgae() {
-        return (endEffectorMode == "Algae");
-    }
 
     //==========================================================
     //=====================Commands=============================
     //==========================================================
-
-    public Command callEndEffector(){
-        if (isEndEffectorModeAlgae) {
-
-        }
-
-    }
 
     public Command moveEndEffector(double wristDesiredRotation, double armDesiredRotation, double elevatorDesiredRotation) {
 
@@ -145,7 +132,8 @@ public class EndEffector {
     }
 
     public Command endEffectorMode(String mode) {
-        return new InstantCommand(() -> {this.setEndEffectorMode(mode);});
+        return
+            Commands();
     }
 
     //======================================================

@@ -139,8 +139,8 @@ public class RobotContainer {
         operator1.start().onTrue(new callEndEffector("L4orBarge")); //Score L4, Barge
         operator1.rightBumper().onTrue(new callEndEffector("L3")); //Score L3
         //operator1.leftBumper().onTrue();
-        operator1.leftStick().onTrue(new endEffectorMode());  //Coral Mode
-        operator1.rightStick().onTrue(endEffector.endEffectorMode());  //Algae Mode
+        operator1.leftStick().onTrue(SetEndEffectorMode("Coral"));  //Coral Mode
+        operator1.rightStick().onTrue(SetEndEffectorMode("Algae"));  //Algae Mode
 
         //=====================================================================
         //=============================Operator 2==============================
