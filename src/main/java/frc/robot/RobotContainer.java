@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.EndEffector;
+import frc.robot.commands.EndEffectorCommand;
 import frc.robot.config.ArmConfig;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
@@ -30,6 +30,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.EndEffector;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -65,7 +66,8 @@ public class RobotContainer {
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake(intakeConfig);
 
-    public EndEffector endEffector = new EndEffector();
+    public EndEffectorCommand endEffectorCommand = new EndEffectorCommand();
+    public final EndEffector endEffector = new EndEffector();
 
     public final ClimberConfig climberConfig = new ClimberConfig();
     public final Climber climber = new Climber(climberConfig);
@@ -139,8 +141,8 @@ public class RobotContainer {
         operator1.start().onTrue(new callEndEffector("L4orBarge")); //Score L4, Barge
         operator1.rightBumper().onTrue(new callEndEffector("L3")); //Score L3
         //operator1.leftBumper().onTrue();
-        operator1.leftStick().onTrue(SetEndEffectorMode("Coral"));  //Coral Mode
-        operator1.rightStick().onTrue(SetEndEffectorMode("Algae"));  //Algae Mode
+        operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
+        operator1.rightStick().onTrue(endEffector.setEndEffectorMode("Algae"));  //Algae Mode
 
         //=====================================================================
         //=============================Operator 2==============================

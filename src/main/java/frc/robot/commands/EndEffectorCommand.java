@@ -11,7 +11,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.constants.ArmConstants;
 
-public class EndEffector {
+public class EndEffectorCommand {
     ElevatorConfig elevatorConfig;
     Elevator elevator;
     ArmConfig armConfig;
@@ -33,7 +33,7 @@ public class EndEffector {
 
     public String endEffectorMode="None";
 
-    public EndEffector() {
+    public EndEffectorCommand() {
         elevatorConfig = new ElevatorConfig();
         elevator = new Elevator(elevatorConfig);
         armConfig = new ArmConfig();

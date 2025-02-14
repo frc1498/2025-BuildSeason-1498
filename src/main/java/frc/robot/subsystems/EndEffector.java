@@ -16,7 +16,7 @@ import frc.robot.sim.ArmSim;
 
 public class EndEffector extends SubsystemBase{
 
-    public String endEffectorMode = "Algae";
+    public String m_endEffectorMode = "Algae";
 
      public EndEffector() {
         
@@ -25,17 +25,23 @@ public class EndEffector extends SubsystemBase{
     //========================================================
     //======================= Private ========================
     //========================================================
-    private void setEndEffectorMode(String mode) {
-        this.endEffectorMode = mode;
+    private void setEndEffectorModeHere(String mode) {
+        this.m_endEffectorMode = mode;
     }
 
     private String GetEndEffectorMode() {
-        return (endEffectorMode == "Algae");
+        return (m_endEffectorMode);
     }
 
     //=========================================================
     //==========================Public Command=================
     //=========================================================
+
+    public Command setEndEffectorMode(String mode) {
+        return run(
+            () -> {this.setEndEffectorModeHere(mode);};
+
+    }
 
     public Supplier<String> endEffectorMode() {
         return this::GetEndEffectorMode; 
