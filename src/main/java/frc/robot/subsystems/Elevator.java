@@ -96,6 +96,18 @@ public class Elevator extends SubsystemBase {
     //======================================================================
     //=====================Public Commands==================================
     //======================================================================
+    public Command elevatorFrontSafe() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kFrontSafe);}
+        ).until(this.isElevatorFrontSafe);
+    }
+    
+    public Command elevatorRearSafe() {
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kRearSafe);}
+        ).until(this.isElevatorRearSafe);
+    }
+
     public Command elevatorCoralStow() {
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralStow);}
@@ -174,10 +186,15 @@ public class Elevator extends SubsystemBase {
         ).until(this.isElevatorAlgaeProcessor);
     }
 
-    //This *feels* too complicated, but it works.
     public Command elevatorPosition(Supplier<Double> position) {
         return run(
             () -> {this.elevatorDriveToPosition(position.get());}
+        );
+    }
+
+    public Command toElevatorPosition(double position) {
+        return run(
+            () -> {this.elevatorDriveToPosition(position);}
         );
     }
 
@@ -201,6 +218,12 @@ public class Elevator extends SubsystemBase {
     public final Trigger isElevatorAlgaeL3 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeL3);});
     public final Trigger isElevatorAlgaeBarge = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeBarge);});
     public final Trigger isElevatorAlgaeProcessor = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kAlgaeProcessor);});
+
+    //=====================================================
+    //===============Triggers General======================
+    //=====================================================
+    public final Trigger isElevatorFrontSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kFrontSafe);});
+    public final Trigger isElevatorRearSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kRearSafe);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

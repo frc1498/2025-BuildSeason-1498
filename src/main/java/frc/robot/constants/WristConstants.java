@@ -18,7 +18,10 @@ public class WristConstants {
     public static final double kAlgaeL3 = 5.204; // Load Algae L3 Position - 25 degrees - 0.436 radians - 5.204 rotations
     public static final double kAlgaeBarge = 9.370; //Score position for Algae in the Barge - 45 degrees - 0.785 radians - 9.370 rotations
     public static final double kAlgaeProcessor = 0; //Score position for Algae in the processor - 0 degrees - 0 radians - 0 rotations
-
+    //==================General Positions====================
+    public static final double kFrontSafe = 0;
+    public static final double kRearSafe = 0;
+    
     //===============Wrist Intake Spin Velocities======================
     public static final double kCoralStop = 0.0;  //Stow Position 
     public static final double kCoralSuck = 50.0;  //  Load Coral Floor Position

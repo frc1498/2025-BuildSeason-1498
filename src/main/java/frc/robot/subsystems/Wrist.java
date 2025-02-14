@@ -9,14 +9,10 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj.DigitalInput;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -166,6 +162,18 @@ public class Wrist extends SubsystemBase{
     //=============================================================
     //========================Commands=============================
     //=============================================================
+    public Command wristFrontSafe() {
+        return run(
+            () -> {this.wristDriveToPosition(WristConstants.kFrontSafe);}
+        ).until(this.isWristFrontSafe);
+    }
+    
+    public Command wristRearSafe() {
+        return run(
+            () -> {this.wristDriveToPosition(WristConstants.kRearSafe);}
+        ).until(this.isWristRearSafe);
+    }
+
     public Command wristCoralStow() {
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralStow);}
@@ -268,6 +276,12 @@ public class Wrist extends SubsystemBase{
         );
     }
 
+    public Command toWristPosition(double position) {
+        return run(
+            () -> {this.wristDriveToPosition(position);}
+        );
+    }
+
     //=======================================================
     //=================Triggers for Wrist Coral==============
     //=======================================================
@@ -290,6 +304,12 @@ public class Wrist extends SubsystemBase{
     public final Trigger isWristAlgaeL3 = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kAlgaeL3);});
     public final Trigger isWristAlgaeBarge = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kAlgaeBarge);});
     public final Trigger isWristAlgaeProcessor = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kAlgaeProcessor);});
+
+    //=====================================================
+    //===============Triggers General======================
+    //=====================================================
+    public final Trigger isWristFrontSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kFrontSafe);});
+    public final Trigger isWristRearSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kRearSafe);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

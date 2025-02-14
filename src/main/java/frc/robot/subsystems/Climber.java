@@ -6,18 +6,13 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.util.sendable.SendableBuilder;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj2.command.Command;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ClimberConfig;
 import frc.robot.constants.ClimberConstants;
-import frc.robot.constants.WristConstants;
 import frc.robot.sim.ClimberSim;
 
 public class Climber extends SubsystemBase{
@@ -86,19 +81,19 @@ public class Climber extends SubsystemBase{
     //===============================================================
     public Command toClimberStow() {
         return run(
-            () -> {this.climberDriveToPosition(WristConstants.kCoralStow);}
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberStowed);}
         ).until(this.isClimberStowed);
     }
 
     public Command toClimberReady() {
         return run(
-            () -> {this.climberDriveToPosition(WristConstants.kCoralStow);}
-        ).until(this.isClimberLoaded);
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberReady);}
+        ).until(this.isClimberReady);
     }
 
-    public Command toClimberCompleteb() {
+    public Command toClimberComplete() {
         return run(
-            () -> {this.climberDriveToPosition(WristConstants.kCoralStow);}
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}
         ).until(this.isClimberComplete);
     }
 
@@ -107,7 +102,7 @@ public class Climber extends SubsystemBase{
     //===============================================================
     public final Trigger isClimberComplete = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimberComplete);});
     public final Trigger isClimberStowed = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimberStowed);});
-    public final Trigger isClimberLoaded = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimberLoaded);});
+    public final Trigger isClimberReady = new Trigger(() -> {return this.isClimberAtPosition(ClimberConstants.kClimberReady);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

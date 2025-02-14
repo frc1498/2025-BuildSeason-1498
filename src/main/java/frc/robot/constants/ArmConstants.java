@@ -22,6 +22,8 @@ public class ArmConstants {
 
     //=======================General======================
     public static final double kDeadband = 2.0;
+    public static final double kFrontSafe=0;
+    public static final double kRearSafe=0;
 
 //==================Sim Values================
 public static final double kArmRotateGearing = 126.0; //126:1 reduction

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -108,6 +110,19 @@ public class Arm extends SubsystemBase{
     //===================================================
     //=====================Public Commands===============
     //===================================================    
+
+    public Command armFrontSafe() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kFrontSafe);}
+        ).until(this.isArmFrontSafe);
+    }
+    
+    public Command armRearSafe() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kRearSafe);}
+        ).until(this.isArmRearSafe);
+    }
+
     public Command armCoralStow() {
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralStow);}
@@ -185,6 +200,17 @@ public class Arm extends SubsystemBase{
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeProcessor);}
         ).until(this.isArmAlgaeProcessor);
     }
+
+    public DoubleSupplier armRotation() {
+        return this::GetArmPosition; 
+    }
+
+    public Command toArmPosition(double position) {
+        return run(
+            () -> {this.armDriveToPosition(position);}
+        );
+    }
+
     //============================================
     //===============Coral Triggers===============
     //============================================
@@ -205,6 +231,12 @@ public class Arm extends SubsystemBase{
     public final Trigger isArmAlgaeL3 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadL3);});
     public final Trigger isArmAlgaeBarge = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeBarge);});
     public final Trigger isArmAlgaeProcessor = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeProcessor);});
+
+    //===========================================
+    //===============General Triggers============
+    //===========================================
+    public final Trigger isArmFrontSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kFrontSafe);});
+    public final Trigger isArmRearSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kRearSafe);});
 
     @Override
     public void initSendable(SendableBuilder builder) {
