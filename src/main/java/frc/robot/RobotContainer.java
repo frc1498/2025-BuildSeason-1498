@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.pilotLib.utility.Selector;
 import frc.robot.config.ArmConfig;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
@@ -69,6 +70,8 @@ public class RobotContainer {
     //Very important, the vision subsystem has to be created after the drivetrain.
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
     public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
+
+    public Selector autoSelect = new Selector();
 
     public RobotContainer() {
         configureBindings();
