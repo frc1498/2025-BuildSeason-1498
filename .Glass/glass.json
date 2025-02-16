@@ -1,0 +1,35 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      },
+      "limelight": {
+        "double[]##v_/limelight/botpose_orb_wpiblue": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Pose": "Field2d",
+      "/SmartDashboard/ARHM": "Mechanism2d",
+      "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/ELERVATER": "Mechanism2d",
+      "/SmartDashboard/INTAKE": "Mechanism2d",
+      "/SmartDashboard/Module 0": "Mechanism2d",
+      "/SmartDashboard/Module 1": "Mechanism2d",
+      "/SmartDashboard/Module 2": "Mechanism2d",
+      "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/WREEST": "Mechanism2d"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "1498"
+  }
+}

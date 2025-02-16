@@ -57,7 +57,8 @@ public class EndEffector {
         return 
             elevator.elevatorCoralL1().until(elevator.isElevatorCoralL1)
             .andThen(arm.armCoralL1()).until(arm.isArmCoralL1)
-            .andThen(wrist.wristCoralL1()).until(wrist.isWristCoralL1);
+            .andThen(wrist.wristCoralL1()).until(wrist.isWristCoralL1)
+            .withName("toCoralL1");
         
     }
 

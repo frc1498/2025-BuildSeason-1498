@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,6 +48,8 @@ public class LED extends SubsystemBase{
         configAll.vBatOutputMode = VBatOutputMode.Modulated;
         m_candle.configAllSettings(configAll, 100);
         m_candle.animate(larson);
+
+        SmartDashboard.putData("LED", this);
     }
     //====================================================================
     //=========================Configuration==============================
@@ -98,7 +101,15 @@ public class LED extends SubsystemBase{
         m_candle.clearAnimation(0);
         m_candle.setLEDs(255, 255, 255);  //LEDs go white
     }
-    
+
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }    
     //=====================================================
     //======================Commands ======================
     //=====================================================
@@ -132,6 +143,7 @@ public class LED extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
+        builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }    
 
 }

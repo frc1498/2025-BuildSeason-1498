@@ -23,12 +23,16 @@ public class ArmConstants {
     //=======================General======================
     public static final double kDeadband = 2.0;
 
-//==================Sim Values================
-public static final double kArmRotateGearing = 126.0; //126:1 reduction
-public static final double kArmRotateMomentOfInertia = 0.01; //kg-m^2 - Absolutely no idea.
-public static final double kArmLength = 0.381; //meters - Guess that the arm is 15 in. long.
-public static final double kArmMinAngle = -100; //radians
-public static final double kArmMaxAngle = 100; //2*pi in radians - 360 degrees of movement.
-public static final double kArmStartingAngle = 0.0; //radians
+    //=========================Safeties===================
+    public static final double kMin = -0.333;
+    public static final double  kMax = 0.29;
+
+    //==================Sim Values================
+    public static final double kArmRotateGearing = 105.883; //105.883:1 reduction
+    public static final double kArmRotateMomentOfInertia = 0.01; //kg-m^2 - Absolutely no idea.
+    public static final double kArmLength = 0.381; //meters - Guess that the arm is 15 in. long.
+    public static final double kArmMinAngle = -100; //radians
+    public static final double kArmMaxAngle = 100; //2*pi in radians - 360 degrees of movement.
+    public static final double kArmStartingAngle = 0.0; //radians
 
 }

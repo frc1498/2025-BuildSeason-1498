@@ -2,17 +2,18 @@ package frc.pilotLib.utility;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 
-import edu.wpi.first.networktables.NTSendableBuilder;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Selector implements Sendable{
+public class Selector extends SubsystemBase{
     private int currentSelection;
     private String currentSelectionName;
-    ArrayList<String> selections;
+    private ArrayList<String> selections;
 
     public Selector() {
         //Empty constructor.
@@ -21,31 +22,35 @@ public class Selector implements Sendable{
         selections = new ArrayList<String>();
     }
 
-
     public Selector(ArrayList<String> selections) {
         super();
         this.selections = this.addSelectionList(selections);
+        this.sortSelections();
     }
 
     public Selector(ArrayList<String> selections, String name) {
         super();
         this.selections = this.addSelectionList(selections);
+        this.sortSelections();
         this.setSmartDashboardName(name);
     }
 
     public Selector(File folderPath) {
         super();
         this.selections = addSelectionList(folderPath);
+        this.sortSelections();
     }
 
     public Selector(File folderPath, String extension) {
         super();
         this.selections = this.addSelectionList(folderPath, extension);
+        this.sortSelections();
     }
 
     public Selector(File folderPath, String extension, String name) {
         super();
         this.selections = this.addSelectionList(folderPath, extension);
+        this.sortSelections();
         this.setSmartDashboardName(name);
     }
 
@@ -87,6 +92,18 @@ public class Selector implements Sendable{
         this.currentSelectionName = this.selections.get(this.currentSelection);
     }
 
+    private void setSelection(int index) {
+        if (index < 0) {
+            this.currentSelection = 0;
+        }
+        else if (index > this.selections.size() - 1) {
+            this.currentSelection = this.selections.size();
+        }
+        else {
+            this.currentSelection = index;
+        }
+    }
+
     private void decrementSelection() {
         if (this.currentSelection > 0) {
             this.currentSelection--;
@@ -105,7 +122,7 @@ public class Selector implements Sendable{
         }
     }
 
-    public ArrayList<String> filterSelections(ArrayList<String> list, String filterCriteria) {
+    private ArrayList<String> filterSelections(ArrayList<String> list, String filterCriteria) {
         Iterator<String> filter = list.iterator();
         ArrayList<String> placeholder = new ArrayList<String>();
         String toCheck;
@@ -117,6 +134,39 @@ public class Selector implements Sendable{
             }
         }
         return placeholder;
+    }
+
+    private void sortSelections() {
+         this.selections.sort(Comparator.naturalOrder());
+    }
+
+    public Command filterList(String criteria) {
+        return runOnce(
+            () -> {
+                this.selections = filterSelections(this.selections, criteria);
+                this.sortSelections();
+                this.setSelection(0);
+                this.setCurrentSelectionName();
+            }
+        ).withName("filterList");
+    }
+
+    public Command increment() {
+        return runOnce(
+            () -> {
+                this.incrementSelection();
+                this.setCurrentSelectionName();
+            }
+        ).withName("increment");
+    }
+
+    public Command decrement() {
+        return runOnce(
+            () -> {
+                this.decrementSelection();
+                this.setCurrentSelectionName();
+            }
+        ).withName("decrement");
     }
 
     @Override

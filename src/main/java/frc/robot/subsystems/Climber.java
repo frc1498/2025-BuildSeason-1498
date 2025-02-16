@@ -81,6 +81,14 @@ public class Climber extends SubsystemBase{
             return climberRotate.getPosition().getValueAsDouble();       
     }
 
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }
     //===============================================================
     //=====================Commands==================================
     //===============================================================
@@ -112,6 +120,7 @@ public class Climber extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
+        builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }
 
     @Override

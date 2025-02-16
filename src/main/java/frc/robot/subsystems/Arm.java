@@ -105,6 +105,15 @@ public class Arm extends SubsystemBase{
             return armRotate.getPosition().getValueAsDouble();
     }
 
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }
+
     //===================================================
     //=====================Public Commands===============
     //===================================================    
@@ -212,6 +221,7 @@ public class Arm extends SubsystemBase{
         builder.addDoubleProperty("Desired Position", this::getDesiredArmPosition, null);
         builder.addDoubleProperty("Current Position", this::GetArmPosition, null);
         builder.addBooleanProperty("Is Arm at L1 Position", isArmCoralL1, null);
+        builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }
 
     @Override
