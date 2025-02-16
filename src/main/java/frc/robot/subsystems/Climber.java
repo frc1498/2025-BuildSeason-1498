@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -17,8 +18,9 @@ import frc.robot.sim.ClimberSim;
 
 public class Climber extends SubsystemBase{
     //Declare Variables
-    TalonFX climberRotate;
+    public TalonFX climberRotate;
     PositionVoltage rotateControl;
+    public DutyCycleOut rotateDutyCycleControl;
     
     TalonFX climberSpin;
     VelocityVoltage spinControl;
@@ -26,6 +28,8 @@ public class Climber extends SubsystemBase{
     TalonFXSimState climberDriveFrontSim = climberRotate.getSimState();
     ClimberSim sim;
    
+    public boolean climberEnabled = false;
+
     public Climber(ClimberConfig config) {
         //Constructor
 
@@ -76,6 +80,14 @@ public class Climber extends SubsystemBase{
             return climberRotate.getPosition().getValueAsDouble();       
     }
 
+    private boolean isClimberEnable(){
+        return climberEnabled;       
+    }
+
+    private void climberEnable(){
+        climberEnabled=true;
+    }
+
     //===============================================================
     //=====================Commands==================================
     //===============================================================
@@ -95,6 +107,12 @@ public class Climber extends SubsystemBase{
         return run(
             () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}
         ).until(this.isClimberComplete);
+    }
+
+    public Command climberTriggered() {
+        return run(
+            () -> {this.climberEnable();});  
+    
     }
 
     //===============================================================

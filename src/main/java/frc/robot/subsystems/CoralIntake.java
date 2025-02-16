@@ -3,9 +3,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -22,15 +22,16 @@ import frc.robot.sim.CoralIntakeSim;
 
 public class CoralIntake extends SubsystemBase{
     //Create Motor Variables
-    TalonFX rotateMotor;
-    TalonFX spinMotor;
+    public TalonFX rotateMotor;
+    public TalonFX spinMotor;
     CANcoder rotateCANcoder;
   
     TalonFXSimState intakePivotSim;
     TalonFXSimState intakeRollerSim;
 
-    VelocityVoltage spinMotorMode;
+    public VelocityVoltage spinMotorMode;
     PositionVoltage rotateMotorMode;
+    public DutyCycleOut rotateDutyCycleControl;
 
     CoralIntakeConfig coralIntakeConfig;
 
@@ -41,6 +42,8 @@ public class CoralIntake extends SubsystemBase{
     //Required for sim
     CoralIntakeSim sim;
   
+    public int suckState=0;
+
     public CoralIntake(CoralIntakeConfig config) {
         //Constructor - only runs once
 
@@ -111,6 +114,10 @@ public class CoralIntake extends SubsystemBase{
         spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSpitSpeed));
     }
 
+    private void stop() {
+        spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kStopSpeed));
+    }
+
     private void goToPosition(double position) {
         rotateMotor.setControl(rotateMotorMode.withPosition(position));
     }
@@ -147,6 +154,12 @@ public class CoralIntake extends SubsystemBase{
     public Command rollerSpit() {
         return run(
             () -> {this.spit();}
+        );
+    }
+
+    public Command rollerStop() {
+        return run(
+            () -> {this.stop();}
         );
     }
 

@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -19,13 +21,12 @@ import frc.robot.sim.ElleySim;
 
 public class Elevator extends SubsystemBase {
     //Declare Variables
-    TalonFX elevatorDriveFront;
-    TalonFX elevatorDriveRear;
+    public TalonFX elevatorDriveFront;
   
     TalonFXSimState elevatorDriveFrontSim;
-    TalonFXSimState elevatorDriveRearSim;
   
     PositionVoltage posControl;
+    public DutyCycleOut rotateDutyCycleControl;
 
     private double desiredPosition;
 
@@ -40,18 +41,15 @@ public class Elevator extends SubsystemBase {
 
         //Instantiate
         elevatorDriveFront = new TalonFX(config.kElevatorDriveFrontCANID, "canivore");
-        elevatorDriveRear = new TalonFX(config.kElevatorDriveRearCANID, "canivore");
 
         //Fill In the Instantiation
         this.configureMechanism(elevatorDriveFront, config.frontConfig);
-        this.configureMechanism(elevatorDriveRear, config.rearConfig);
 
         elevatorDriveFrontSim = elevatorDriveFront.getSimState();
-        elevatorDriveRearSim = elevatorDriveRear.getSimState();
 
         posControl = new PositionVoltage(0);   
 
-        sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveRearSim);
+        sim = new ElleySim(config, elevatorDriveFrontSim);
         
         SmartDashboard.putData("Elevator", this);
     }
@@ -81,7 +79,7 @@ public class Elevator extends SubsystemBase {
         elevatorDriveFront.setControl(posControl.withPosition(position));
     }
 
-    private double getCurrentPosition() {
+    private double getElevatorPosition() {
         return elevatorDriveFront.getPosition().getValueAsDouble();
     }
 
@@ -90,7 +88,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private boolean isElevatorAtPosition(double position) {
-        return (position - ElevatorConstants.kDeadband) <= this.getCurrentPosition() && (position + ElevatorConstants.kDeadband) >= this.getCurrentPosition();
+        return (position - ElevatorConstants.kDeadband) <= this.getElevatorPosition() && (position + ElevatorConstants.kDeadband) >= this.getElevatorPosition();
     }
 
     //======================================================================
@@ -198,6 +196,10 @@ public class Elevator extends SubsystemBase {
         );
     }
 
+    public DoubleSupplier getElevatorRotation() {
+        return this::getElevatorPosition;
+    }
+
     //======================================================
     //==============Triggers for Elevator Coral=============
     //======================================================
@@ -229,7 +231,7 @@ public class Elevator extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
         builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
-        builder.addDoubleProperty("Current Position", this::getCurrentPosition, null);
+        builder.addDoubleProperty("Current Position", this::getElevatorPosition, null);
         builder.addBooleanProperty("Is Elevator at Coral L1", isElevatorCoralL1, null);
         builder.addBooleanProperty("Is Elevator at Coral L2", isElevatorCoralL2, null);    
         builder.addBooleanProperty("Is Elevator at Coral L3", isElevatorCoralL3, null);  
@@ -241,7 +243,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void simulationInit() {
-        sim = new ElleySim(config, elevatorDriveFrontSim, elevatorDriveRearSim);
+        sim = new ElleySim(config, elevatorDriveFrontSim);
     }
 
     @Override

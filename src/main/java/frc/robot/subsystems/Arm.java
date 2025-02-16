@@ -1,17 +1,14 @@
 package frc.robot.subsystems;
-
 import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,8 +20,9 @@ import frc.robot.sim.ArmSim;
 
 public class Arm extends SubsystemBase{
     //Declare Variables
-    TalonFX armRotate;
+    public TalonFX armRotate;
     PositionVoltage rotateControl;
+    public DutyCycleOut rotateDutyCycleControl;
 
     CANcoder armRotateEncoder;
 
@@ -179,13 +177,13 @@ public class Arm extends SubsystemBase{
 
     public Command armAlgaeL2() {
         return run(
-            () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL2);}
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeL2);}
         ).until(this.isArmAlgaeL2);
     }
 
     public Command armAlgaeL3() {
         return run(
-            () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadL3);}
+            () -> {this.armDriveToPosition(ArmConstants.kAlgaeL3);}
         ).until(this.isArmAlgaeL3);
     }
 
@@ -201,7 +199,7 @@ public class Arm extends SubsystemBase{
         ).until(this.isArmAlgaeProcessor);
     }
 
-    public DoubleSupplier armRotation() {
+    public DoubleSupplier getArmRotation() {
         return this::GetArmPosition; 
     }
 
@@ -227,8 +225,8 @@ public class Arm extends SubsystemBase{
     //===========================================
     public final Trigger isArmAlgaeStow = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeStow);});
     public final Trigger isArmAlgaeLoadFloor = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadFloor);});
-    public final Trigger isArmAlgaeL2 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadL2);});
-    public final Trigger isArmAlgaeL3 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeLoadL3);});
+    public final Trigger isArmAlgaeL2 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeL2);});
+    public final Trigger isArmAlgaeL3 = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeL3);});
     public final Trigger isArmAlgaeBarge = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeBarge);});
     public final Trigger isArmAlgaeProcessor = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kAlgaeProcessor);});
 

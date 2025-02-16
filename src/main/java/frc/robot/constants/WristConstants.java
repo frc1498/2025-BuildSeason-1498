@@ -32,6 +32,8 @@ public class WristConstants {
 
     //=======================General======================
     public static final double kDeadband = 0.05;
+    public static final boolean kWristPrint = false;
+    public static final boolean kWristSensorPrint = false;
 
     //==================Sim Values================
     public static final double kWristRotateGearing = 75.0; //75:1 reduction

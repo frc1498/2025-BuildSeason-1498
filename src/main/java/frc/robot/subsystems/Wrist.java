@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -9,26 +10,29 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.WristConfig;
+import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.sim.WristSim;
 
 public class Wrist extends SubsystemBase{
-    TalonFX wristRotate;
+    public TalonFX wristRotate;
+    PositionVoltage rotateControl;
+    public DutyCycleOut rotateDutyCycleControl;
 
     CANcoder wristRotateCancoder;
 
-    PositionVoltage rotateControl;
-
-    TalonFX wristSpin;
-    VelocityVoltage spinControl;
+    public TalonFX wristSpin;
+    public VelocityVoltage spinControl;
     
     TalonFXSimState wristRotateSim;
     CANcoderSimState wristEncoderSim;
@@ -36,7 +40,6 @@ public class Wrist extends SubsystemBase{
 
     WristConfig config;
     WristSim sim;
-
 
     double wristDesiredPosition;
 
@@ -142,8 +145,16 @@ public class Wrist extends SubsystemBase{
         //If either beam break is made, part is in gripper
         if (m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && !m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
         {
+            if (WristConstants.kWristSensorPrint){
+                System.out.println("=========================Front Wrist Sensor=====================");
+                System.out.println("Front Wrist Sensor Made");
+            }    
             return true;
         } else {
+            if (WristConstants.kWristSensorPrint){
+                System.out.println("=========================Front Wrist Sensor=====================");
+                System.out.println("Front Wrist Sensor Lost");
+            }
             return false;
         }
     }
@@ -151,6 +162,24 @@ public class Wrist extends SubsystemBase{
     private boolean isPartRearwardGripper() {
         //If either beam break is made, part is in gripper
         if (!m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
+        {
+            if (WristConstants.kWristSensorPrint){
+                System.out.println("=========================Rear Wrist Sensor=====================");
+                System.out.println("Rear Wrist Sensor Made");
+            }    
+            return true;
+        } else {
+            if (WristConstants.kWristSensorPrint){
+                System.out.println("=========================Rear Wrist Sensor=====================");
+                System.out.println("Rear Wrist Sensor Lost");
+            }
+            return false;
+        }
+    }
+
+    private boolean isPartGripper() {
+        //If neither beam break is made, part is in gripper
+        if (!m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && !m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
         {
             return true;
         } else {
@@ -282,11 +311,20 @@ public class Wrist extends SubsystemBase{
         );
     }
 
+    //===============================================
+    //=================Suppliers=====================
+    //===============================================
+
+    public DoubleSupplier getWristRotation() {
+        return this::getWristPosition; 
+    }
+
     //=======================================================
     //=================Triggers for Wrist Coral==============
     //=======================================================
     public final Trigger isPartRearwardGripper = new Trigger(() -> {return this.isPartRearwardGripper();});
     public final Trigger isPartForwardGripper = new Trigger(() -> {return this.isPartForwardGripper();});
+    public final Trigger isPartInGripper = new Trigger(() -> {return this.isPartGripper();});
     public final Trigger isWristCoralStow = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralStow);});
     public final Trigger isWristCoralLoadFloor = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralLoadFloor);});
     public final Trigger isWristCoralLoadHuman = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralLoadHuman);});
