@@ -482,7 +482,7 @@ public class Wrist extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
-        builder.addDoubleProperty("Desired Position", this::getDesiredPostion, null);
+        builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
         builder.addBooleanProperty("Front Gripper Beam Break", () -> {return m_BeamBreakGripperFrontDigital.get();}, null);
         builder.addBooleanProperty("Rear Gripper Beam Break", () -> {return m_BeamBreakGripperRearDigital.get();}, null);
         builder.addDoubleProperty("CANrange Reef Distance", this::getReefDistance, null);
