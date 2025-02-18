@@ -29,6 +29,8 @@ public class ElevatorConstants {
     public static final double kDeadband = 0.05;
     public static final double kFrontSafe = 0.05;
     public static final double kRearSafe = 0.05;
+    public static final boolean kElevatorPrint = false;
+    public static final boolean kElevatorPrintTrigger = false;
     //Currently, in meters.
     
     //==================Sim Values================

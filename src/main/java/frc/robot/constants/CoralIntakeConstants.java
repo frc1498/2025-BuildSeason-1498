@@ -13,6 +13,8 @@ public class CoralIntakeConstants {
 
     //Units are in rotations.
     public static final double kDeadband = 0.05;
+    public static final boolean kCoralIntakePrint = false;
+    public static final boolean kCoralIntakePrintTriggers = false;
 
     //==================Sim Values================
     public static final double kIntakeRotateGearing = 112.0; //112:1 reduction

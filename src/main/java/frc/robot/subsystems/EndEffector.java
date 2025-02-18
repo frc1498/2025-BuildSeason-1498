@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.ElevatorConstants;
 
 public class EndEffector extends SubsystemBase{
 
@@ -17,10 +18,19 @@ public class EndEffector extends SubsystemBase{
     //======================= Private ========================
     //========================================================
     private void setEndEffectorModeHere(String mode) {
+        if (ElevatorConstants.kElevatorPrint){
+            System.out.println("=============private setEndEffectorModeHere===============");
+            System.out.println("Mode:"+mode);    
+        }
         this.m_endEffectorMode = mode;
     }
 
     private Boolean GetEndEffectorMode() {
+        if (ElevatorConstants.kElevatorPrintTrigger){
+            System.out.println("=============private getEndEffectorMode===============");
+            System.out.println("End Effector Mode:" + m_endEffectorMode);
+        }
+
         return (m_endEffectorMode == "Algae");
     }
 
@@ -29,6 +39,11 @@ public class EndEffector extends SubsystemBase{
     //=========================================================
 
     public Command setEndEffectorMode(String mode) {
+        if (ElevatorConstants.kElevatorPrint){
+            System.out.println("=============Command setEndEffectorMode===============");
+            System.out.println("End Effector Mode:" + mode);
+        }
+
         return run(() -> {this.setEndEffectorModeHere(mode);});
     }
 

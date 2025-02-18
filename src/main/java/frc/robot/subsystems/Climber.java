@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ClimberConfig;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.sim.ClimberSim;
 
@@ -69,11 +70,22 @@ public class Climber extends SubsystemBase{
     //=======================Private=============================
     //===========================================================
     private void climberDriveToPosition(double position) {
-            climberRotate.setControl(rotateControl.withPosition(position));
+        if (ClimberConstants.kClimberPrint){
+            System.out.println("=============Private climberDriveToPosition===============");
+        }
+
+        climberRotate.setControl(rotateControl.withPosition(position));
     }
 
     private boolean isClimberAtPosition(double position) {
-            return ((position-ClimberConstants.kDeadband) <= getClimberPosition()) && ((position+ClimberConstants.kDeadband) >= getClimberPosition());
+        if (ClimberConstants.kClimberPrintTriggers){
+            System.out.println("=============Private isClimberAtPosition===============");
+            System.out.println("Lower Bound:" + (position - ClimberConstants.kDeadband));
+            System.out.println("Climber Position:" + getClimberPosition());
+            System.out.println("Upper Bound:" + (position + ClimberConstants.kDeadband));
+        }
+
+        return ((position-ClimberConstants.kDeadband) <= getClimberPosition()) && ((position+ClimberConstants.kDeadband) >= getClimberPosition());
     }
 
     private double getClimberPosition(){
@@ -81,10 +93,18 @@ public class Climber extends SubsystemBase{
     }
 
     private boolean isClimberEnable(){
+        if (ClimberConstants.kClimberPrint){
+            System.out.println("=============Private isClimberEnable===============");
+            System.out.println("Is climberEnabled" + climberEnabled);
+        }
         return climberEnabled;       
     }
 
     private void climberEnable(){
+        if (ClimberConstants.kClimberPrint){
+            System.out.println("=============Private ClimberEnable===============");
+        }
+
         climberEnabled=true;
     }
 
@@ -92,24 +112,40 @@ public class Climber extends SubsystemBase{
     //=====================Commands==================================
     //===============================================================
     public Command toClimberStow() {
+        if (ClimberConstants.kClimberPrint){
+            System.out.println("=============Command toClimberStow===============");
+        }
+        
         return run(
             () -> {this.climberDriveToPosition(ClimberConstants.kClimberStowed);}
         ).until(this.isClimberStowed);
     }
 
     public Command toClimberReady() {
-        return run(
+        if (ClimberConstants.kClimberPrint){
+            System.out.println("=============Command toClimberReady===============");
+        }
+
+        return run(            
             () -> {this.climberDriveToPosition(ClimberConstants.kClimberReady);}
         ).until(this.isClimberReady);
     }
 
     public Command toClimberComplete() {
+        if (ClimberConstants.kClimberPrint){
+            System.out.println("=============Command toClimberComplete===============");
+        }
+        
         return run(
             () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}
         ).until(this.isClimberComplete);
     }
 
     public Command climberTriggered() {
+        if (ClimberConstants.kClimberPrint){
+            System.out.println("=============Command climberTriggered===============");
+        }
+        
         return run(
             () -> {this.climberEnable();});  
     

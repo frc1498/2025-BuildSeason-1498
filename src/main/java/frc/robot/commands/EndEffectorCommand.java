@@ -121,7 +121,7 @@ public class EndEffectorCommand {
             }
         }
 
-        if (EndEffectorConstants.kEndEffectorPrint){
+        if (EndEffectorConstants.kEndEffectorPrintTrigger){
             System.out.println("=========================End Effector In Position?=====================");
             System.out.println("Algae Mode:" + endEffector.isModeAlgae.getAsBoolean());
             System.out.println("End Effector Desired Location: " + desiredLocation);
@@ -203,6 +203,7 @@ public class EndEffectorCommand {
         }
 
         //Counter clockwise is positive on all rotations, so algae pickup or front / low is the lowest we go
+        //This statement determines the starting point by looking at the arm position
         if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe)) // We are in front of the robot, rotating past rearsafe
         {
             movement = movementState.FRONT_PAST_REAR_SAFE;
@@ -228,7 +229,7 @@ public class EndEffectorCommand {
         }
 
         if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=========================End Effector Moving=====================");
+            System.out.println("=========================Command End Effector moveEndEffector=====================");
             System.out.println("Algae Mode:" + endEffector.isModeAlgae.getAsBoolean());
             System.out.println("End Effector Desired Location: " + desiredLocation);
             System.out.println("wrist Desired Rotation:" + wristDesiredRotation);
@@ -262,6 +263,9 @@ public class EndEffectorCommand {
     }
 
     public Command toFrontSafe() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=========================Command End Effector toFrontSafe=====================");
+        }
         return 
             elevator.elevatorFrontSafe().until(elevator.isElevatorFrontSafe)
             .andThen(wrist.wristFrontSafe()).until(wrist.isWristFrontSafe)
@@ -269,6 +273,9 @@ public class EndEffectorCommand {
     }
 
     public Command toRearSafe() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=========================Command End Effector toRearSafe=====================");
+        }
         return 
             elevator.elevatorRearSafe().until(elevator.isElevatorRearSafe)
             .andThen(wrist.wristRearSafe()).until(wrist.isWristRearSafe)
@@ -276,6 +283,9 @@ public class EndEffectorCommand {
     }
 
     public Command toDesired(double wristDesiredRotation, double armDesiredRotation, double elevatorDesiredRotation) {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=========================Command End Effector toDesired=====================");
+        }
         return 
             Commands.parallel(elevator.toElevatorPosition(elevatorDesiredRotation),
             wrist.toWristPosition(wristDesiredRotation),
@@ -283,52 +293,100 @@ public class EndEffectorCommand {
     }
 
 //====================Goto Coral Locations==============================
-    public Command toCoralL1() {
+    public Command toCoralL1(){
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toCoralL1===============");
+        }    
+
         return this.moveEndEffector("CoralL1");    
     }
     
     public Command toCoralL2() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toCoralL2===============");
+        }    
+
         return  this.moveEndEffector("CoralL2");   
     }
 
     public Command toCoralL3() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toCoralL3===============");
+        } 
+
         return this.moveEndEffector("CoralL3");
     }
 
     public Command toCoralL4() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toCoralL4===============");
+        } 
+
         return this.moveEndEffector("CoralL4");
     }
 
     public Command toCoralGroundPickup() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toCoralGroundPickup===============");
+        } 
+
         return this.moveEndEffector("CoralGroundPickup");
     }
 
     public Command toCoralHumanPickup() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toCoralHumanPickup===============");
+        } 
+
         return this.moveEndEffector("CoralHumanPickup");
     }
 
     public Command toCoralStow() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toCoralStow===============");
+        } 
+
         return this.moveEndEffector("CoralStow");
     }
 
     //==================Goto Alage Locations================================
     public Command toAlgaePickup() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toAlgaePickup===============");
+        } 
+
         return this.moveEndEffector("AlgaePickup");
     }
 
     public Command toAlgaeScoreBarge() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toAlgaeScoreBarge===============");
+        } 
+
         return this.moveEndEffector("AlgaeScoreBarge");
     }
     
     public Command toAlgaeL2() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toAlgaeL2===============");
+        } 
+
         return this.moveEndEffector("AlgaeL2");
     }
     
     public Command toAlgaeL3() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toalgaeL3===============");
+        } 
+
         return this.moveEndEffector("AlgaeL3");
     }
     
     public Command toAlgaeProcessor() {
+        if (EndEffectorConstants.kEndEffectorPrint){
+            System.out.println("=============Command EndEffector toAlgaeProcessor===============");
+        } 
+
         return this.moveEndEffector("AlgaeProcessor");
     }
 

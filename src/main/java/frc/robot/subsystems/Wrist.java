@@ -111,27 +111,51 @@ public class Wrist extends SubsystemBase{
     //====================Private Methods==========================
     //=============================================================
     private void wristDriveToPosition(double position) {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Private Wrist wristDriveToPosition===============");
+        }
+
         this.wristDesiredPosition = position;
             wristRotate.setControl(rotateControl.withPosition(position));
     }
 
     private void wristSpin(double speed) {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Private Wrist wristSpin===============");
+        }
+
         wristSpin.setControl(spinControl.withVelocity(speed));
     }
 
     private boolean isWristAtPosition(double position) {
+        if (WristConstants.kWristPrintTrigger){
+            System.out.println("=============Private Wrist isWristAtPosition===============");
+        }
+
             return ((position-WristConstants.kDeadband) <= getWristPosition()) && ((position+WristConstants.kDeadband) >= getWristPosition());
     }
 
-    private double getDesiredPostion() {
+    private double getDesiredPosition() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Private Wrist getDesiredPosition===============");
+        }
+
         return wristDesiredPosition;
     }
 
     private double getWristPosition(){
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Private Wrist wristDriveToPosition===============");
+        }
+
             return wristRotate.getPosition().getValueAsDouble();       
     }
 
     private void positionCoral(){
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Private Wrist wristDriveToPosition===============");
+        }
+
         if (isPartForwardGripper()){ //front beam break is made
             wristSpin.set(WristConstants.kCoralSlowBackward); //move coral backward slowly
         } else if (isPartRearwardGripper()){ //rear beam break is made
@@ -145,14 +169,14 @@ public class Wrist extends SubsystemBase{
         //If either beam break is made, part is in gripper
         if (m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && !m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
         {
-            if (WristConstants.kWristSensorPrint){
-                System.out.println("=========================Front Wrist Sensor=====================");
+            if (WristConstants.kWristPrint){
+                System.out.println("=========================Private wrist isPartForwardGripper=====================");
                 System.out.println("Front Wrist Sensor Made");
             }    
             return true;
         } else {
-            if (WristConstants.kWristSensorPrint){
-                System.out.println("=========================Front Wrist Sensor=====================");
+            if (WristConstants.kWristPrint){
+                System.out.println("=========================Private Wrist isPartForwardGripper=====================");
                 System.out.println("Front Wrist Sensor Lost");
             }
             return false;
@@ -163,14 +187,14 @@ public class Wrist extends SubsystemBase{
         //If either beam break is made, part is in gripper
         if (!m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
         {
-            if (WristConstants.kWristSensorPrint){
-                System.out.println("=========================Rear Wrist Sensor=====================");
+            if (WristConstants.kWristPrint){
+                System.out.println("=========================Private Wrist isPartRearwardGripper=====================");
                 System.out.println("Rear Wrist Sensor Made");
             }    
             return true;
         } else {
-            if (WristConstants.kWristSensorPrint){
-                System.out.println("=========================Rear Wrist Sensor=====================");
+            if (WristConstants.kWristPrint){
+                System.out.println("=========================Private Wrist isPartRearwardGripper=====================");
                 System.out.println("Rear Wrist Sensor Lost");
             }
             return false;
@@ -178,6 +202,12 @@ public class Wrist extends SubsystemBase{
     }
 
     private boolean isPartGripper() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Private Wrist isPartGripper===============");
+            System.out.println("Rear Sensor:" + m_BeamBreakGripperRearDigital.get());
+            System.out.println("Front Sensor" + m_BeamBreakGripperFrontDigital.get());
+        }
+
         //If neither beam break is made, part is in gripper
         if (!m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && !m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
         {
@@ -192,120 +222,200 @@ public class Wrist extends SubsystemBase{
     //========================Commands=============================
     //=============================================================
     public Command wristFrontSafe() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristFrontSafe===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kFrontSafe);}
         ).until(this.isWristFrontSafe);
     }
     
     public Command wristRearSafe() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristRearSafe===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kRearSafe);}
         ).until(this.isWristRearSafe);
     }
 
     public Command wristCoralStow() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristCoralStow===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralStow);}
         ).until(this.isWristCoralStow);
     }
 
     public Command wristCoralLoadFloor() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristCoralLoadFloor===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralLoadFloor);}
         ).until(this.isWristCoralLoadFloor);
     }
 
     public Command wristCoralLoadHuman() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristCoralLoadHuman===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralLoadHuman);}
         ).until(this.isWristCoralLoadHuman);
     }
 
     public Command wristCoralL1() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristCoralL1===============");
+        }
+        
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralL1);}
         ).until(this.isWristCoralL1);
     }
 
     public Command wristCoralL2() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristCoralL2===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralL2);}
         ).until(this.isWristCoralL2);
     }
     
     public Command wristCoralL3() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristCoralL3===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralL3);}
         ).until(this.isWristCoralL3);
     }
 
     public Command wristCoralL4() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristCoralL4===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralL4);}
         ).until(this.isWristCoralL4);
     }
 
     public Command wristAlgaeStow() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristAlgaeStow===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeStow);}
         ).until(this.isWristAlgaeStow);
     }
 
     public Command wristAlgaeLoadFloor() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristAlgaeLoadFloor===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeLoadFloor);}
         ).until(this.isWristAlgaeLoadFloor);
     }
 
     public Command wristAlgaeL2() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristAlgaeL2===============");
+        }
+        
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeL2);}
         ).until(this.isWristAlgaeL2);
     }
     
     public Command wristAlgaeL3() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristAlgaeL3===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeL3);}
         ).until(this.isWristAlgaeL3);
     }
     
     public Command wristAlgaeBarge() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristAlgaeBarge===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeBarge);}
         ).until(this.isWristAlgaeBarge);
     }
 
     public Command wristAlgaeProcessor() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist wristAlgaeProcesor===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeProcessor);}
         ).until(this.isWristAlgaeProcessor);
     }
 
     public Command positionCoralInGripper(){
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist positionCoralInGripper===============");
+        }
+
         return run(
             () -> {this.positionCoral();}
         ).until(this.isWristAlgaeProcessor);
     }
 
     public Command suck() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist suck===============");
+        }
+
         return run(
             () -> {this.wristSpin(WristConstants.kCoralSuck);}
         );
     }
 
     public Command spit() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist spit===============");
+        }
+
         return run(
             () -> {this.wristSpin(WristConstants.kCoralSpit);}
         );
     }
 
     public Command stop() {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist stop spinning===============");
+        }
+
         return run(
             () -> {this.wristSpin(WristConstants.kCoralStop);}
         );
     }
 
     public Command toWristPosition(double position) {
+        if (WristConstants.kWristPrint){
+            System.out.println("=============Command wrist toWristPosition===============");
+        }
+
         return run(
             () -> {this.wristDriveToPosition(position);}
         );
@@ -352,7 +462,7 @@ public class Wrist extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
-        builder.addDoubleProperty("Desired Position", this::getDesiredPostion, null);
+        builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
     }  
 
     @Override
