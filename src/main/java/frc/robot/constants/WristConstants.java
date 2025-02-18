@@ -29,9 +29,12 @@ public class WristConstants {
     public final static double kCoralSlowBackward = -10; //Move coral slowly in gripper forward
     public final static double kCoralSlowForward = 10; //Move coral slowly in gripper backward
 
+    //Safeties - the allowable range of movement.
+    public static final double kWristMinPosition = -0.572266;
+    public static final double kWristMaxPosition = 0.181641;
 
     //=======================General======================
-    public static final double kDeadband = 0.05;
+    public static final double kDeadband = 0.015;
     public static final boolean kWristPrint = false;
     public static final boolean kWristPrintTrigger = false;
 

@@ -174,6 +174,14 @@ public class CoralIntake extends SubsystemBase{
 
     }
 
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }
     //=============================================================
     //====================== Commands==============================
     //=============================================================
@@ -246,6 +254,8 @@ public class CoralIntake extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
+        builder.addBooleanProperty("Intake Beam Break", isPartPresent, null);
+        builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }   
 
     @Override

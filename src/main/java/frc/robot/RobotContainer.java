@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.pilotLib.utility.Selector;
+import frc.robot.config.ArmConfig;
 import frc.robot.commands.EndEffectorCommand;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.constants.EndEffectorConstants;
@@ -77,6 +79,8 @@ public class RobotContainer {
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
     public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
 
+    public Selector autoSelect = new Selector();
+
     public RobotContainer() {
         configureBindings();
     }
@@ -132,6 +136,35 @@ public class RobotContainer {
         driver.povRight().onTrue(endEffector.toCoralStow());
         driver.rightBumper().onTrue(endEffector.toCoralSuck());
         */
+
+        driver.leftBumper().onTrue(vision.addMegaTag2(() -> drivetrain));
+
+        //====================Operator Commands========================
+        //Button Correlation Table
+        //===========
+        //Operator 1 - NOTE!  These numbers may be off one, I can't remember if the array starts at 0 or 1.
+        //A - DS 1 - Pickup: Algae Floor
+        //B - DS 2 - 
+        //X - DS 3 - Pickup: Algae L2
+        //Y - DS 4 - Socre: Coral L1
+        //leftBumper - DS 5 - Pikcup: Algae L3 
+        //rightBumper - DS 6  - Score: Coral L2
+        // Select - DS 7 - Pickup: Coral Human
+        // Start - DS 8  - Score: Coral L3
+        // Left Stick Press - DS 9 - Pickup: Coral Floor
+        // Right Stick Press - DS 10 - Score: Coral L4 / Barge
+        //===========
+        //Operator 2
+        //A - DS 1 - 
+        //B - DS 2 - Stow
+        //X - DS 3 - 
+        //Y - DS 4 - 
+        //leftBumper - DS 5  - 
+        //rightBumper - DS 6  - 
+        // Select - DS 7 - Climber - Load
+        // Start - DS 8  - Descore: Algae L2
+        // Left Stick Press - DS 9 - Climber - Load
+        // Right Stick Press - DS 10 - Descore: Algae L3
 
         /* PseudoCode - Intake Suck in coral ground mode
          * When Right trigger and not algae mode,

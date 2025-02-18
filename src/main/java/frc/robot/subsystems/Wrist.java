@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import javax.lang.model.util.ElementScanner14;
 import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -7,6 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -26,10 +28,14 @@ import frc.robot.sim.WristSim;
 
 public class Wrist extends SubsystemBase{
     public TalonFX wristRotate;
-    PositionVoltage rotateControl;
     public DutyCycleOut rotateDutyCycleControl;
 
     CANcoder wristRotateCancoder;
+
+    CANrange wristReefDistance;
+
+    PositionVoltage rotateControl;
+
 
     public TalonFX wristSpin;
     public VelocityVoltage spinControl;
@@ -57,6 +63,7 @@ public class Wrist extends SubsystemBase{
         wristRotate = new TalonFX(config.kRotateCANID, "canivore");
         wristRotateCancoder = new CANcoder(config.kEncoderCANID,"canivore");
         rotateControl = new PositionVoltage(WristConstants.kCoralStow);
+        wristReefDistance = new CANrange(config.kRangeCANID, "canivore");
 
         m_BeamBreakGripperFrontDigital = new DigitalInput(config.kBeamBreakGripperFront);
         m_BeamBreakGripperRearDigital = new DigitalInput(config.kBeamBreakGripperRear);
@@ -151,6 +158,10 @@ public class Wrist extends SubsystemBase{
             return wristRotate.getPosition().getValueAsDouble();       
     }
 
+    private double getReefDistance() {
+        return wristReefDistance.getDistance().getValueAsDouble();
+    }
+
     private void positionCoral(){
         if (WristConstants.kWristPrint){
             System.out.println("=============Private Wrist wristDriveToPosition===============");
@@ -217,6 +228,14 @@ public class Wrist extends SubsystemBase{
         }
     }
 
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }
 
     //=============================================================
     //========================Commands=============================
@@ -278,7 +297,8 @@ public class Wrist extends SubsystemBase{
         
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralL1);}
-        ).until(this.isWristCoralL1);
+        ).until(this.isWristCoralL1)
+        .withName("wristCoralL1");
     }
 
     public Command wristCoralL2() {
@@ -462,7 +482,11 @@ public class Wrist extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
-        builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
+        builder.addDoubleProperty("Desired Position", this::getDesiredPostion, null);
+        builder.addBooleanProperty("Front Gripper Beam Break", () -> {return m_BeamBreakGripperFrontDigital.get();}, null);
+        builder.addBooleanProperty("Rear Gripper Beam Break", () -> {return m_BeamBreakGripperRearDigital.get();}, null);
+        builder.addDoubleProperty("CANrange Reef Distance", this::getReefDistance, null);
+        builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }  
 
     @Override

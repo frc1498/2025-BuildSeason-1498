@@ -107,6 +107,14 @@ public class Elevator extends SubsystemBase {
         return (position - ElevatorConstants.kDeadband) <= this.getElevatorPosition() && (position + ElevatorConstants.kDeadband) >= this.getElevatorPosition();
     }
 
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }
     //======================================================================
     //=====================Public Commands==================================
     //======================================================================
@@ -317,7 +325,8 @@ public class Elevator extends SubsystemBase {
         builder.addDoubleProperty("Current Position", this::getElevatorPosition, null);
         builder.addBooleanProperty("Is Elevator at Coral L1", isElevatorCoralL1, null);
         builder.addBooleanProperty("Is Elevator at Coral L2", isElevatorCoralL2, null);    
-        builder.addBooleanProperty("Is Elevator at Coral L3", isElevatorCoralL3, null);  
+        builder.addBooleanProperty("Is Elevator at Coral L3", isElevatorCoralL3, null);
+        builder.addStringProperty("Command", this::getCurrentCommandName, null);  
     }
 
     @Override
