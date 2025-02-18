@@ -39,7 +39,20 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.endEffectorCommand.wrist.wristSpin.setControl(m_robotContainer.endEffectorCommand.wrist.spinControl.withVelocity(0));
+    m_robotContainer.endEffectorCommand.wrist.wristRotate.setControl(m_robotContainer.endEffectorCommand.wrist.rotateDutyCycleControl.withOutput(0));
+ 
+    m_robotContainer.endEffectorCommand.arm.armRotate.setControl(m_robotContainer.endEffectorCommand.arm.rotateDutyCycleControl.withOutput(0));
+ 
+    m_robotContainer.endEffectorCommand.elevator.elevatorDriveFront.setControl(m_robotContainer.endEffectorCommand.elevator.rotateDutyCycleControl.withOutput(0));
+
+    m_robotContainer.intake.rotateMotor.setControl(m_robotContainer.intake.rotateDutyCycleControl.withOutput(0));
+    m_robotContainer.intake.spinMotor.setControl(m_robotContainer.intake.spinMotorMode.withVelocity(0));
+   
+    m_robotContainer.climber.climberRotate.setControl(m_robotContainer.climber.rotateDutyCycleControl.withOutput(0));
+
+  }
 
   @Override
   public void disabledPeriodic() {}

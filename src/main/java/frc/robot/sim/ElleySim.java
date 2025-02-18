@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.config.ElevatorConfig;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ElevatorConstants;
 
 /**
@@ -18,7 +17,6 @@ import frc.robot.constants.ElevatorConstants;
 public class ElleySim implements AutoCloseable{
 
     TalonFXSimState leftDrive;
-    TalonFXSimState rightDrive;
 
     DCMotor elevatorGearbox = DCMotor.getKrakenX60Foc(2);
     ElevatorSim elevate;
@@ -33,9 +31,8 @@ public class ElleySim implements AutoCloseable{
     MechanismRoot2d elevator_root;
     MechanismLigament2d elevator_mech;
 
-    public ElleySim(ElevatorConfig config, TalonFXSimState leftDrive, TalonFXSimState rightDrive) {
+    public ElleySim(ElevatorConfig config, TalonFXSimState leftDrive) {
         this.leftDrive = leftDrive;
-        this.rightDrive = rightDrive;
 
         this.elevate = new ElevatorSim(
             elevatorGearbox, 
@@ -59,7 +56,6 @@ public class ElleySim implements AutoCloseable{
     public void simulationPeriodic() {
         //Set motor and sensor voltage.
         leftDrive.setSupplyVoltage(12);
-        rightDrive.setSupplyVoltage(12);
         
         //Run the simulation and update it.
         elevate.setInput(leftDrive.getMotorVoltage());
@@ -76,10 +72,7 @@ public class ElleySim implements AutoCloseable{
         inputRotationsPerSec = this.outputRotToInputRot(outputRotationsPerSec, ElevatorConstants.kElevatorGearing);
 
         leftDrive.setRawRotorPosition(inputRotations);
-        rightDrive.setRawRotorPosition(inputRotations);
         leftDrive.setRotorVelocity(inputRotationsPerSec);
-        rightDrive.setRotorVelocity(inputRotationsPerSec);
-
         elevator_mech.setLength(elevate.getPositionMeters());
     }
 

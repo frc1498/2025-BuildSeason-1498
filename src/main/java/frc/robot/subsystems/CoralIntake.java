@@ -3,41 +3,36 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
 import frc.robot.config.CoralIntakeConfig;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.CoralIntakeConstants;
-import frc.robot.constants.ElevatorConstants;
 import frc.robot.sim.CoralIntakeSim;
 
 public class CoralIntake extends SubsystemBase{
     //Create Motor Variables
-    TalonFX rotateMotor;
-    TalonFX spinMotor;
+    public TalonFX rotateMotor;
+    public TalonFX spinMotor;
     CANcoder rotateCANcoder;
   
     TalonFXSimState intakePivotSim;
     TalonFXSimState intakeRollerSim;
 
-    VelocityVoltage spinMotorMode;
+    public VelocityVoltage spinMotorMode;
     PositionVoltage rotateMotorMode;
+    public DutyCycleOut rotateDutyCycleControl;
 
     CoralIntakeConfig coralIntakeConfig;
 
@@ -48,6 +43,8 @@ public class CoralIntake extends SubsystemBase{
     //Required for sim
     CoralIntakeSim sim;
   
+    public int suckState=0;
+
     public CoralIntake(CoralIntakeConfig config) {
         //Constructor - only runs once
 
@@ -111,27 +108,63 @@ public class CoralIntake extends SubsystemBase{
     //================================================================
 
     private void suck() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Private CoralIntake suck===============");
+        }
+
         spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSuckSpeed));
     }
 
     private void spit() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Private CoralIntake suck===============");
+        }
+
         spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSpitSpeed));
     }
 
+    private void stop() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Private CoralIntake suck===============");
+        }
+
+        spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kStopSpeed));
+    }
+
     private void goToPosition(double position) {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Private CoralIntake Suck===============");
+        }
+
         rotateMotor.setControl(rotateMotorMode.withPosition(position));
     }
     
     private double getPivotPosition() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Private CoralIntake getPivotPosition===============");
+            System.out.println("Position:" + rotateMotor.getPosition().getValueAsDouble());
+        }
+
         return rotateMotor.getPosition().getValueAsDouble();
     }
 
     private boolean isRotateMotorAtPosition(double position) {
+        if (CoralIntakeConstants.kCoralIntakePrintTriggers){
+            System.out.println("=============Private CoralIntake isRotateMotorAtPosition===============");
+            System.out.println("Lower Bound:" + (position - CoralIntakeConstants.kDeadband));
+            System.out.println("Coral Intake Rotate Position:" + this.getPivotPosition());
+            System.out.println("Upper Bound:" + (position + CoralIntakeConstants.kDeadband));
+        }
+
         return ((position - CoralIntakeConstants.kDeadband) <= this.getPivotPosition()) && ((position + CoralIntakeConstants.kDeadband) <= this.getPivotPosition());
     }
 
     private boolean isPartPresent() {
-        //If ANY beam break is made, we have a part.
+        if (CoralIntakeConstants.kCoralIntakePrintTriggers){
+            System.out.println("=============Private CoralIntake isPartPresent===============");
+            System.out.println("BeamBreak:" + m_Debouncer.calculate(m_BeamBreakIntakeDigital.get()));
+        }
+
         if (m_Debouncer.calculate(m_BeamBreakIntakeDigital.get()))
         {
             return true;
@@ -154,30 +187,57 @@ public class CoralIntake extends SubsystemBase{
     //=============================================================
 
     public Command rollerSuck() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Command CoralIntake rollerSuck===============");
+        }
         return run(
             () -> {this.suck();}
         );
     }
 
     public Command rollerSpit() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Command CoralIntake rollerSpit===============");
+        }
         return run(
             () -> {this.spit();}
         );
     }
 
+    public Command rollerStop() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Command CoralIntake rollerStop===============");
+        }
+        return run(
+            () -> {this.stop();}
+        );
+    }
+
     public Command intakeStow() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Command CoralIntake intakeStow===============");
+        }
+
         return run(
             () -> {this.goToPosition(CoralIntakeConstants.kIntakeStowPosition);}
         );
     }
 
     public Command intakeRaised() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Command CoralIntake intakeRaised===============");
+        }
+
         return run(
             () -> {this.goToPosition(CoralIntakeConstants.kIntakeRaisedPosition);}
         );
     }
 
     public Command intakeFloor() {
+        if (CoralIntakeConstants.kCoralIntakePrint){
+            System.out.println("=============Command CoralIntake intakeFloor===============");
+        }
+            
         return run(
             () -> {this.goToPosition(CoralIntakeConstants.kIntakeFloorPosition);}
         );
