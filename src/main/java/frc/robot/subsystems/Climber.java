@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ClimberConfig;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.Constants;
 import frc.robot.sim.ClimberSim;
 
 public class Climber extends SubsystemBase{
@@ -23,11 +24,12 @@ public class Climber extends SubsystemBase{
     PositionVoltage rotateControl;
     public DutyCycleOut rotateDutyCycleControl;
     
-    TalonFX climberSpin;
-    VelocityVoltage spinControl;
+    //TalonFX climberSpin;
+    //VelocityVoltage spinControl;
 
-    TalonFXSimState climberDriveFrontSim = climberRotate.getSimState();
-    ClimberSim sim;
+    //This was causing an error - had to comment out
+    //TalonFXSimState climberDriveFrontSim = climberRotate.getSimState();
+    //ClimberSim sim;
    
     public boolean climberEnabled = false;
 
@@ -38,12 +40,12 @@ public class Climber extends SubsystemBase{
         climberRotate = new TalonFX(config.kclimberRotateCANID, "canivore");
         rotateControl = new PositionVoltage(ClimberConstants.kClimberStowed);
 
-        climberSpin = new TalonFX(config.kclimberRotateCANID, "canivore");
-        spinControl = new VelocityVoltage(ClimberConstants.kClimberStop);
+        //climberSpin = new TalonFX(config.kclimberRotateCANID, "canivore");
+        //spinControl = new VelocityVoltage(ClimberConstants.kClimberStop);
 
         //Fill in Instantiation
         this.configureMechanism(climberRotate, config.climberRotateConfig);
-        this.configureMechanism(climberSpin, config.climberSpinConfig);
+        //this.configureMechanism(climberSpin, config.climberSpinConfig);
 
         SmartDashboard.putData("Climber", this);
     }
@@ -73,8 +75,9 @@ public class Climber extends SubsystemBase{
         if (ClimberConstants.kClimberPrint){
             System.out.println("=============Private climberDriveToPosition===============");
         }
-
-        climberRotate.setControl(rotateControl.withPosition(position));
+        if (Constants.kMotorEnabled == true) {
+            climberRotate.setControl(rotateControl.withPosition(position));
+        }
     }
 
     private boolean isClimberAtPosition(double position) {

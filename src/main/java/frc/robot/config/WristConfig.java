@@ -9,6 +9,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import frc.robot.constants.Constants;
+
 public class WristConfig {
     public final int kRotateCANID = 14;  //Rotate Motor
     public final int kEncoderCANID = 33;  //Throughbore encoder
@@ -78,7 +80,13 @@ public class WristConfig {
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
 
-        rotate.MotionMagic.MotionMagicCruiseVelocity = 0.9;
+        if (Constants.kSloMo == true){ 
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.9 * Constants.kSloMoFactor;
+        } else {
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.9;
+        }
+        
+
         rotate.MotionMagic.MotionMagicAcceleration = 6.67;
         rotate.MotionMagic.MotionMagicJerk = 66.7;
 

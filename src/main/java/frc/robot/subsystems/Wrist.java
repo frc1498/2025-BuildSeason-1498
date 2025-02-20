@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.WristConfig;
+import frc.robot.constants.Constants;
 import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.sim.WristSim;
@@ -123,15 +124,18 @@ public class Wrist extends SubsystemBase{
         }
 
         this.wristDesiredPosition = position;
+        if (Constants.kMotorEnabled == true) {
             wristRotate.setControl(rotateControl.withPosition(position));
+        }
     }
 
     private void wristSpin(double speed) {
         if (WristConstants.kWristPrint){
             System.out.println("=============Private Wrist wristSpin===============");
         }
-
-        wristSpin.setControl(spinControl.withVelocity(speed));
+        if (Constants.kMotorEnabled == true) {
+            wristSpin.setControl(spinControl.withVelocity(speed));
+        }
     }
 
     private boolean isWristAtPosition(double position) {

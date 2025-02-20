@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import frc.robot.constants.Constants;
 import frc.robot.constants.CoralIntakeConstants;
 
 public class CoralIntakeConfig {
@@ -76,7 +77,12 @@ public class CoralIntakeConfig {
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
 
-        rotate.MotionMagic.MotionMagicCruiseVelocity = 15;
+        if (Constants.kSloMo == true){ 
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 15 * Constants.kSloMoFactor;
+        } else {
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 15;
+        }
+        
         rotate.MotionMagic.MotionMagicAcceleration = 2.22;
         rotate.MotionMagic.MotionMagicJerk = 22.22;
 

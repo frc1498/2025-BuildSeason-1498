@@ -9,6 +9,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import frc.robot.constants.Constants;
+
 public class ArmConfig {
     //Contants
     public static final int kArmRotateCANID = 13;
@@ -65,8 +67,13 @@ public class ArmConfig {
         rotate.Feedback.SensorToMechanismRatio = 1;
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
+        
+        if (Constants.kSloMo == true){ 
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85 * Constants.kSloMoFactor;
+        } else {
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85;
+        }
 
-        rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85;
         rotate.MotionMagic.MotionMagicAcceleration = 3.5;
         rotate.MotionMagic.MotionMagicJerk = 47.6;
 

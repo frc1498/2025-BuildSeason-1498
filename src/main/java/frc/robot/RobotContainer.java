@@ -15,7 +15,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.pilotLib.utility.Selector;
+
+//Was throwing an error
+//import frc.pilotLib.utility.Selector;
+
+
 import frc.robot.config.ArmConfig;
 import frc.robot.commands.EndEffectorCommand;
 import frc.robot.config.CoralIntakeConfig;
@@ -79,7 +83,8 @@ public class RobotContainer {
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
     public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
 
-    public Selector autoSelect = new Selector();
+    // Was throwing an error.  had to comment out the import as well
+    // public Selector autoSelect = new Selector();
 
     public RobotContainer() {
         configureBindings();
@@ -251,8 +256,8 @@ public class RobotContainer {
 
 
         //===============================Select Mode=====================================
-        operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
-        operator1.rightStick().onTrue(endEffector.setEndEffectorMode("Algae"));  //Algae Mode
+        operator1.x().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
+        operator1.a().onTrue(endEffector.setEndEffectorMode("Algae"));  //Algae Mode
 
         //=====================================================================
         //=============================Operator 2==============================

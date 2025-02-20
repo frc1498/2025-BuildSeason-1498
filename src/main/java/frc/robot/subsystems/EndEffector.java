@@ -25,7 +25,7 @@ public class EndEffector extends SubsystemBase{
         this.m_endEffectorMode = mode;
     }
 
-    private Boolean GetEndEffectorMode() {
+     Boolean GetEndEffectorMode() {
         if (ElevatorConstants.kElevatorPrintTrigger){
             System.out.println("=============private getEndEffectorMode===============");
             System.out.println("End Effector Mode:" + m_endEffectorMode);
@@ -46,6 +46,13 @@ public class EndEffector extends SubsystemBase{
 
         return run(() -> {this.setEndEffectorModeHere(mode);});
     }
+
+    public Command whatIsEndEffectorMode() {
+
+        return run(() -> {this.GetEndEffectorMode();});
+    }
+
+
 
     /*
     public Supplier<String> endEffectorMode() {

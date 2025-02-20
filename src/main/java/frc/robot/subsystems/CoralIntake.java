@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.Constants;
 import frc.robot.constants.CoralIntakeConstants;
 import frc.robot.sim.CoralIntakeSim;
 
@@ -111,16 +112,18 @@ public class CoralIntake extends SubsystemBase{
         if (CoralIntakeConstants.kCoralIntakePrint){
             System.out.println("=============Private CoralIntake suck===============");
         }
-
-        spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSuckSpeed));
+        if (Constants.kMotorEnabled == true) {
+            spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSuckSpeed));
+        }
     }
 
     private void spit() {
         if (CoralIntakeConstants.kCoralIntakePrint){
             System.out.println("=============Private CoralIntake suck===============");
         }
-
-        spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSpitSpeed));
+        if (Constants.kMotorEnabled == true) {
+            spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSpitSpeed));
+        }
     }
 
     private void stop() {
@@ -128,15 +131,18 @@ public class CoralIntake extends SubsystemBase{
             System.out.println("=============Private CoralIntake suck===============");
         }
 
-        spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kStopSpeed));
+        if (Constants.kMotorEnabled == true) {
+            spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kStopSpeed));
+        }
     }
 
     private void goToPosition(double position) {
         if (CoralIntakeConstants.kCoralIntakePrint){
             System.out.println("=============Private CoralIntake Suck===============");
         }
-
-        rotateMotor.setControl(rotateMotorMode.withPosition(position));
+        if (Constants.kMotorEnabled == true) {
+            rotateMotor.setControl(rotateMotorMode.withPosition(position));
+        }
     }
     
     private double getPivotPosition() {

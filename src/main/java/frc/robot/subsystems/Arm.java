@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ArmConfig;
 import frc.robot.constants.ArmConstants;
+import frc.robot.constants.Constants;
 import frc.robot.constants.WristConstants;
 import frc.robot.sim.ArmSim;
 
@@ -96,7 +97,9 @@ public class Arm extends SubsystemBase{
             System.out.println("armDriveToPosition:"+this.desiredPosition);
         }
         
-        armRotate.setControl(rotateControl.withPosition(position));
+        if (Constants.kMotorEnabled == true) {
+            armRotate.setControl(rotateControl.withPosition(position));
+        }
     }
 
     private boolean isArmAtPosition(double position) {

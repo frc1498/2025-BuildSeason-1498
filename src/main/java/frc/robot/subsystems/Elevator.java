@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.constants.ArmConstants;
+import frc.robot.constants.Constants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.sim.ElleySim;
 
@@ -80,7 +81,9 @@ public class Elevator extends SubsystemBase {
         if (ElevatorConstants.kElevatorPrint){
             System.out.println("=============Private Elevator elevatorDriveToPosition===============");
         }
-        elevatorDriveFront.setControl(posControl.withPosition(position));
+        if (Constants.kMotorEnabled == true) {
+            elevatorDriveFront.setControl(posControl.withPosition(position));
+        }
     }
 
     private double getElevatorPosition() {

@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    /*
     m_robotContainer.endEffectorCommand.wrist.wristSpin.setControl(m_robotContainer.endEffectorCommand.wrist.spinControl.withVelocity(0));
     m_robotContainer.endEffectorCommand.wrist.wristRotate.setControl(m_robotContainer.endEffectorCommand.wrist.rotateDutyCycleControl.withOutput(0));
  
@@ -51,6 +52,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.intake.spinMotor.setControl(m_robotContainer.intake.spinMotorMode.withVelocity(0));
    
     m_robotContainer.climber.climberRotate.setControl(m_robotContainer.climber.rotateDutyCycleControl.withOutput(0));
+
+    */
 
   }
 
