@@ -161,6 +161,11 @@ public class Climber extends SubsystemBase{
     
     }
 
+    public Command isClimbReady(){
+        return run( () -> {this.isClimberAtPosition(ClimberConstants.kClimberReady);});
+
+    };
+
     //===============================================================
     //======================Triggers=================================
     //===============================================================

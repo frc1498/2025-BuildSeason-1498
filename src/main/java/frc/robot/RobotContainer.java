@@ -262,7 +262,7 @@ public class RobotContainer {
         //=====================================================================
 
         //==============Trigger Climber========================================
-        operator1.a().and(climber.isClimberReady.negate()).and(operator1.x()).onTrue(climber.climberTriggered()).until(climber.isClimberReady).andThen(climber.toClimberReady());
+        operator1.a().and(climber.isClimberReady).and(operator1.x()).onTrue(climber.climberTriggered()).until(climber.isClimberReady).andThen(climber.toClimberReady());
 
         /*
         .andThen(endEffectorCommand.toCoralL1()).until(endEffectorCommand.isEndEffectorAtCoralL1)
