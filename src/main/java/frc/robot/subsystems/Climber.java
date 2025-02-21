@@ -75,7 +75,7 @@ public class Climber extends SubsystemBase{
         if (ClimberConstants.kClimberPrint){
             System.out.println("=============Private climberDriveToPosition===============");
         }
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kClimberRotateMotorEnabled == true) {
             climberRotate.setControl(rotateControl.withPosition(position));
         }
     }
@@ -129,8 +129,7 @@ public class Climber extends SubsystemBase{
         }
         
         return run(
-            () -> {this.climberDriveToPosition(ClimberConstants.kClimberStowed);}
-        ).until(this.isClimberStowed);
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberStowed);});
     }
 
     public Command toClimberReady() {
@@ -139,8 +138,7 @@ public class Climber extends SubsystemBase{
         }
 
         return run(            
-            () -> {this.climberDriveToPosition(ClimberConstants.kClimberReady);}
-        ).until(this.isClimberReady);
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberReady);});
     }
 
     public Command toClimberComplete() {
@@ -150,7 +148,7 @@ public class Climber extends SubsystemBase{
         
         return run(
             () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}
-        ).until(this.isClimberComplete);
+        );
     }
 
     public Command climberTriggered() {

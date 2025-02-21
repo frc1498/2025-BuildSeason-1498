@@ -3,9 +3,9 @@ package frc.robot.constants;
 public class CoralIntakeConstants {
 
     //These numbers are completely made up.
-    public static final double kIntakeStowPosition = 0.21875;
     public static final double kIntakeFloorPosition = -0.096191;
     public static final double kIntakeRaisedPosition = 0.156738;
+    public static final double kIntakeStowPosition = 0.21875;
 
     //Safeties - the allowable range of movement.
     public static final double kIntakeMinPosition = -0.098145;

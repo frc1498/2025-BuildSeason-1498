@@ -46,14 +46,14 @@ public class EndEffectorCommand {
     public double wristDesiredRotation2 = 0.0;
     public double elevatorDesiredRotation2 = 0.0;
 
-    public EndEffectorCommand() {
+    public EndEffectorCommand(EndEffector endEffector) {
         elevatorConfig = new ElevatorConfig();
         elevator = new Elevator(elevatorConfig);
         armConfig = new ArmConfig();
         arm = new Arm(armConfig);
         wristConfig = new WristConfig();
         wrist = new Wrist(wristConfig);
-
+        this.endEffector = endEffector;
 
         movement = movementState.NONE;
 
@@ -75,7 +75,7 @@ public class EndEffectorCommand {
     //need previous desired location
 
         if (desiredLocation != previousDesiredLocation){
-            if (endEffector.whatIsEndEffectorMode() == "Algae"){     //Are we Algae mode     
+            if (endEffector.isModeAlgae.getAsBoolean()){     //Are we Algae mode     
                 switch (desiredLocation) {
                     case "L1orProcessor":
                         armDesiredRotation2 = ArmConstants.kAlgaeProcessor;

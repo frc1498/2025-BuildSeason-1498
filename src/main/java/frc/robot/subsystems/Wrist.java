@@ -124,7 +124,7 @@ public class Wrist extends SubsystemBase{
         }
 
         this.wristDesiredPosition = position;
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kWristRotateMotorEnabled == true) {
             wristRotate.setControl(rotateControl.withPosition(position));
         }
     }
@@ -133,7 +133,7 @@ public class Wrist extends SubsystemBase{
         if (WristConstants.kWristPrint){
             System.out.println("=============Private Wrist wristSpin===============");
         }
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kWristSpinMotorEnabled == true) {
             wristSpin.setControl(spinControl.withVelocity(speed));
         }
     }

@@ -7,6 +7,9 @@ public class ElevatorConstants {
     //Positions are in meters.  Heights are based off the manual, so not quite practical for actual scoring.
     public static final double kStow = 0;
     
+    public static final double kCoralMax = 32.0;
+    public static final double kCoralMin = 0.5;
+
     //===========Coral Positions===================
     public static final double kCoralStow = 0.0;
     public static final double kCoralLoadFloor = 0.571; //0.1 meters

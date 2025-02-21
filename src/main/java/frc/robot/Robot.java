@@ -40,6 +40,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    
+ 
+
+  }
+
+  @Override
+  public void disabledPeriodic() {
     /*
     m_robotContainer.endEffectorCommand.wrist.wristSpin.setControl(m_robotContainer.endEffectorCommand.wrist.spinControl.withVelocity(0));
     m_robotContainer.endEffectorCommand.wrist.wristRotate.setControl(m_robotContainer.endEffectorCommand.wrist.rotateDutyCycleControl.withOutput(0));
@@ -52,13 +59,9 @@ public class Robot extends TimedRobot {
     m_robotContainer.intake.spinMotor.setControl(m_robotContainer.intake.spinMotorMode.withVelocity(0));
    
     m_robotContainer.climber.climberRotate.setControl(m_robotContainer.climber.rotateDutyCycleControl.withOutput(0));
-
     */
 
   }
-
-  @Override
-  public void disabledPeriodic() {}
 
   @Override
   public void disabledExit() {}
@@ -83,6 +86,15 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.endEffectorCommand.wrist.stop();
+    m_robotContainer.endEffectorCommand.wrist.wristCoralStow();
+    m_robotContainer.endEffectorCommand.arm.armCoralStow();
+    m_robotContainer.endEffectorCommand.elevator.elevatorCoralStow();
+    m_robotContainer.intake.intakeRaised();
+    m_robotContainer.intake.rollerStop();
+    m_robotContainer.climber.toClimberStow();
+
   }
 
   @Override

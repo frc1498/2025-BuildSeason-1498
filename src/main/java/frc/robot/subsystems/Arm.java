@@ -97,7 +97,7 @@ public class Arm extends SubsystemBase{
             System.out.println("armDriveToPosition:"+this.desiredPosition);
         }
         
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kArmRotateMotorEnabled == true) {
             armRotate.setControl(rotateControl.withPosition(position));
         }
     }

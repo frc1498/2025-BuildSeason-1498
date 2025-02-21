@@ -81,7 +81,7 @@ public class Elevator extends SubsystemBase {
         if (ElevatorConstants.kElevatorPrint){
             System.out.println("=============Private Elevator elevatorDriveToPosition===============");
         }
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kElevatorExtendMotorEnabled == true) {
             elevatorDriveFront.setControl(posControl.withPosition(position));
         }
     }

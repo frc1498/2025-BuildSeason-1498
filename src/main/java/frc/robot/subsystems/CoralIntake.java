@@ -78,7 +78,7 @@ public class CoralIntake extends SubsystemBase{
     //=========================Configs====================================
     //====================================================================    
 
-        //Start Configuring Climber Motor
+        //Start Configuring Coral Intake Motor
         StatusCode coralIntakeRotateStatus = StatusCode.StatusCodeNotInitialized;
 
         for(int i = 0; i < 5; ++i) {
@@ -88,6 +88,7 @@ public class CoralIntake extends SubsystemBase{
         if (!coralIntakeRotateStatus.isOK()) {
             System.out.println("Could not configure device. Error: " + coralIntakeRotateStatus.toString());
         }
+
     }
 
     public void configureMechanism(TalonFX mechanism, TalonFXConfiguration config){     
@@ -112,7 +113,7 @@ public class CoralIntake extends SubsystemBase{
         if (CoralIntakeConstants.kCoralIntakePrint){
             System.out.println("=============Private CoralIntake suck===============");
         }
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kCoralIntakeSpinMotorEnabled == true) {
             spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSuckSpeed));
         }
     }
@@ -121,7 +122,7 @@ public class CoralIntake extends SubsystemBase{
         if (CoralIntakeConstants.kCoralIntakePrint){
             System.out.println("=============Private CoralIntake suck===============");
         }
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kCoralIntakeSpinMotorEnabled == true) {
             spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSpitSpeed));
         }
     }
@@ -131,7 +132,7 @@ public class CoralIntake extends SubsystemBase{
             System.out.println("=============Private CoralIntake suck===============");
         }
 
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kCoralIntakeSpinMotorEnabled == true) {
             spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kStopSpeed));
         }
     }
@@ -140,7 +141,7 @@ public class CoralIntake extends SubsystemBase{
         if (CoralIntakeConstants.kCoralIntakePrint){
             System.out.println("=============Private CoralIntake Suck===============");
         }
-        if (Constants.kMotorEnabled == true) {
+        if (Constants.kCoralIntakerotateMotorEnabled == true) {
             rotateMotor.setControl(rotateMotorMode.withPosition(position));
         }
     }
