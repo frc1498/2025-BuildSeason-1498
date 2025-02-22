@@ -5,12 +5,12 @@ public class ArmConstants {
     //===============Coral Positions======================
     //Numbers are currently for simulation.
     public static final double kCoralStow = 0.0;  //Stow Position - 0 degrees 
-    public static final double kCoralLoadFloor = 0;  //  Load Coral Floor Position - Changing to real measurements, was: 15 degrees - 0.262 radians - 5.254 rotations
-    public static final double kCoralLoadHuman = 0;  //  Load Coral Floor Position - Changing to real measurements, was:20 degrees - 0.349 radians - 6.999 rotations
-    public static final double kCoralL1 = 0; // Level 1 Score Coral Position - Changing to real measurements, was:30 degrees - 0.526 radians - 10.548 rotations
-    public static final double kCoralL2 = 0; // Level 2 Score Coral Position - Changing to real measurements, was:45 degrees - 0.785 radians - 15.742 rotations
-    public static final double kCoralL3 = 0; // Level 3 Score Coral Position - Changing to real measurements, was:60 degrees - 1.047 radians - 20.996 rotations
-    public static final double kCoralL4 = 0; // Level 4 Score Coral Position - Changing to real measurements, was:75 degrees - 1.309 radians - 26.250 rotations
+    public static final double kCoralLoadFloor = -0.15;  //  Load Coral Floor Position - Changing to real measurements, was: 15 degrees - 0.262 radians - 5.254 rotations
+    public static final double kCoralLoadHuman = -0.05;  //  Load Coral Floor Position - Changing to real measurements, was:20 degrees - 0.349 radians - 6.999 rotations
+    public static final double kCoralL1 = -0.31; // Level 1 Score Coral Position - Changing to real measurements, was:30 degrees - 0.526 radians - 10.548 rotations
+    public static final double kCoralL2 = -0.31; // Level 2 Score Coral Position - Changing to real measurements, was:45 degrees - 0.785 radians - 15.742 rotations
+    public static final double kCoralL3 = 0.25; // Level 3 Score Coral Position - Changing to real measurements, was:60 degrees - 1.047 radians - 20.996 rotations
+    public static final double kCoralL4 = 0.25; // Level 4 Score Coral Position - Changing to real measurements, was:75 degrees - 1.309 radians - 26.250 rotations
 
     //==================Algae Positions====================
     public static final double kAlgaeStow = 0; // Load Algae Floor Position - Changing to real measurements, was:-10 degrees - -0.175 radians - -3.509 rotations
@@ -22,10 +22,9 @@ public class ArmConstants {
 
     //=======================General======================
     public static final double kDeadband = 0.05;
-    public static final double kFrontSafe = 0;
+    public static final double kFrontSafe = -0.35;
     public static final double kRearSafe = 0;
-    public static final boolean kArmPrint = false;
-    public static final boolean kArmPrintTriggers = false;
+    public static final double kIntakeSafe = -.17; //When arm is in middle and moving "through" the intake 
 
     //=========================Safeties===================
     public static final double kMin = -0.333;

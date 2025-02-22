@@ -60,7 +60,6 @@ public class Robot extends TimedRobot {
    
     m_robotContainer.climber.climberRotate.setControl(m_robotContainer.climber.rotateDutyCycleControl.withOutput(0));
     */
-
   }
 
   @Override
@@ -86,7 +85,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+/*
     m_robotContainer.endEffectorCommand.wrist.stop();
     m_robotContainer.endEffectorCommand.wrist.wristCoralStow();
     m_robotContainer.endEffectorCommand.arm.armCoralStow();
@@ -94,6 +93,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.intake.intakeRaised();
     m_robotContainer.intake.rollerStop();
     m_robotContainer.climber.toClimberStow();
+*/
+
 
   }
 

@@ -9,6 +9,4 @@ public class ClimberConstants {
 
     //=======================General======================
     public static final double kDeadband = 0.05;
-    public static final boolean kClimberPrint = true;
-    public static final boolean kClimberPrintTriggers = false;
 }

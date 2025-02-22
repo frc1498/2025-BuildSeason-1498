@@ -78,35 +78,35 @@ public class Elevator extends SubsystemBase {
     //=======================================================
     private void elevatorDriveToPosition(double position) {
         this.desiredPosition = position;
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Private Elevator elevatorDriveToPosition===============");
-        }
+        
+        //System.out.println("Elevator:elevatorDriveToPosition: " + position);
+        
         if (Constants.kElevatorExtendMotorEnabled == true) {
             elevatorDriveFront.setControl(posControl.withPosition(position));
         }
     }
 
     private double getElevatorPosition() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Private Elevator getElevatorPosition===============");
-        }
+        
+        //    System.out.println("=============Private Elevator getElevatorPosition===============");
+        
         return elevatorDriveFront.getPosition().getValueAsDouble();
     }
 
     private double getDesiredPosition() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Private Elevator getDesiredPosition===============");
-        }
+        
+        //    System.out.println("=============Private Elevator getDesiredPosition===============");
+        
         return this.desiredPosition;
     }
 
     private boolean isElevatorAtPosition(double position) {
-        if (ElevatorConstants.kElevatorPrintTrigger){
-            System.out.println("=============Private Elevator isElevatorAtPosition===============");
-            System.out.println("Lower Bound:" + (position - ElevatorConstants.kDeadband));
-            System.out.println("Elevator Position:" + this.getElevatorPosition());
-            System.out.println("Upper Bound:" +(position + ElevatorConstants.kDeadband));
-        }
+
+        //    System.out.println("=============Private Elevator isElevatorAtPosition===============");
+        //    System.out.println("Lower Bound:" + (position - ElevatorConstants.kDeadband));
+        //    System.out.println("Elevator Position:" + this.getElevatorPosition());
+        //    System.out.println("Upper Bound:" +(position + ElevatorConstants.kDeadband));
+        
         return (position - ElevatorConstants.kDeadband) <= this.getElevatorPosition() && (position + ElevatorConstants.kDeadband) >= this.getElevatorPosition();
     }
 
@@ -121,55 +121,50 @@ public class Elevator extends SubsystemBase {
     //======================================================================
     //=====================Public Commands==================================
     //======================================================================
+    public Command elevatorMiddleSafe() {
+               
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kMiddleSafe);}
+        ).until(this.isElevatorMiddleSafe);
+    }
+    
+    
     public Command elevatorFrontSafe() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorFrontSafe===============");
-        }
+               
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kFrontSafe);}
         ).until(this.isElevatorFrontSafe);
     }
     
     public Command elevatorRearSafe() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorRearSafe===============");
-        }
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kRearSafe);}
         ).until(this.isElevatorRearSafe);
     }
 
     public Command elevatorCoralStow() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorCoralStow===============");
-        }
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralStow);}
         ).until(this.isElevatorCoralStow);
     }
 
     public Command elevatorCoralLoadFloor() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorCoralLoadFloor===============");
-        }
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralLoadFloor);}
         ).until(this.isElevatorCoralLoadFloor);
     }
 
     public Command elevatorCoralLoadHuman() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorCoralLoadHuman===============");
-        }
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralLoadHuman);}
         ).until(this.isElevatorCoralLoadHuman);
     }
 
-    public Command elevatorCoralL1() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorCoralL1===============");
-        }
+    public Command elevatorCoralL1() {      
 
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL1);}
@@ -177,9 +172,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command elevatorCoralL2() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorCoralL2===============");
-        }
 
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL2);}
@@ -187,19 +179,13 @@ public class Elevator extends SubsystemBase {
     }
     
     public Command elevatorCoralL3() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorCoralL3===============");
-        }
-
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL3);}
         ).until(this.isElevatorCoralL3);
     }
 
     public Command elevatorCoralL4() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorCoralL4===============");
-        }
 
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralL4);}
@@ -207,9 +193,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command elevatorAlgaeStow() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorAlgaeStow===============");
-        }
 
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeStow);}
@@ -217,79 +200,55 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command elevatorAlgaeLoadFloor() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorAlgaeFloorLoad===============");
-        }
-
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeLoadFloor);}
         ).until(this.isElevatorAlgaeLoadFloor);
     }
 
     public Command elevatorAlgaeL2() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorAlgaeFloorLoad===============");
-        }
-
+ 
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeL2);}
         ).until(this.isElevatorAlgaeL2);
     }
     
     public Command elevatorAlgaeL3() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorAlgaeFloorLoad===============");
-        }
-
+ 
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeL3);}
         ).until(this.isElevatorAlgaeL3);
     }
     
     public Command elevatorAlgaeBarge() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorAlgaeFloorLoad===============");
-        }
-
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeBarge);}
         ).until(this.isElevatorAlgaeBarge);
     }
 
     public Command elevatorAlgaeProcessor() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorAlgaeFloorLoad===============");
-        }
-
+        
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kAlgaeProcessor);}
         ).until(this.isElevatorAlgaeProcessor);
     }
 
     public Command elevatorPosition(Supplier<Double> position) {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator elevatorAlgaeFloorLoad===============");
-        }
-
+        
         return run(
             () -> {this.elevatorDriveToPosition(position.get());}
         );
     }
 
     public Command toElevatorPosition(double position) {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator toElevatorPosition===============");
-        }
-
+        
         return run(
             () -> {this.elevatorDriveToPosition(position);}
         );
     }
 
     public DoubleSupplier getElevatorRotation() {
-        if (ElevatorConstants.kElevatorPrint){
-            System.out.println("=============Command Elevator getElevatorRotation===============");
-        }
 
         return this::getElevatorPosition;
     }
@@ -320,6 +279,7 @@ public class Elevator extends SubsystemBase {
     //=====================================================
     public final Trigger isElevatorFrontSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kFrontSafe);});
     public final Trigger isElevatorRearSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kRearSafe);});
+    public final Trigger isElevatorMiddleSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kMiddleSafe);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

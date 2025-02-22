@@ -55,9 +55,9 @@ public class CoralIntakeConfig {
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;
 
         //Slot 0 Configs
-        rotate.Slot0.kP = 50;  // An error of 1 rotation per second results in 2V output
+        rotate.Slot0.kP = 400;  // An error of 1 rotation per second results in 2V output
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
-        rotate.Slot0.kD = 5;  // A change of 1 rotation per second squared results in 0.01 volts output
+        rotate.Slot0.kD = 0;  // A change of 1 rotation per second squared results in 0.01 volts output
         rotate.Slot0.kS = 0;
         rotate.Slot0.kV = 15;  // KV for a Kraken X60 is 490 rpm/V. 490/60 is 8.1667 rps/V.  The inverse is 0.122449 V/rps.
         rotate.Slot0.kA = 0.888;
@@ -71,19 +71,19 @@ public class CoralIntakeConfig {
         //Fuse the Cancoder here
         rotate.Feedback.FeedbackRemoteSensorID = 31;
         rotate.Feedback.FeedbackRotorOffset = 0;
-        rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        rotate.Feedback.RotorToSensorRatio = 112.5;
+        rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;  //MUST be synced due to high backlash
         rotate.Feedback.SensorToMechanismRatio = 1;
+        rotate.Feedback.RotorToSensorRatio = 112.5;
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
 
         if (Constants.kSloMo == true){ 
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 15 * Constants.kSloMoFactor;
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.8 * Constants.kSloMoFactor;
         } else {
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 15;
+            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.8;
         }
         
-        rotate.MotionMagic.MotionMagicAcceleration = 2.22;
+        rotate.MotionMagic.MotionMagicAcceleration = 4;
         rotate.MotionMagic.MotionMagicJerk = 22.22;
 
         rotate.Audio.AllowMusicDurDisable = true;
@@ -109,7 +109,7 @@ public class CoralIntakeConfig {
     }
 
     public void configureCoralIntakeCANcoder(CANcoderConfiguration CANcoderConfig){
-        CANcoderConfig.MagnetSensor.MagnetOffset = -0.130859375;
+        CANcoderConfig.MagnetSensor.MagnetOffset = 0.00952148;
         CANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         CANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     }

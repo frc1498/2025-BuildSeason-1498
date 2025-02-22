@@ -8,7 +8,7 @@ import frc.robot.constants.EndEffectorConstants;
 
 public class EndEffector extends SubsystemBase{
 
-    public String m_endEffectorMode = "Algae";
+    public String m_endEffectorMode = "Coral";
 
      public EndEffector() {
         
@@ -18,18 +18,13 @@ public class EndEffector extends SubsystemBase{
     //======================= Private ========================
     //========================================================
     private void setEndEffectorModeHere(String mode) {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============private setEndEffectorModeHere===============");
-            System.out.println("Mode:"+mode);    
-        }
+
+        System.out.println("EndEffector:setEndEffectorModeHere:  " + mode);    
+        
         this.m_endEffectorMode = mode;
     }
 
      Boolean GetEndEffectorMode() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============private getEndEffectorMode===============");
-            System.out.println("End Effector Mode:" + m_endEffectorMode);
-        }
 
         return (m_endEffectorMode == "Algae");
     }
@@ -39,17 +34,13 @@ public class EndEffector extends SubsystemBase{
     //=========================================================
 
     public Command setEndEffectorMode(String mode) {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command setEndEffectorMode===============");
-            System.out.println("End Effector Mode:" + mode);
-        }
 
-        return run(() -> {this.setEndEffectorModeHere(mode);});
+        return runOnce(() -> {this.setEndEffectorModeHere(mode);});
     }
 
     public Command whatIsEndEffectorMode() {
 
-        return run(() -> {this.GetEndEffectorMode();});
+        return runOnce(() -> {this.GetEndEffectorMode();});
     }
 
 

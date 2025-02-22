@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ArmConfig;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.Constants;
-import frc.robot.constants.WristConstants;
 import frc.robot.sim.ArmSim;
 
 public class Arm extends SubsystemBase{
@@ -92,10 +91,10 @@ public class Arm extends SubsystemBase{
     //===================================================
     private void armDriveToPosition(double position) {
         this.desiredPosition = position;
-        if (ArmConstants.kArmPrint){
-            System.out.println("=========================Private armDriveToPosition=====================");
-            System.out.println("armDriveToPosition:"+this.desiredPosition);
-        }
+
+        //    System.out.println("=========================Private armDriveToPosition=====================");
+        //    System.out.println("armDriveToPosition:"+this.desiredPosition);
+
         
         if (Constants.kArmRotateMotorEnabled == true) {
             armRotate.setControl(rotateControl.withPosition(position));
@@ -103,29 +102,28 @@ public class Arm extends SubsystemBase{
     }
 
     private boolean isArmAtPosition(double position) {
-        if (ArmConstants.kArmPrintTriggers){
-            System.out.println("=========================Private isArmAtPosition=====================");
-            System.out.println("LowerBound:"+(position+ArmConstants.kDeadband));
-            System.out.println("Actual:"+position);
-            System.out.println("UpperBound:"+(position-ArmConstants.kDeadband));
-        }
+
+        //    System.out.println("=========================Private isArmAtPosition=====================");
+        //    System.out.println("LowerBound:"+(position+ArmConstants.kDeadband));
+        //    System.out.println("Actual:"+position);
+        //    System.out.println("UpperBound:"+(position-ArmConstants.kDeadband));
+
             return ((position-ArmConstants.kDeadband) <= GetArmPosition()) && ((position+ArmConstants.kDeadband) >= GetArmPosition());
     }
 
     private double getDesiredArmPosition() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=========================Private Arm getDesiredPosition=====================");
-            System.out.println("Desired Position:"+this.desiredPosition);
-        }
+ 
+        //    System.out.println("=========================Private Arm getDesiredPosition=====================");
+        //    System.out.println("Desired Position:"+this.desiredPosition);
 
         return this.desiredPosition;
     }
 
     private double GetArmPosition(){
-        if (ArmConstants.kArmPrint){
-            System.out.println("========================= Private Arm getArmPosition=====================");
-            System.out.println("Arm Position:"+armRotate.getPosition().getValueAsDouble());
-        }
+        
+        // System.out.println("========================= Private Arm getArmPosition=====================");
+        // System.out.println("Arm Position:"+armRotate.getPosition().getValueAsDouble());
+
 
         return armRotate.getPosition().getValueAsDouble();
     }
@@ -138,15 +136,15 @@ public class Arm extends SubsystemBase{
             return this.getCurrentCommand().getName();
         }
     }
-
+    
     //===================================================
     //=====================Public Commands===============
     //===================================================    
 
     public Command armFrontSafe() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armFrontSafe===============");
-        }
+
+        //    System.out.println("=============Command Arm armFrontSafe===============");
+
 
         return run(    
             () -> {this.armDriveToPosition(ArmConstants.kFrontSafe);}
@@ -154,9 +152,9 @@ public class Arm extends SubsystemBase{
     }
     
     public Command armRearSafe() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armRearSafe===============");
-        }
+
+        //    System.out.println("=============Command Arm armRearSafe===============");
+
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kRearSafe);}
@@ -164,9 +162,9 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralStow() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armCoralStow===============");
-        }
+
+        //    System.out.println("=============Command Arm armCoralStow===============");
+
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralStow);}
@@ -174,9 +172,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralLoadFloor() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armCoralLoadFloor===============");
-        }
+
+        //System.out.println("=============Command Arm armCoralLoadFloor===============");
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralLoadFloor);}
@@ -184,9 +181,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralLoadHuman() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armCoralLoadHuman===============");
-        }
+        
+        //System.out.println("=============Command Arm armCoralLoadHuman===============");
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralLoadHuman);}
@@ -194,9 +190,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralL1() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armCoralL1===============");
-        }
+
+        //System.out.println("=============Command Arm armCoralL1===============");
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL1);}
@@ -204,9 +199,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralL2() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armCoralL2===============");
-        }
+
+        //    System.out.println("=============Command Arm armCoralL2===============");
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL2);}
@@ -214,9 +208,9 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralL3() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armCoralL3===============");
-        }
+
+        //System.out.println("=============Command Arm armCoralL3===============");
+
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL3);}
@@ -224,9 +218,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralL4() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armCoralL4===============");
-        }
+
+        // System.out.println("=============Command Arm armCoralL4===============");
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL4);}
@@ -234,9 +227,9 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armAlgaeStow() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armAlgaeStow===============");
-        }
+
+        //System.out.println("=============Command Arm armAlgaeStow===============");
+
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeStow);}
@@ -244,9 +237,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armAlgaeLoadFloor() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armAlgaeLoadFloor===============");
-        }
+
+         //   System.out.println("=============Command Arm armAlgaeLoadFloor===============");
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadFloor);}
@@ -254,18 +246,18 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armAlgaeL2() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armAlgaeL2===============");
-        }
+
+        //    System.out.println("=============Command Arm armAlgaeL2===============");
+
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeL2);}
         ).until(this.isArmAlgaeL2);
     }
 
     public Command armAlgaeL3() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armAlgaeL3===============");
-        }
+
+        //    System.out.println("=============Command Arm armAlgaeL3===============");
+
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeL3);}
@@ -273,9 +265,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armAlgaeBarge() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armAlgaeBarge===============");
-        }
+
+        //    System.out.println("=============Command Arm armAlgaeBarge===============");
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeBarge);}
@@ -283,9 +274,8 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armAlgaeProcessor() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm armAlgaeProcessor===============");
-        }
+        
+        //System.out.println("=============Command Arm armAlgaeProcessor===============");
         
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeProcessor);}
@@ -293,17 +283,16 @@ public class Arm extends SubsystemBase{
     }
 
     public DoubleSupplier getArmRotation() {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm getArmRotation===============");
-        }
+
+        //   System.out.println("=============Command Arm getArmRotation===============");
+
 
         return this::GetArmPosition; 
     }
 
     public Command toArmPosition(double position) {
-        if (ArmConstants.kArmPrint){
-            System.out.println("=============Command Arm toArmPosition===============");
-        }
+         //   System.out.println("=============Command Arm toArmPosition===============");
+
         return run(
             () -> {this.armDriveToPosition(position);}
         );

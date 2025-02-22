@@ -17,16 +17,16 @@ package frc.robot.constants;
  
 
 public final class Constants {
-  public static final boolean kWristRotateMotorEnabled = false;
+  public static final boolean kWristRotateMotorEnabled = true;
   public static final boolean kWristSpinMotorEnabled = false;
-  public static final boolean kClimberRotateMotorEnabled = true;
-  public static final boolean kElevatorExtendMotorEnabled = false;
+  public static final boolean kClimberRotateMotorEnabled = false;
+  public static final boolean kElevatorExtendMotorEnabled = true;
   public static final boolean kCoralIntakeSpinMotorEnabled = false;
-  public static final boolean kCoralIntakerotateMotorEnabled = false;
-  public static final boolean kArmRotateMotorEnabled = false;
+  public static final boolean kCoralIntakeRotateMotorEnabled = true;
+  public static final boolean kArmRotateMotorEnabled = true;
 
 
-  public static final boolean kSloMo = true;
+  public static final boolean kSloMo = false;
   public static final double kSloMoFactor = 0.1;
 
 

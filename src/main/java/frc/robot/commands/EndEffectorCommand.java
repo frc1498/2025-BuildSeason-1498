@@ -11,7 +11,6 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ElevatorConstants;
-import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.EndEffector;
 
@@ -31,6 +30,7 @@ public class EndEffectorCommand {
         REAR_MIDDLE,
         MIDDLE_PAST_FRONT_SAFE,
         MIDDLE_PAST_REAR_SAFE,
+        MIDDLE_MIDDLE,
         NONE
     }
 
@@ -72,7 +72,9 @@ public class EndEffectorCommand {
     //==========================================================
 
     private Boolean isEndEffectorAtPosition(String desiredLocation) {
-    //need previous desired location
+        System.out.println("EndEffectorCommand:isEndEffectorAtPosition was called");
+
+        //This section checks to see if we have changed desired locations.  If so, save new desired locations.
 
         if (desiredLocation != previousDesiredLocation){
             if (endEffector.isModeAlgae.getAsBoolean()){     //Are we Algae mode     
@@ -82,12 +84,12 @@ public class EndEffectorCommand {
                         wristDesiredRotation2 = WristConstants.kAlgaeProcessor;
                         elevatorDesiredRotation2 = ElevatorConstants.kAlgaeProcessor;
                     break;
-                    case "L2":
+                    case "AlgaeL2":
                         armDesiredRotation2 = ArmConstants.kAlgaeL2;
                         wristDesiredRotation2 = WristConstants.kAlgaeL2;
                         elevatorDesiredRotation2 = ElevatorConstants.kAlgaeL2;
                     break;
-                    case "L3":
+                    case "AlgaeL3":
                         armDesiredRotation2 = ArmConstants.kAlgaeL3;
                         wristDesiredRotation2 = WristConstants.kAlgaeL3;
                         elevatorDesiredRotation2 = ElevatorConstants.kAlgaeL3;
@@ -100,42 +102,57 @@ public class EndEffectorCommand {
                 }
             } else if (!endEffector.isModeAlgae.getAsBoolean()){  //Are we coral mode
                 switch (desiredLocation) {
-                    case "L1orProcessor":
+                    case "CoralL1":
                         armDesiredRotation2 = ArmConstants.kCoralL1;
                         wristDesiredRotation2 = WristConstants.kCoralL1;
                         elevatorDesiredRotation2 = ElevatorConstants.kCoralL1;
                     break;
-                    case "L2":
+                    case "CoralL2":
                         armDesiredRotation2 = ArmConstants.kCoralL2;
                         wristDesiredRotation2 = WristConstants.kCoralL2;
                         elevatorDesiredRotation2 = ElevatorConstants.kCoralL2;
                     break;
-                    case "L3":
+                    case "CoralL3":
                         armDesiredRotation2 = ArmConstants.kCoralL3;
                         wristDesiredRotation2 = WristConstants.kCoralL3;
                         elevatorDesiredRotation2 = ElevatorConstants.kCoralL3;
                     break;
-                    case "L4orBarge":
+                    case "CoralL4":
                         armDesiredRotation2 = ArmConstants.kCoralL4;
                         wristDesiredRotation2 = WristConstants.kCoralL4;
                         elevatorDesiredRotation2 = ElevatorConstants.kCoralL4;
+                    break;
+                    case "CoralGroundPickup":
+                        armDesiredRotation2 = ArmConstants.kCoralLoadFloor;
+                        wristDesiredRotation2 = WristConstants.kCoralLoadFloor;
+                        elevatorDesiredRotation2 = ElevatorConstants.kCoralLoadFloor;
+                    break;
+                    case "CoralHumanPickup":
+                        armDesiredRotation2 = ArmConstants.kCoralLoadHuman;
+                        wristDesiredRotation2 = WristConstants.kCoralLoadHuman;
+                        elevatorDesiredRotation2 = ElevatorConstants.kCoralLoadHuman;
+                    break;
+                    case "CoralStow":
+                        armDesiredRotation2 = ArmConstants.kCoralStow;
+                        wristDesiredRotation2 = WristConstants.kCoralStow;
+                        elevatorDesiredRotation2 = ElevatorConstants.kCoralStow;
                     break;
                 }
             }
         }
 
-        if (EndEffectorConstants.kEndEffectorPrintTrigger){
-            System.out.println("=========================End Effector In Position?=====================");
-            System.out.println("Algae Mode:" + endEffector.isModeAlgae.getAsBoolean());
-            System.out.println("End Effector Desired Location: " + desiredLocation);
-            System.out.println("wrist Desired Rotation:" + wristDesiredRotation2);
-            System.out.println("arm Desired Rotation:" + armDesiredRotation2);
-            System.out.println("arm Desired Rotation:" + elevatorDesiredRotation2);
-            System.out.println("wrist Actual Rotation:" + wrist.getWristRotation().getAsDouble());
-            System.out.println("arm Actual Rotation:" + arm.getArmRotation().getAsDouble());
-            System.out.println("elevator Actual Rotation:" + elevator.getElevatorRotation().getAsDouble());
-        }
 
+         //   System.out.println("=========================End Effector In Position?=====================");
+         //   System.out.println("Algae Mode:" + endEffector.isModeAlgae.getAsBoolean());
+         //   System.out.println("End Effector Desired Location: " + desiredLocation);
+         //   System.out.println("wrist Desired Rotation:" + wristDesiredRotation2);
+         //   System.out.println("arm Desired Rotation:" + armDesiredRotation2);
+         //   System.out.println("arm Desired Rotation:" + elevatorDesiredRotation2);
+         //   System.out.println("wrist Actual Rotation:" + wrist.getWristRotation().getAsDouble());
+         //   System.out.println("arm Actual Rotation:" + arm.getArmRotation().getAsDouble());
+         //   System.out.println("elevator Actual Rotation:" + elevator.getElevatorRotation().getAsDouble());
+
+        //Check to see if we are at any of the locations
         return  (((wristDesiredRotation2 - WristConstants.kDeadband) <= wrist.getWristRotation().getAsDouble())
                 && ((wristDesiredRotation2 + WristConstants.kDeadband) >= wrist.getWristRotation().getAsDouble())
                 && ((armDesiredRotation2 - ArmConstants.kDeadband) <= arm.getArmRotation().getAsDouble()) 
@@ -151,7 +168,10 @@ public class EndEffectorCommand {
     //==========================================================
     public Command moveEndEffector(String desiredLocation) {
 
-        if (desiredLocation != previousDesiredLocation){
+        //Check to see the desired location has changed, and then choose the new desired positions
+      //  if (desiredLocation != previousDesiredLocation){
+
+          /*
             if (endEffector.isModeAlgae.getAsBoolean()){  //Check to see if we are algae mode      
                 switch (desiredLocation) {
                     case "L1orProcessor":
@@ -178,219 +198,311 @@ public class EndEffectorCommand {
                     break;
                 }
             } else if (!endEffector.isModeAlgae.getAsBoolean()){ //Check to see if we are coral mode
+
+            */
+
                 switch (desiredLocation) {
-                    case "L1orProcessor":
+                    case "CoralL1":
                         armDesiredRotation = ArmConstants.kCoralL1;
                         wristDesiredRotation = WristConstants.kCoralL1;
                         elevatorDesiredRotation = ElevatorConstants.kCoralL1;
                     break;
-                    case "L2":
+                    case "CoralL2":
                         armDesiredRotation = ArmConstants.kCoralL2;
                         wristDesiredRotation = WristConstants.kCoralL2;
                         elevatorDesiredRotation = ElevatorConstants.kCoralL2;
                     break;
-                    case "L3":
+                    case "CoralL3":
                         armDesiredRotation = ArmConstants.kCoralL3;
                         wristDesiredRotation = WristConstants.kCoralL3;
                         elevatorDesiredRotation = ElevatorConstants.kCoralL3;
                     break;
-                    case "L4orBarge":
+                    case "CoralL4":
                         armDesiredRotation = ArmConstants.kCoralL4;
                         wristDesiredRotation = WristConstants.kCoralL4;
                         elevatorDesiredRotation = ElevatorConstants.kCoralL4;
                     break;
+                    case "CoralGroundPickup":
+                        armDesiredRotation = ArmConstants.kCoralLoadFloor;
+                        wristDesiredRotation = WristConstants.kCoralLoadFloor;
+                        elevatorDesiredRotation = ElevatorConstants.kCoralLoadFloor;
+                    break;
+                    case "CoralHumanPickup":
+                        armDesiredRotation = ArmConstants.kCoralLoadHuman;
+                        wristDesiredRotation = WristConstants.kCoralLoadHuman;
+                        elevatorDesiredRotation = ElevatorConstants.kCoralLoadHuman;
+                    break;
+                    case "CoralStow":
+                        armDesiredRotation = ArmConstants.kCoralStow;
+                        wristDesiredRotation = WristConstants.kCoralStow;
+                        elevatorDesiredRotation = ElevatorConstants.kCoralStow;
+                    break;
                     default:
+                        armDesiredRotation = arm.getArmRotation().getAsDouble();
                     break;
                 }
-            }
-        }
+            //}
+      //  }
 
-        //Counter clockwise is positive on all rotations, so algae pickup or front / low is the lowest we go
         //This statement determines the starting point by looking at the arm position
         if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe)) // We are in front of the robot, rotating past rearsafe
         {
             movement = movementState.FRONT_PAST_REAR_SAFE;
-        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe)) //We are behind the robot, rotating past frontsafe
+
+
+        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe)) //We are behind the robot, rotating past frontsafe
         {
             movement = movementState.REAR_PAST_FRONT_SAFE;
-        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe))  //We are in the front of the robot, rotating middle
+
+
+        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the front of the robot, rotating middle
         {
             movement = movementState.FRONT_MIDDLE;
-        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe))  //We are in the rear of the robot, rotating middle
+
+
+        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the rear of the robot, rotating middle
         {
             movement = movementState.REAR_MIDDLE;
-        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe))  //We are in the middle of the robot, rotating forward
+
+
+        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe))  //We are in the middle of the robot, rotating forward
         {
             movement = movementState.MIDDLE_PAST_FRONT_SAFE;
-        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe))  //We are in the middle of the robot, rotating rearward
+
+
+        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kIntakeSafe))  //We are in the middle of the robot
         {
-            movement = movementState.MIDDLE_PAST_REAR_SAFE;
-        } else 
+            movement = movementState.MIDDLE_PAST_REAR_SAFE;  
+        
+        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the middle of the robot
+        {
+            movement = movementState.MIDDLE_MIDDLE;  //For the rare situation where we are in the middle and tell it to go to the middle
+        
+        
+        }else 
         {
             //We are in an unknown position.  Stop.
             movement = movementState.NONE;
         }
 
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=========================Command End Effector moveEndEffector=====================");
-            System.out.println("Algae Mode:" + endEffector.isModeAlgae.getAsBoolean());
-            System.out.println("End Effector Desired Location: " + desiredLocation);
-            System.out.println("wrist Desired Rotation:" + wristDesiredRotation);
-            System.out.println("arm Desired Rotation:" + armDesiredRotation);
-            System.out.println("arm Desired Rotation:" + elevatorDesiredRotation);
-            System.out.println("wrist Actual Rotation:" + wrist.getWristRotation().getAsDouble());
-            System.out.println("arm Actual Rotation:" + arm.getArmRotation().getAsDouble());
-            System.out.println("elevator Actual Rotation:" + elevator.getElevatorRotation().getAsDouble());
-        }
+
+        //    System.out.println("=========================Command End Effector moveEndEffector=====================");
+        //    System.out.println("Algae Mode:" + endEffector.isModeAlgae.getAsBoolean());
+        //    System.out.println("End Effector Desired Location: " + desiredLocation);
+        //    System.out.println("wrist Desired Rotation:" + wristDesiredRotation);
+        //    System.out.println("arm Desired Rotation:" + armDesiredRotation);
+        //    System.out.println("arm Desired Rotation:" + elevatorDesiredRotation);
+        //    System.out.println("wrist Actual Rotation:" + wrist.getWristRotation().getAsDouble());
+        //    System.out.println("arm Actual Rotation:" + arm.getArmRotation().getAsDouble());
+        //    System.out.println("elevator Actual Rotation:" + elevator.getElevatorRotation().getAsDouble());
+        
 
         previousDesiredLocation = desiredLocation;
 
         switch (movement) {
-            case FRONT_PAST_REAR_SAFE:   
-                return this.toFrontSafe().andThen(this.toRearSafe()).andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation));
+            case FRONT_PAST_REAR_SAFE:  
+                return 
+                    Commands.parallel((this.toFrontSafe()
+                    .andThen(this.toRearSafe())
+                    .andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
+                    Commands.print("EndEffectorCommand:moveEndEffector:"+ movement));
             case REAR_PAST_FRONT_SAFE:
-                return this.toRearSafe().andThen(this.toFrontSafe()).andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation));
+                return 
+                    Commands.parallel((this.toRearSafe()
+                    .andThen(this.toFrontSafe())
+                    .andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
+                    Commands.print("EndEffectorCommand:moveEndEffector:"+ movement));
             case FRONT_MIDDLE:
-                return this.toFrontSafe().andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation));
+                return 
+                    Commands.parallel((this.toFrontSafe().
+                    andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
+                    Commands.print("EndEffectorCommand:moveEndEffector:"+ movement));
             case REAR_MIDDLE:
-                return this.toRearSafe().andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation));
+                return 
+                    Commands.parallel((this.toRearSafe().
+                    andThen(this.toIntakeSafe()).andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
+                    Commands.print("EndEffectorCommand:moveEndEffector: "+ movement),
+                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Desired Rotation: " + armDesiredRotation),
+                    Commands.print("General Desired location: " + desiredLocation),
+                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe): " + (arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe)),
+                    Commands.print("(armDesiredRotation < ArmConstants.kIntakeSafe): " + (armDesiredRotation < ArmConstants.kIntakeSafe) ),
+                    Commands.print("(armDesiredRotation > ArmConstants.kFrontSafe): " + (armDesiredRotation > ArmConstants.kFrontSafe)));
+           
+           
             case MIDDLE_PAST_FRONT_SAFE:
-                return this.toFrontSafe().andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation));
-            case MIDDLE_PAST_REAR_SAFE:
-                return this.toRearSafe().andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation));
-            case NONE:
-                return this.toDesired(wrist.getWristRotation().getAsDouble(), arm.getArmRotation().getAsDouble(), elevator.getElevatorRotation().getAsDouble());     
-            default:
-                return this.toDesired(wrist.getWristRotation().getAsDouble(), arm.getArmRotation().getAsDouble(), elevator.getElevatorRotation().getAsDouble());     
+                return 
+                    Commands.parallel((this.toFrontSafe().
+                    andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
+                    Commands.print("EndEffectorCommand:moveEndEffector: "+ movement));
+            case MIDDLE_PAST_REAR_SAFE:          
+                return 
+                    Commands.parallel((this.toIntakeSafe().
+                    andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
+                    Commands.print("EndEffectorCommand:moveEndEffector: "+ movement),
+                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Desired Rotation: " + armDesiredRotation),
+                    Commands.print("General Desired location: " + desiredLocation),
+                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe): " + (arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe)),
+                    Commands.print("(armDesiredRotation < ArmConstants.kIntakeSafe): " + (armDesiredRotation < ArmConstants.kIntakeSafe) ),
+                    Commands.print("(armDesiredRotation > ArmConstants.kFrontSafe): " + (armDesiredRotation > ArmConstants.kFrontSafe)));
+            case MIDDLE_MIDDLE:          
+                return 
+                    Commands.parallel((this.toMiddleSafe().
+                    andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
+                    Commands.print("EndEffectorCommand:moveEndEffector: "+ movement),
+                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Desired Rotation: " + armDesiredRotation),
+                    Commands.print("General Desired location: " + desiredLocation));
+            default:                     
+                return //This sets everything to where it currently is because something is wrong.....
+                    Commands.parallel((this.toDesired(wrist.getWristRotation().getAsDouble(), 
+                    arm.getArmRotation().getAsDouble(), 
+                    elevator.getElevatorRotation().getAsDouble())),
+                    Commands.print("EndEffectorCommand:moveEndEffector: DEFAULT!!!!: "+ movement),
+                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Desired Rotation: " + armDesiredRotation),
+                    Commands.print("General Desired location: " + desiredLocation),
+                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe): " + (arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe)),
+                    Commands.print("(arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe): " + (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) ),
+                    Commands.print("armDesiredRotation > ArmConstants.kIntakeSafe: " + (armDesiredRotation > ArmConstants.kIntakeSafe)));     
          }
     }
 
-    public Command toFrontSafe() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=========================Command End Effector toFrontSafe=====================");
-        }
-        return 
-            elevator.elevatorFrontSafe().until(elevator.isElevatorFrontSafe)
-            .andThen(wrist.wristFrontSafe()).until(wrist.isWristFrontSafe)
-            .andThen(arm.armFrontSafe()).until(arm.isArmFrontSafe);       
+      //    System.out.println("=========================Command End Effector moveEndEffector=====================");
+        //    System.out.println("Algae Mode:" + endEffector.isModeAlgae.getAsBoolean());
+        //    System.out.println("End Effector Desired Location: " + desiredLocation);
+        //    System.out.println("wrist Desired Rotation:" + wristDesiredRotation);
+        //    System.out.println("arm Desired Rotation:" + armDesiredRotation);
+        //    System.out.println("arm Desired Rotation:" + elevatorDesiredRotation);
+        //    System.out.println("wrist Actual Rotation:" + wrist.getWristRotation().getAsDouble());
+        //    System.out.println("arm Actual Rotation:" + arm.getArmRotation().getAsDouble());
+        //    System.out.println("elevator Actual Rotation:" + elevator.getElevatorRotation().getAsDouble());
+        
+
+
+
+
+
+
+
+    public Command toMiddleSafe() {
+
+        return Commands.parallel(
+            elevator.elevatorMiddleSafe(),
+            Commands.print("EndEffectorCommand:toMiddleSafe"));    
+
     }
 
+    public Command toFrontSafe() {
+
+        return Commands.parallel((
+            elevator.elevatorFrontSafe()
+            .andThen(wrist.wristFrontSafe())
+            .andThen(arm.armFrontSafe())),
+            Commands.print("EndEffectorCommand:toFrontSafe"));       
+    }
+
+    public Command toIntakeSafe() {
+        
+        return Commands.parallel((
+            elevator.elevatorRearSafe()
+            .andThen(wrist.wristRearSafe())
+            .andThen(arm.armRearSafe())),
+            Commands.print("EndEffectorCommand:toIntakeSafe"));
+    }
+
+
     public Command toRearSafe() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=========================Command End Effector toRearSafe=====================");
-        }
-        return 
-            elevator.elevatorRearSafe().until(elevator.isElevatorRearSafe)
-            .andThen(wrist.wristRearSafe()).until(wrist.isWristRearSafe)
-            .andThen(arm.armRearSafe()).until(arm.isArmRearSafe);
+        
+        return Commands.parallel((
+            elevator.elevatorRearSafe()
+            .andThen(wrist.wristRearSafe())
+            .andThen(arm.armRearSafe())),
+            Commands.print("EndEffectorCommand:toRearSafe"));
     }
 
     public Command toDesired(double wristDesiredRotation, double armDesiredRotation, double elevatorDesiredRotation) {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=========================Command End Effector toDesired=====================");
-        }
-        return 
+
+        return Commands.parallel((
             Commands.parallel(elevator.toElevatorPosition(elevatorDesiredRotation),
             wrist.toWristPosition(wristDesiredRotation),
-            arm.toArmPosition(armDesiredRotation));        
+            arm.toArmPosition(armDesiredRotation))),
+            Commands.print("EndEffectorCommand:toDesired"));        
     }
 
 //====================Goto Coral Locations==============================
     public Command toCoralL1(){
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toCoralL1===============");
-        }    
 
-        return this.moveEndEffector("CoralL1");    
+        return Commands.parallel(this.moveEndEffector("CoralL1"),
+        Commands.print("EndEffectorCommand:toCoralL1"));    
     }
     
     public Command toCoralL2() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toCoralL2===============");
-        }    
 
-        return  this.moveEndEffector("CoralL2");   
+        return Commands.parallel(this.moveEndEffector("CoralL2"),
+        Commands.print("EndEffectorCommand:toCoralL2"));   
     }
 
     public Command toCoralL3() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toCoralL3===============");
-        } 
 
-        return this.moveEndEffector("CoralL3");
+        return Commands.parallel(this.moveEndEffector("CoralL3"),
+            Commands.print("EndEffectorCommand:toCoralL3"));
     }
 
     public Command toCoralL4() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toCoralL4===============");
-        } 
 
-        return this.moveEndEffector("CoralL4");
+        return Commands.parallel(this.moveEndEffector("CoralL4"),
+            Commands.print("EndEffectorCommand:toCoralL4"));
     }
 
     public Command toCoralGroundPickup() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toCoralGroundPickup===============");
-        } 
 
-        return this.moveEndEffector("CoralGroundPickup");
+        return Commands.parallel(this.moveEndEffector("CoralGroundPickup"),
+            Commands.print("EndEffectorCommand:toCoralGroundPickup"));
     }
 
     public Command toCoralHumanPickup() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toCoralHumanPickup===============");
-        } 
 
-        return this.moveEndEffector("CoralHumanPickup");
+        return Commands.parallel(this.moveEndEffector("CoralHumanPickup"),
+        Commands.print("EndEffectorCommand:toCoralHumanPickup"));
     }
 
     public Command toCoralStow() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toCoralStow===============");
-        } 
 
-        return this.moveEndEffector("CoralStow");
+        return Commands.parallel(this.moveEndEffector("CoralStow"),
+        Commands.print("EndEffectorCommand:toCoralStow"));
     }
 
     //==================Goto Alage Locations================================
-    public Command toAlgaePickup() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toAlgaePickup===============");
-        } 
+    public Command toAlgaePickup() {      
 
-        return this.moveEndEffector("AlgaePickup");
+        return Commands.parallel(this.moveEndEffector("AlgaePickup"),
+        Commands.print("EndEffectorCommand:toAlgaePickup"));
     }
 
     public Command toAlgaeScoreBarge() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toAlgaeScoreBarge===============");
-        } 
 
-        return this.moveEndEffector("AlgaeScoreBarge");
+        return Commands.parallel(this.moveEndEffector("AlgaeScoreBarge"),
+        Commands.print("EndEffectorCommand:toAlgeaScoreBarge"));
     }
     
     public Command toAlgaeL2() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toAlgaeL2===============");
-        } 
 
-        return this.moveEndEffector("AlgaeL2");
+        return Commands.parallel(this.moveEndEffector("AlgaeL2"),
+        Commands.print("EndEffectorCommand:toAlgaeL2"));
     }
     
     public Command toAlgaeL3() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toalgaeL3===============");
-        } 
 
-        return this.moveEndEffector("AlgaeL3");
+        return Commands.parallel(this.moveEndEffector("AlgaeL3"),
+        Commands.print("EndEffectorCommand:toAlgaeL3"));
     }
     
     public Command toAlgaeProcessor() {
-        if (EndEffectorConstants.kEndEffectorPrint){
-            System.out.println("=============Command EndEffector toAlgaeProcessor===============");
-        } 
 
-        return this.moveEndEffector("AlgaeProcessor");
+        return Commands.parallel(this.moveEndEffector("AlgaeProcessor"),
+        Commands.print("EndEffectorCommand:toAlgaeProcessor"));
     }
 
     //======================================================

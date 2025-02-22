@@ -7,34 +7,32 @@ public class ElevatorConstants {
     //Positions are in meters.  Heights are based off the manual, so not quite practical for actual scoring.
     public static final double kStow = 0;
     
-    public static final double kCoralMax = 32.0;
-    public static final double kCoralMin = 0.5;
+    public static final double kCoralMax = 32.0; //Rotations
+    public static final double kCoralMin = 0.5; //Rotations
 
     //===========Coral Positions===================
     public static final double kCoralStow = 0.0;
-    public static final double kCoralLoadFloor = 0.571; //0.1 meters
-    public static final double kCoralLoadHuman = 0.571; //0.1 meters
-    public static final double kCoralL1 = 2.628; //0.46 meters
-    public static final double kCoralL2 = 4.628; //0.81 meters
-    public static final double kCoralL3 = 6.913; //1.21 meters
-    public static final double kCoralL4 = 10.455; //1.83 meters
+    public static final double kCoralLoadFloor = 5; //0.1 meters
+    public static final double kCoralLoadHuman = 23; //0.1 meters
+    public static final double kCoralL1 = 10; //0.46 meters
+    public static final double kCoralL2 = 15; //0.81 meters
+    public static final double kCoralL3 = 20; //1.21 meters
+    public static final double kCoralL4 = 25; //1.83 meters
 
     //=============Algae Positions=============
     public static final double kAlgaeStow = 0.0;
-    public static final double kAlgaeLoadFloor = 0.571; //0.1 meters  
-    public static final double kAlgaeL2 = 4.628; //0.81 meters
-    public static final double kAlgaeL3 = 6.913; //1.21 meters
-    public static final double kAlgaeBarge = 12.569; //2.2 meters
-    public static final double kAlgaeProcessor = 1.714; //0.3 meters
+    public static final double kAlgaeLoadFloor = 5; //0.1 meters  
+    public static final double kAlgaeL2 = 10; //0.81 meters
+    public static final double kAlgaeL3 = 15; //1.21 meters
+    public static final double kAlgaeBarge = 20; //2.2 meters
+    public static final double kAlgaeProcessor = 25; //0.3 meters
 
     //==================General===================
     //Deadband to determine if the elevator is 'at' a position.
-    public static final double kDeadband = 0.05;
-    public static final double kFrontSafe = 0.05;
-    public static final double kRearSafe = 0.05;
-    public static final boolean kElevatorPrint = false;
-    public static final boolean kElevatorPrintTrigger = false;
-    //Currently, in meters.
+    public static final double kDeadband = 0.15;
+    public static final double kFrontSafe = 30;
+    public static final double kRearSafe = 22;
+    public static final double kMiddleSafe = 10;
     
     //==================Sim Values================
     public static final double kElevatorGearing = 7.75;  //Assumes the form of X:1, so anything greater than 1 is a reduction.
