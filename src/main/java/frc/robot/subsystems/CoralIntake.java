@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -32,7 +33,7 @@ public class CoralIntake extends SubsystemBase{
     TalonFXSimState intakeRollerSim;
 
     public VelocityVoltage spinMotorMode;
-    PositionVoltage rotateMotorMode;
+    MotionMagicVoltage rotateMotorMode;
     public DutyCycleOut rotateDutyCycleControl;
 
     CoralIntakeConfig coralIntakeConfig;
@@ -54,15 +55,16 @@ public class CoralIntake extends SubsystemBase{
         spinMotor = new TalonFX(config.kSpinCANID, "canivore");
         rotateCANcoder = new CANcoder(config.kRotateCANcoderID);
         spinMotorMode = new VelocityVoltage(CoralIntakeConstants.kSuckSpeed);
-        rotateMotorMode = new PositionVoltage(CoralIntakeConstants.kIntakeStowPosition);
+        rotateMotorMode = new MotionMagicVoltage(CoralIntakeConstants.kIntakeStowPosition);
 
         m_BeamBreakIntakeDigital = new DigitalInput(config.kBeamBreakIntake);
         m_Debouncer = new Debouncer (0.05, Debouncer.DebounceType.kBoth);
 
         //Fill in the Instantiation
+        this.configureCancoder(rotateCANcoder, config.coralIntakeCANcoderConfig);
         this.configureMechanism(spinMotor, config.coralIntakeSpinConfig);
         this.configureMechanism(rotateMotor, config.coralIntakeRotateConfig);
-        this.configureCancoder(rotateCANcoder, config.coralIntakeCANcoderConfig);
+
       
         intakePivotSim = rotateMotor.getSimState();
         intakeRollerSim = spinMotor.getSimState();
@@ -110,16 +112,14 @@ public class CoralIntake extends SubsystemBase{
     //================================================================
 
     private void suck() {
-        // System.out.println("============Private CoralIntake suck=====================");
-        
+    
         if (Constants.kCoralIntakeSpinMotorEnabled == true) {
             spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSuckSpeed));
         }
     }
 
     private void spit() {
-        //System.out.println("=============Private CoralIntake spit=====================");
-        
+
         if (Constants.kCoralIntakeSpinMotorEnabled == true) {
             spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kSpitSpeed));
         }
@@ -194,16 +194,12 @@ public class CoralIntake extends SubsystemBase{
 
     public Command rollerSuck() {
 
-        //    System.out.println("=============Command CoralIntake rollerSuck===============");
-
         return run(
             () -> {this.suck();}
         );
     }
 
     public Command rollerSpit() {
-
-        //    System.out.println("=============Command CoralIntake rollerSpit===============");
 
         return run(
             () -> {this.spit();}
@@ -212,17 +208,12 @@ public class CoralIntake extends SubsystemBase{
 
     public Command rollerStop() {
 
-        //    System.out.println("=============Command CoralIntake rollerStop===============");
-
-        return run(
+        return runOnce(
             () -> {this.stop();}
         );
     }
 
     public Command intakeStow() {
-
-        //    System.out.println("=============Command CoralIntake intakeStow===============");
-
 
         return run(
             () -> {this.goToPosition(CoralIntakeConstants.kIntakeStowPosition);}

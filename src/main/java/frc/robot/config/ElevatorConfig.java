@@ -27,19 +27,11 @@ public class ElevatorConfig {
 
         //configure motor
         
-        rotate.CurrentLimits.SupplyCurrentLimit = 7;
+        rotate.CurrentLimits.SupplyCurrentLimit = 40;
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         rotate.MotionMagic.MotionMagicAcceleration = 300;
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 50;
 
-        if (Constants.kSloMo == true){ 
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 50 * Constants.kSloMoFactor;
-        } else {
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 50;
-        }
-
-
-        
-        
         rotate.Voltage.PeakForwardVoltage = 11;
         rotate.Voltage.PeakReverseVoltage = -11;
         rotate.MotorOutput.NeutralMode = NeutralModeValue.Brake;

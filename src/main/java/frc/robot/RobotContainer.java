@@ -18,9 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 //Was throwing an error
 //import frc.pilotLib.utility.Selector;
 
-
-import frc.robot.commands.EndEffectorCommand;
-import frc.robot.commands.EndEffectorMovement;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.config.WristConfig;
@@ -35,7 +32,7 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.EndEffector;
+import frc.robot.commands.Move;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -73,20 +70,19 @@ public class RobotContainer {
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake(intakeConfig);
 
-    public final EndEffector endEffector = new EndEffector();
-    //public EndEffectorCommand endEffectorCommand = new EndEffectorCommand(endEffector);
     public ArmConfig armConfig = new ArmConfig();
     public Arm arm = new Arm(armConfig);
+    
     public WristConfig wristConfig = new WristConfig();
     public Wrist wrist = new Wrist(wristConfig);
+    
     public ElevatorConfig elevatorConfig = new ElevatorConfig();
     public Elevator elevator = new Elevator(elevatorConfig);
 
-    public EndEffectorMovement endEffectorMovement = new EndEffectorMovement(arm, wrist, elevator, endEffector);
-  
-
     public final ClimberConfig climberConfig = new ClimberConfig();
     public final Climber climber = new Climber(climberConfig);
+
+    public final Move move = new Move(wrist, arm, intake, elevator);
 
     public LED leds = new LED();
 
@@ -195,26 +191,10 @@ public class RobotContainer {
          */
 
         //==========================Intake Coral from Ground=============================
-        driver.rightTrigger(0.1).and(endEffector.isModeAlgae.negate()).and(climber.isClimberReady.negate()).onTrue(endEffectorMovement.toCoralL4());
-        
-        driver.leftTrigger(0.1).onTrue(endEffectorMovement.toCoralHumanPickup());
-        
-        //endEffectorCommand.toCoralL4()
-        //endEffectorCommand.toCoralL3()
-        //endEffectorCommand.toCoralGroundPickup()
-        //endEffectorCommand.toCoralL1()
-        //endEffectorCommand.toCoralL2()
-        //endEffectorCommand.toCoralHumanPickup()
-        //intake.intakeFloor()
-
-            /*
-            .andThen(endEffectorCommand.toCoralGroundPickup()).until(endEffectorCommand.isEndEffectorAtCoralGroundPickup)
-            .andThen(Commands.parallel(intake.rollerSuck(),endEffectorCommand.wrist.suck()).until(endEffectorCommand.wrist.isPartForwardGripper))
-            .andThen(Commands.parallel(intake.rollerStop(),endEffectorCommand.wrist.positionCoralInGripper()))
-            .andThen(endEffectorCommand.toCoralStow()).until(endEffectorCommand.isEndEffectorAtCoralStow)
-            .andThen(intake.intakeRaised()).until(intake.isIntakeRaised));
-            */
-
+        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(move.intakeCoralFloor());
+     
+        driver.leftBumper().onTrue(move.wristCoralRollerSpit()).onFalse(move.wristCoralRollerStop());
+     
         //==========================Intake Coral from Human================================    
         //driver.rightBumper().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(    
         //    endEffectorCommand.toCoralHumanPickup().until(endEffectorCommand.isEndEffectorAtCoralHumanPickup)
@@ -258,33 +238,29 @@ public class RobotContainer {
         //operator1.leftBumper().onTrue();
 
         //============================Operator to Coral L1=======================
-        //operator1.b().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(endEffectorCommand.toCoralL1()); //Score L1, Processor
+        operator1.b().and(climber.isClimberReady.negate()).onTrue(move.coralL1()); //Score L1, Processor
         
         //============================Operator to Processor=======================
         //operator1.b().and(endEffector.isModeAlgae.negate())onTrue(endEffectorCommand.moveEndEffector("L1orProcessor")); //Score L1, Processor
 
-        //============================Operator to Coral L2====================================
-        //operator1.y().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(endEffectorCommand.toCoralL2()); //Score L2
-
-        //============================Operator to Algae L2====================================
-        //operator1.y().onTrue(endEffectorCommand.moveEndEffector("L2")); //Score L2
-
         //============================Operator ot Coral L3====================================
-        //operator1.rightBumper().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(endEffectorCommand.toCoralL3()); //Score L3
+        operator1.y().and(climber.isClimberReady.negate()).onTrue(move.coralL2()); //Score L3
 
         //============================Operator ot Algae L3====================================
-        //operator1.rightBumper().onTrue(endEffectorCommand.moveEndEffector("L3")); //Score L3
+        operator1.rightBumper().and(climber.isClimberReady.negate()).onTrue(move.coralL3()); //Score L3
 
         //============================Operator to Coral L4=============================
-        //operator1.start().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(endEffectorCommand.toCoralL4()); //Score L4, Barge
+        operator1.start().and(climber.isClimberReady.negate()).onTrue(move.coralL4()); //Score L4, Barge
 
         //============================Operator to Barge=============================
         //operator1.start().onTrue(endEffectorCommand.moveEndEffector("L4orBarge")); //Score L4, Barge
 
+        //============================Operator to Stow==============================
+        operator1.rightStick().onTrue(move.coralStow());  //Algae Mode
 
         //===============================Select Mode=====================================
         //operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
-        //operator1.rightStick().onTrue(endEffector.setEndEffectorMode("Algae"));  //Algae Mode
+        //
 
         //=====================================================================
         //=============================Operator 2==============================
@@ -304,7 +280,7 @@ public class RobotContainer {
         //operator2.rightStick().onTrue();  //Descore Algae L3
 
         //=============LED System==============================================
-        intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
+        //intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

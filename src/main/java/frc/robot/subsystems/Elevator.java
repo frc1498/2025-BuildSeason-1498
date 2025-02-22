@@ -7,6 +7,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -27,7 +28,9 @@ public class Elevator extends SubsystemBase {
   
     TalonFXSimState elevatorDriveFrontSim;
   
-    PositionVoltage posControl;
+    MotionMagicVoltage posControl;
+    
+    //PositionVoltage posControl;
     public DutyCycleOut rotateDutyCycleControl;
 
     private double desiredPosition;
@@ -49,7 +52,7 @@ public class Elevator extends SubsystemBase {
 
         elevatorDriveFrontSim = elevatorDriveFront.getSimState();
 
-        posControl = new PositionVoltage(0);   
+        posControl = new MotionMagicVoltage(0);   
 
         sim = new ElleySim(config, elevatorDriveFrontSim);
         
@@ -78,35 +81,24 @@ public class Elevator extends SubsystemBase {
     //=======================================================
     private void elevatorDriveToPosition(double position) {
         this.desiredPosition = position;
-        
-        //System.out.println("Elevator:elevatorDriveToPosition: " + position);
-        
+
         if (Constants.kElevatorExtendMotorEnabled == true) {
             elevatorDriveFront.setControl(posControl.withPosition(position));
         }
     }
 
     private double getElevatorPosition() {
-        
-        //    System.out.println("=============Private Elevator getElevatorPosition===============");
-        
+
         return elevatorDriveFront.getPosition().getValueAsDouble();
     }
 
     private double getDesiredPosition() {
-        
-        //    System.out.println("=============Private Elevator getDesiredPosition===============");
-        
+
         return this.desiredPosition;
     }
 
     private boolean isElevatorAtPosition(double position) {
 
-        //    System.out.println("=============Private Elevator isElevatorAtPosition===============");
-        //    System.out.println("Lower Bound:" + (position - ElevatorConstants.kDeadband));
-        //    System.out.println("Elevator Position:" + this.getElevatorPosition());
-        //    System.out.println("Upper Bound:" +(position + ElevatorConstants.kDeadband));
-        
         return (position - ElevatorConstants.kDeadband) <= this.getElevatorPosition() && (position + ElevatorConstants.kDeadband) >= this.getElevatorPosition();
     }
 
@@ -248,6 +240,13 @@ public class Elevator extends SubsystemBase {
         );
     }
 
+    public Command toIntakeSafe() {
+        
+        return run(
+            () -> {elevatorDriveToPosition(ElevatorConstants.kIntakeSafe);}
+            ).until(isElevatorIntakeSafe);
+    }
+
     public DoubleSupplier getElevatorRotation() {
 
         return this::getElevatorPosition;
@@ -280,6 +279,7 @@ public class Elevator extends SubsystemBase {
     public final Trigger isElevatorFrontSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kFrontSafe);});
     public final Trigger isElevatorRearSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kRearSafe);});
     public final Trigger isElevatorMiddleSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kMiddleSafe);});
+    public final Trigger isElevatorIntakeSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kIntakeSafe);});
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -289,6 +289,7 @@ public class Elevator extends SubsystemBase {
         builder.addBooleanProperty("Is Elevator at Coral L1", isElevatorCoralL1, null);
         builder.addBooleanProperty("Is Elevator at Coral L2", isElevatorCoralL2, null);    
         builder.addBooleanProperty("Is Elevator at Coral L3", isElevatorCoralL3, null);
+        builder.addBooleanProperty("Is Elevator at Coral Load Floor", isElevatorCoralLoadFloor, null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);  
     }
 

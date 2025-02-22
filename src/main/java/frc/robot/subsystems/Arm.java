@@ -3,6 +3,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -22,7 +23,7 @@ import frc.robot.sim.ArmSim;
 public class Arm extends SubsystemBase{
     //Declare Variables
     public TalonFX armRotate;
-    PositionVoltage rotateControl;
+    MotionMagicVoltage rotateControl;
     public DutyCycleOut rotateDutyCycleControl;
 
     CANcoder armRotateEncoder;
@@ -40,7 +41,7 @@ public class Arm extends SubsystemBase{
         //Instantiate
         armRotate = new TalonFX(config.kArmRotateCANID, "canivore");
         armRotateEncoder = new CANcoder(config.kEncoderCANID,"canivore");
-        rotateControl = new PositionVoltage(ArmConstants.kCoralStow);
+        rotateControl = new MotionMagicVoltage(ArmConstants.kCoralStow);
 
         //Fill In Instatiations
         this.configureMechanism(armRotate, config.armRotateConfig);
@@ -162,9 +163,6 @@ public class Arm extends SubsystemBase{
     }
 
     public Command armCoralStow() {
-
-        //    System.out.println("=============Command Arm armCoralStow===============");
-
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralStow);}
@@ -331,6 +329,7 @@ public class Arm extends SubsystemBase{
         builder.addDoubleProperty("Desired Position", this::getDesiredArmPosition, null);
         builder.addDoubleProperty("Current Position", this::GetArmPosition, null);
         builder.addBooleanProperty("Is Arm at L1 Position", isArmCoralL1, null);
+        builder.addBooleanProperty("Is the Arm at CoralLoadFloor", isArmCoralLoadFloor,null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }
 

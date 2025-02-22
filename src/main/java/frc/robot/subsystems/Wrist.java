@@ -1,6 +1,4 @@
 package frc.robot.subsystems;
-
-import javax.lang.model.util.ElementScanner14;
 import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -13,17 +11,17 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.WristConfig;
 import frc.robot.constants.Constants;
-import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.sim.WristSim;
 
@@ -35,7 +33,7 @@ public class Wrist extends SubsystemBase{
 
     CANrange wristReefDistance;
 
-    PositionVoltage rotateControl;
+    MotionMagicVoltage rotateControl;
 
 
     public TalonFX wristSpin;
@@ -63,7 +61,7 @@ public class Wrist extends SubsystemBase{
 
         wristRotate = new TalonFX(config.kRotateCANID, "canivore");
         wristRotateCancoder = new CANcoder(config.kEncoderCANID,"canivore");
-        rotateControl = new PositionVoltage(WristConstants.kCoralStow);
+        rotateControl = new MotionMagicVoltage(WristConstants.kCoralStow);
         wristReefDistance = new CANrange(config.kRangeCANID, "canivore");
 
         m_BeamBreakGripperFrontDigital = new DigitalInput(config.kBeamBreakGripperFront);
@@ -181,46 +179,24 @@ public class Wrist extends SubsystemBase{
 
     private boolean isPartForwardGripper() {
         //If either beam break is made, part is in gripper
-        if (m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && !m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
+        if (!m_BeamBreakGripperFrontDigital.get())
         {
-    
-                //System.out.println("=========================Private wrist isPartForwardGripper=====================");
-                //System.out.println("Front Wrist Sensor Made");
-                
             return true;
         } else {
-    
-                //System.out.println("=========================Private Wrist isPartForwardGripper=====================");
-                //System.out.println("Front Wrist Sensor Lost");
-            
             return false;
         }
     }
 
     private boolean isPartRearwardGripper() {
-        //If either beam break is made, part is in gripper
-        if (!m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
+        if (!m_BeamBreakGripperRearDigital.get())
         {
-    
-                //System.out.println("=========================Private Wrist isPartRearwardGripper=====================");
-                //System.out.println("Rear Wrist Sensor Made");
-                
             return true;
-        } else {
-    
-                //System.out.println("=========================Private Wrist isPartRearwardGripper=====================");
-                //System.out.println("Rear Wrist Sensor Lost");
-            
+        } else {      
             return false;
         }
     }
 
     private boolean isPartGripper() {
-
-            //System.out.println("=============Private Wrist isPartGripper===============");
-            //System.out.println("Rear Sensor:" + m_BeamBreakGripperRearDigital.get());
-            //System.out.println("Front Sensor" + m_BeamBreakGripperFrontDigital.get());
-        
 
         //If neither beam break is made, part is in gripper
         if (!m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && !m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
@@ -275,17 +251,12 @@ public class Wrist extends SubsystemBase{
 
     public Command wristCoralLoadFloor() {
 
-        //    System.out.println("=============Command wrist wristCoralLoadFloor===============");
-        
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralLoadFloor);}
         ).until(this.isWristCoralLoadFloor);
     }
 
-    public Command wristCoralLoadHuman() {
-
-        //    System.out.println("=============Command wrist wristCoralLoadHuman===============");
-        
+    public Command wristCoralLoadHuman() {  
 
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralLoadHuman);}
@@ -305,18 +276,12 @@ public class Wrist extends SubsystemBase{
 
     public Command wristCoralL2() {
 
-        //    System.out.println("=============Command wrist wristCoralL2===============");
-        
-
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralL2);}
         ).until(this.isWristCoralL2);
     }
     
-    public Command wristCoralL3() {
-
-        //    System.out.println("=============Command wrist wristCoralL3===============");
-        
+    public Command wristCoralL3() {       
 
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralL3);}
@@ -344,10 +309,6 @@ public class Wrist extends SubsystemBase{
     }
 
     public Command wristAlgaeLoadFloor() {
-
-         //   System.out.println("=============Command wrist wristAlgaeLoadFloor===============");
-        
-
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeLoadFloor);}
         ).until(this.isWristAlgaeLoadFloor);
@@ -374,10 +335,6 @@ public class Wrist extends SubsystemBase{
     }
     
     public Command wristAlgaeBarge() {
-
-         //   System.out.println("=============Command wrist wristAlgaeBarge===============");
-        
-
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeBarge);}
         ).until(this.isWristAlgaeBarge);
@@ -428,7 +385,7 @@ public class Wrist extends SubsystemBase{
         //    System.out.println("=============Command wrist stop spinning===============");
         
 
-        return run(
+        return runOnce(
             () -> {this.wristSpin(WristConstants.kCoralStop);}
         );
     }
@@ -485,10 +442,11 @@ public class Wrist extends SubsystemBase{
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
         builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
-        builder.addBooleanProperty("Front Gripper Beam Break", () -> {return m_BeamBreakGripperFrontDigital.get();}, null);
-        builder.addBooleanProperty("Rear Gripper Beam Break", () -> {return m_BeamBreakGripperRearDigital.get();}, null);
+        builder.addBooleanProperty("Front Gripper Beam Break", () -> {return isPartForwardGripper();}, null);
+        builder.addBooleanProperty("Rear Gripper Beam Break", () -> {return isPartRearwardGripper();}, null);
         builder.addDoubleProperty("CANrange Reef Distance", this::getReefDistance, null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
+        builder.addBooleanProperty("Is the wrist at CoralLoadFloor", isWristCoralLoadFloor,null);
     }  
 
     @Override

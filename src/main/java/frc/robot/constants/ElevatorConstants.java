@@ -11,12 +11,12 @@ public class ElevatorConstants {
     public static final double kCoralMin = 0.5; //Rotations
 
     //===========Coral Positions===================
-    public static final double kCoralStow = 0.0;
-    public static final double kCoralLoadFloor = 5; //0.1 meters
+    public static final double kCoralStow = 3.0;
+    public static final double kCoralLoadFloor = 5.5; //5 meters
     public static final double kCoralLoadHuman = 23; //0.1 meters
-    public static final double kCoralL1 = 10; //0.46 meters
-    public static final double kCoralL2 = 15; //0.81 meters
-    public static final double kCoralL3 = 20; //1.21 meters
+    public static final double kCoralL1 = 20; //0.46 meters
+    public static final double kCoralL2 = 26; //0.81 meters
+    public static final double kCoralL3 = .5; //1.21 meters
     public static final double kCoralL4 = 25; //1.83 meters
 
     //=============Algae Positions=============
@@ -31,8 +31,9 @@ public class ElevatorConstants {
     //Deadband to determine if the elevator is 'at' a position.
     public static final double kDeadband = 0.15;
     public static final double kFrontSafe = 30;
-    public static final double kRearSafe = 22;
+    public static final double kRearSafe = 25;
     public static final double kMiddleSafe = 10;
+    public static final double kIntakeSafe = 25;
     
     //==================Sim Values================
     public static final double kElevatorGearing = 7.75;  //Assumes the form of X:1, so anything greater than 1 is a reduction.
