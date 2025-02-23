@@ -4,7 +4,7 @@ public class CoralIntakeConstants {
 
     //These numbers are completely made up.
     public static final double kIntakeFloorPosition = -0.209;
-    public static final double kIntakeRaisedPosition = 0.161;
+    public static final double kIntakeRaisedPosition = 0.19;
     public static final double kIntakeStowPosition = 0.23;
 
     //Safeties - the allowable range of movement.

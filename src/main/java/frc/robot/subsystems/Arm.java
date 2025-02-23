@@ -329,6 +329,7 @@ public class Arm extends SubsystemBase{
         builder.addDoubleProperty("Desired Position", this::getDesiredArmPosition, null);
         builder.addDoubleProperty("Current Position", this::GetArmPosition, null);
         builder.addBooleanProperty("Is Arm at L1 Position", isArmCoralL1, null);
+        builder.addBooleanProperty("Is Arm at Human Coral Load", isArmCoralLoadHuman, null);
         builder.addBooleanProperty("Is the Arm at CoralLoadFloor", isArmCoralLoadFloor,null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }
