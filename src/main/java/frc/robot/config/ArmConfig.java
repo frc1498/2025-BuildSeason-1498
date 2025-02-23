@@ -68,11 +68,7 @@ public class ArmConfig {
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         
-        if (Constants.kSloMo == true){ 
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85 * Constants.kSloMoFactor;
-        } else {
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85;
-        }
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85;
 
         rotate.MotionMagic.MotionMagicAcceleration = 3.5;
         rotate.MotionMagic.MotionMagicJerk = 47.6;
