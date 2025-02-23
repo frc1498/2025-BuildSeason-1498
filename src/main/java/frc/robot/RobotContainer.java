@@ -118,11 +118,10 @@ public class RobotContainer {
             )
         );
 
-        driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driver.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-        ));
+        //driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        //driver.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
 
+        
      
         // reset the field-centric heading on left bumper press
         //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -152,32 +151,42 @@ public class RobotContainer {
         //=====================================================================
         //==============================Driver=================================
         //=====================================================================
-        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(endEffectorLocation.CORAL_GROUND_PICKUP).
+        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloor(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Ground
-        driver.leftBumper().and(climber.isClimberReady.negate()).onTrue(move.intakeCoralHuman().
-            andThen(endEffector.setEndEffectorLocation(endEffectorLocation.CORAL_HUMAN_PICKUP)));  //Intake Coral from Ground
+ 
+        driver.leftBumper().and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
+            andThen(move.intakeCoralHuman(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Human
+ 
         driver.rightBumper().onTrue(move.wristCoralRollerSpit(endEffector.whatIsEndEffectorLocation()).
             until(wrist.isPartInGripper.negate()).
             andThen(move.coralStow()));  //Spit Coral
-     
-        //.and(move.wrist.isRangeOk)
-
-        driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete()); //Climb
-        
+ 
+        driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete().
+        andThen(climber.commandClimberLatch())); //Climb
           
         //=====================================================================
         //=============================Operator 1==============================
         //=====================================================================
         operator1.b().and(climber.isClimberReady.negate()).onTrue(move.coralL1().
-            andThen(endEffector.setEndEffectorLocation(endEffectorLocation.CORAL_L1))); //Score L1
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); //Score L1
+
         operator1.y().and(climber.isClimberReady.negate()).onTrue(move.coralL2().
-            andThen(endEffector.setEndEffectorLocation(endEffectorLocation.CORAL_L2))); //Score L3
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}))); //Score L3
+
         operator1.rightBumper().and(climber.isClimberReady.negate()).onTrue(move.coralL3().
-            andThen(endEffector.setEndEffectorLocation(endEffectorLocation.CORAL_L3))); //Score L3
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;}))); //Score L3
+
         operator1.start().and(climber.isClimberReady.negate()).onTrue(move.coralL4().
-            andThen(endEffector.setEndEffectorLocation(endEffectorLocation.CORAL_L4))); //Score L4
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}))); //Score L4
+
         operator1.rightStick().onTrue(move.coralStow().
-            andThen(endEffector.setEndEffectorLocation(endEffectorLocation.NONE)));  //Coral Stow
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));  //Coral Stow
+
+        operator1.x().and(operator1.a()).onTrue(climber.commandClimberUnLatch().
+        andThen(move.clearClimb()).
+        andThen(climber.climberTriggered()).
+        andThen(climber.toClimberReady()).
+        andThen(move.intakeToRaisedForClimb()).withName("Climber Ready"));
 
         //===============================Select Mode=====================================
         //operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode

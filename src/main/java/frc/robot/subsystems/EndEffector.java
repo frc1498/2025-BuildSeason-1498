@@ -54,9 +54,9 @@ public class EndEffector extends SubsystemBase{
         return runOnce(() -> {this.GetEndEffectorModeHere();});
     }
 
-    public Command setEndEffectorLocation(endEffectorLocation mode) {
+    public Command setEndEffectorLocation(Supplier<endEffectorLocation> mode) {
 
-        return runOnce(() -> {this.setEndEffectorLocationHere(mode);});
+        return runOnce(() -> {this.setEndEffectorLocationHere(mode.get());});
     }
 
     public Supplier<endEffectorLocation> whatIsEndEffectorLocation() {

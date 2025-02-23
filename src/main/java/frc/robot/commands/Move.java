@@ -83,19 +83,33 @@ public class Move {
         return wrist.stop();
     }
 
-
-
-    public Command intakeCoralHuman() {
+    public Command intakeCoralHuman(Supplier<endEffectorLocation> endEffectorLocation) {
         return elevator.toIntakeSafe().
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralLoadHuman(), wrist.wristCoralLoadHuman())).
-        andThen(elevator.elevatorCoralLoadHuman());
+        andThen(elevator.elevatorCoralLoadHuman()).
+        andThen(wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper).
+        andThen(wrist.stop()).
+        andThen(elevator.toIntakeSafe()).
+        andThen(Commands.parallel(arm.armCoralStow(),wrist.wristCoralStow())).
+        andThen(Commands.parallel(intake.intakeRaised(),elevator.elevatorCoralStow()));
     }
 
     public Command coralL1() {
         return elevator.toIntakeSafe().
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralL1(), wrist.wristCoralL1())).
         andThen(elevator.elevatorCoralL1());
-    }    
+    }
+
+    public Command clearClimb() {
+        return elevator.toIntakeSafe().
+        andThen(Commands.parallel(intake.intakeFloor(), arm.armClearClimb(), wrist.wristCoralL1())).
+        andThen(elevator.elevatorCoralL1());
+    }
+
+    public Command intakeToRaisedForClimb() {
+        return intake.intakeRaisedForClimb();
+    }
+
 
     //======================================================
     //========================Triggers======================

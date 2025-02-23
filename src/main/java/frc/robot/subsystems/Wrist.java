@@ -140,10 +140,10 @@ public class Wrist extends SubsystemBase{
                 wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));
                 break;
                 case CORAL_GROUND_PICKUP:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_HUMAN_PICKUP:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_L1:
                 wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));

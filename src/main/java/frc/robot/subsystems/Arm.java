@@ -217,17 +217,12 @@ public class Arm extends SubsystemBase{
 
     public Command armCoralL4() {
 
-        // System.out.println("=============Command Arm armCoralL4===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL4);}
         ).until(this.isArmCoralL4);
     }
 
     public Command armAlgaeStow() {
-
-        //System.out.println("=============Command Arm armAlgaeStow===============");
-
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeStow);}
@@ -296,6 +291,14 @@ public class Arm extends SubsystemBase{
         );
     }
 
+    public Command armClearClimb() {
+
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kClearClimb);}
+        ).until(this.isArmClearClimb);
+    }
+
+    
     //============================================
     //===============Coral Triggers===============
     //============================================
@@ -322,6 +325,8 @@ public class Arm extends SubsystemBase{
     //===========================================
     public final Trigger isArmFrontSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kFrontSafe);});
     public final Trigger isArmRearSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kRearSafe);});
+    public final Trigger isArmClearClimb = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kClearClimb);});
+
 
     @Override
     public void initSendable(SendableBuilder builder) {
