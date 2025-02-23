@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.function.Supplier;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,32 +24,32 @@ public class Selector extends SubsystemBase{
     }
 
     public Selector(ArrayList<String> selections) {
-        super();
+        this();
         this.selections = this.addSelectionList(selections);
         this.sortSelections();
     }
 
     public Selector(ArrayList<String> selections, String name) {
-        super();
+        this();
         this.selections = this.addSelectionList(selections);
         this.sortSelections();
         this.setSmartDashboardName(name);
     }
 
     public Selector(File folderPath) {
-        super();
+        this();
         this.selections = addSelectionList(folderPath);
         this.sortSelections();
     }
 
     public Selector(File folderPath, String extension) {
-        super();
+        this();
         this.selections = this.addSelectionList(folderPath, extension);
         this.sortSelections();
     }
 
     public Selector(File folderPath, String extension, String name) {
-        super();
+        this();
         this.selections = this.addSelectionList(folderPath, extension);
         this.sortSelections();
         this.setSmartDashboardName(name);
@@ -82,6 +83,10 @@ public class Selector extends SubsystemBase{
 
     private ArrayList<String> addSelectionList(File folderPath, String extension) {
         return this.removeSubstringFromList(this.addSelectionList(folderPath), extension);
+    }
+
+    private ArrayList<String> getSelectionList() {
+        return this.selections;
     }
 
     private String getCurrentSelectionName() {
@@ -138,6 +143,7 @@ public class Selector extends SubsystemBase{
 
     private void sortSelections() {
          this.selections.sort(Comparator.naturalOrder());
+         this.setCurrentSelectionName();
     }
 
     public Command filterList(String criteria) {
@@ -148,7 +154,7 @@ public class Selector extends SubsystemBase{
                 this.setSelection(0);
                 this.setCurrentSelectionName();
             }
-        ).withName("filterList");
+        ).ignoringDisable(true).withName("filterList");
     }
 
     public Command increment() {
@@ -157,7 +163,7 @@ public class Selector extends SubsystemBase{
                 this.incrementSelection();
                 this.setCurrentSelectionName();
             }
-        ).withName("increment");
+        ).ignoringDisable(true).withName("increment");
     }
 
     public Command decrement() {
@@ -166,7 +172,11 @@ public class Selector extends SubsystemBase{
                 this.decrementSelection();
                 this.setCurrentSelectionName();
             }
-        ).withName("decrement");
+        ).ignoringDisable(true).withName("decrement");
+    }
+
+    public Supplier<ArrayList<String>> currentList() {
+        return this::getSelectionList;
     }
 
     @Override

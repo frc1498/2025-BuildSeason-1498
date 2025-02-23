@@ -6,17 +6,21 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-
-//Was throwing an error
-//import frc.pilotLib.utility.Selector;
+import frc.pilotLib.utility.Selector;
 
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
@@ -93,10 +97,15 @@ public class RobotContainer {
     public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
 
     // Was throwing an error.  had to comment out the import as well
-    // public Selector autoSelect = new Selector();
+    //Future proofing CHRP functionality.
+    //File chirpFolder = new File(Filesystem.getDeployDirectory() + "/chirp");
+    File autonFolder = new File(Filesystem.getDeployDirectory() + "/pathplanner/autos");
+    public Selector autoSelect = new Selector(autonFolder, ".auto", "Auto Selector");
+    public ArrayList<Command> autonCommands = new ArrayList<Command>();
 
     public RobotContainer() {
         configureBindings();
+        //loadAllAutonomous();
     }
 
     private void configureBindings() {
@@ -228,8 +237,9 @@ public class RobotContainer {
         //==================================Climb==========================================
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
         
-        
-
+        //Auton Selection
+        driver.povLeft().onTrue(autoSelect.decrement());
+        driver.povRight().onTrue(autoSelect.increment());
         
         //=====================================================================
         //=============================Operator 1==============================
@@ -289,6 +299,13 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return new PathPlannerAuto("Blue Simple");
+    }
+
+    public void loadAllAutonomous(Supplier<ArrayList<String>> autonList) {
+        ArrayList<Command> commandList= new ArrayList<Command>();
+        for (var i : autonList.get()) {
+            commandList.add(new PathPlannerAuto(i));
+        }
     }
 }
