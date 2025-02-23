@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,12 +17,9 @@ import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.EndEffector;
 
 public class EndEffectorCommand {
-    ElevatorConfig elevatorConfig;
-    public Elevator elevator;
-    ArmConfig armConfig;
-    public Arm arm;
-    WristConfig wristConfig;
-    public Wrist wrist;
+    Supplier<Elevator> elevator;
+    Supplier<Arm> arm;
+    Supplier<Wrist> wrist;
     EndEffector endEffector;
 
     enum movementState {
@@ -46,13 +45,10 @@ public class EndEffectorCommand {
     public double wristDesiredRotation2 = 0.0;
     public double elevatorDesiredRotation2 = 0.0;
 
-    public EndEffectorCommand(EndEffector endEffector) {
-        elevatorConfig = new ElevatorConfig();
-        elevator = new Elevator(elevatorConfig);
-        armConfig = new ArmConfig();
-        arm = new Arm(armConfig);
-        wristConfig = new WristConfig();
-        wrist = new Wrist(wristConfig);
+    public EndEffectorCommand(Supplier<Arm> arm, Supplier<Wrist> wrist, Supplier<Elevator> elevator, EndEffector endEffector) {
+        this.elevator = elevator;
+        this.arm = arm;
+        this.wrist = wrist;
         this.endEffector = endEffector;
 
         movement = movementState.NONE;
@@ -153,12 +149,12 @@ public class EndEffectorCommand {
          //   System.out.println("elevator Actual Rotation:" + elevator.getElevatorRotation().getAsDouble());
 
         //Check to see if we are at any of the locations
-        return  (((wristDesiredRotation2 - WristConstants.kDeadband) <= wrist.getWristRotation().getAsDouble())
-                && ((wristDesiredRotation2 + WristConstants.kDeadband) >= wrist.getWristRotation().getAsDouble())
-                && ((armDesiredRotation2 - ArmConstants.kDeadband) <= arm.getArmRotation().getAsDouble()) 
-                && ((armDesiredRotation2 + ArmConstants.kDeadband) >= arm.getArmRotation().getAsDouble())
-                && ((elevatorDesiredRotation2 - ElevatorConstants.kDeadband) <= elevator.getElevatorRotation().getAsDouble()) 
-                && ((elevatorDesiredRotation2 + ElevatorConstants.kDeadband) >= elevator.getElevatorRotation().getAsDouble()));
+        return  (((wristDesiredRotation2 - WristConstants.kDeadband) <= wrist.get().getWristRotation().getAsDouble())
+                && ((wristDesiredRotation2 + WristConstants.kDeadband) >= wrist.get().getWristRotation().getAsDouble())
+                && ((armDesiredRotation2 - ArmConstants.kDeadband) <= arm.get().getArmRotation().getAsDouble()) 
+                && ((armDesiredRotation2 + ArmConstants.kDeadband) >= arm.get().getArmRotation().getAsDouble())
+                && ((elevatorDesiredRotation2 - ElevatorConstants.kDeadband) <= elevator.get().getElevatorRotation().getAsDouble()) 
+                && ((elevatorDesiredRotation2 + ElevatorConstants.kDeadband) >= elevator.get().getElevatorRotation().getAsDouble()));
     
     }
 
@@ -238,48 +234,48 @@ public class EndEffectorCommand {
                         elevatorDesiredRotation = ElevatorConstants.kCoralStow;
                     break;
                     default:
-                        armDesiredRotation = arm.getArmRotation().getAsDouble();
+                        armDesiredRotation = arm.get().getArmRotation().getAsDouble();
                     break;
                 }
             //}
       //  }
 
         //This statement determines the starting point by looking at the arm position
-        if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe)) // We are in front of the robot, rotating past rearsafe
+        if ((arm.get().getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe)) // We are in front of the robot, rotating past rearsafe
         {
             movement = movementState.FRONT_PAST_REAR_SAFE;
 
 
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe)) //We are behind the robot, rotating past frontsafe
+        } else if ((arm.get().getArmRotation().getAsDouble() > ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe)) //We are behind the robot, rotating past frontsafe
         {
             movement = movementState.REAR_PAST_FRONT_SAFE;
 
 
-        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the front of the robot, rotating middle
+        } else if ((arm.get().getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the front of the robot, rotating middle
         {
             movement = movementState.FRONT_MIDDLE;
 
 
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the rear of the robot, rotating middle
+        } else if ((arm.get().getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the rear of the robot, rotating middle
         {
             movement = movementState.REAR_MIDDLE;
 
 
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe))  //We are in the middle of the robot, rotating forward
+        } else if ((arm.get().getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.get().getArmRotation().getAsDouble() < ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe))  //We are in the middle of the robot, rotating forward
         {
             movement = movementState.MIDDLE_PAST_FRONT_SAFE;
 
 
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kIntakeSafe))  //We are in the middle of the robot
+        } else if ((arm.get().getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.get().getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kIntakeSafe))  //We are in the middle of the robot
         {
             movement = movementState.MIDDLE_PAST_REAR_SAFE;  
         
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the middle of the robot
+        } else if ((arm.get().getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.get().getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the middle of the robot
         {
             movement = movementState.MIDDLE_MIDDLE;  //For the rare situation where we are in the middle and tell it to go to the middle
         
         
-        }else 
+        } else 
         {
             //We are in an unknown position.  Stop.
             movement = movementState.NONE;
@@ -322,10 +318,10 @@ public class EndEffectorCommand {
                     Commands.parallel((this.toRearSafe().
                     andThen(this.toIntakeSafe()).andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
                     Commands.print("EndEffectorCommand:moveEndEffector: "+ movement),
-                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Location: " + arm.get().getArmRotation().getAsDouble()),
                     Commands.print("Arm Desired Rotation: " + armDesiredRotation),
                     Commands.print("General Desired location: " + desiredLocation),
-                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe): " + (arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe)),
+                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe): " + (arm.get().getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe)),
                     Commands.print("(armDesiredRotation < ArmConstants.kIntakeSafe): " + (armDesiredRotation < ArmConstants.kIntakeSafe) ),
                     Commands.print("(armDesiredRotation > ArmConstants.kFrontSafe): " + (armDesiredRotation > ArmConstants.kFrontSafe)));
            
@@ -340,10 +336,10 @@ public class EndEffectorCommand {
                     Commands.parallel((this.toIntakeSafe().
                     andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
                     Commands.print("EndEffectorCommand:moveEndEffector: "+ movement),
-                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Location: " + arm.get().getArmRotation().getAsDouble()),
                     Commands.print("Arm Desired Rotation: " + armDesiredRotation),
                     Commands.print("General Desired location: " + desiredLocation),
-                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe): " + (arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe)),
+                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe): " + (arm.get().getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe)),
                     Commands.print("(armDesiredRotation < ArmConstants.kIntakeSafe): " + (armDesiredRotation < ArmConstants.kIntakeSafe) ),
                     Commands.print("(armDesiredRotation > ArmConstants.kFrontSafe): " + (armDesiredRotation > ArmConstants.kFrontSafe)));
             case MIDDLE_MIDDLE:          
@@ -351,20 +347,20 @@ public class EndEffectorCommand {
                     Commands.parallel((this.toMiddleSafe().
                     andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation))),
                     Commands.print("EndEffectorCommand:moveEndEffector: "+ movement),
-                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Location: " + arm.get().getArmRotation().getAsDouble()),
                     Commands.print("Arm Desired Rotation: " + armDesiredRotation),
                     Commands.print("General Desired location: " + desiredLocation));
             default:                     
                 return //This sets everything to where it currently is because something is wrong.....
-                    Commands.parallel((this.toDesired(wrist.getWristRotation().getAsDouble(), 
-                    arm.getArmRotation().getAsDouble(), 
-                    elevator.getElevatorRotation().getAsDouble())),
+                    Commands.parallel((this.toDesired(wrist.get().getWristRotation().getAsDouble(), 
+                    arm.get().getArmRotation().getAsDouble(), 
+                    elevator.get().getElevatorRotation().getAsDouble())),
                     Commands.print("EndEffectorCommand:moveEndEffector: DEFAULT!!!!: "+ movement),
-                    Commands.print("Arm Location: " + arm.getArmRotation().getAsDouble()),
+                    Commands.print("Arm Location: " + arm.get().getArmRotation().getAsDouble()),
                     Commands.print("Arm Desired Rotation: " + armDesiredRotation),
                     Commands.print("General Desired location: " + desiredLocation),
-                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe): " + (arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe)),
-                    Commands.print("(arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe): " + (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) ),
+                    Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe): " + (arm.get().getArmRotation().getAsDouble() > ArmConstants.kFrontSafe)),
+                    Commands.print("(arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe): " + (arm.get().getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) ),
                     Commands.print("armDesiredRotation > ArmConstants.kIntakeSafe: " + (armDesiredRotation > ArmConstants.kIntakeSafe)));     
          }
     }
@@ -389,7 +385,7 @@ public class EndEffectorCommand {
     public Command toMiddleSafe() {
 
         return Commands.parallel(
-            elevator.elevatorMiddleSafe(),
+            elevator.get().elevatorMiddleSafe(),
             Commands.print("EndEffectorCommand:toMiddleSafe"));    
 
     }
@@ -397,18 +393,18 @@ public class EndEffectorCommand {
     public Command toFrontSafe() {
 
         return Commands.parallel((
-            elevator.elevatorFrontSafe()
-            .andThen(wrist.wristFrontSafe())
-            .andThen(arm.armFrontSafe())),
+            elevator.get().elevatorFrontSafe()
+            .andThen(wrist.get().wristFrontSafe())
+            .andThen(arm.get().armFrontSafe())),
             Commands.print("EndEffectorCommand:toFrontSafe"));       
     }
 
     public Command toIntakeSafe() {
         
         return Commands.parallel((
-            elevator.elevatorRearSafe()
-            .andThen(wrist.wristRearSafe())
-            .andThen(arm.armRearSafe())),
+            elevator.get().elevatorRearSafe()
+            .andThen(wrist.get().wristRearSafe())
+            .andThen(arm.get().armRearSafe())),
             Commands.print("EndEffectorCommand:toIntakeSafe"));
     }
 
@@ -416,18 +412,18 @@ public class EndEffectorCommand {
     public Command toRearSafe() {
         
         return Commands.parallel((
-            elevator.elevatorRearSafe()
-            .andThen(wrist.wristRearSafe())
-            .andThen(arm.armRearSafe())),
+            elevator.get().elevatorRearSafe()
+            .andThen(wrist.get().wristRearSafe())
+            .andThen(arm.get().armRearSafe())),
             Commands.print("EndEffectorCommand:toRearSafe"));
     }
 
     public Command toDesired(double wristDesiredRotation, double armDesiredRotation, double elevatorDesiredRotation) {
 
         return Commands.parallel((
-            Commands.parallel(elevator.toElevatorPosition(elevatorDesiredRotation),
-            wrist.toWristPosition(wristDesiredRotation),
-            arm.toArmPosition(armDesiredRotation))),
+            Commands.parallel(elevator.get().toElevatorPosition(elevatorDesiredRotation),
+            wrist.get().toWristPosition(wristDesiredRotation),
+            arm.get().toArmPosition(armDesiredRotation))),
             Commands.print("EndEffectorCommand:toDesired"));        
     }
 

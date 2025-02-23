@@ -6,12 +6,16 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 
@@ -21,9 +25,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.EndEffectorCommand;
 import frc.robot.commands.EndEffectorMovement;
+import frc.robot.commands.EndEffectorScheduling;
 import frc.robot.config.CoralIntakeConfig;
 import frc.robot.config.ElevatorConfig;
 import frc.robot.config.WristConfig;
+import frc.robot.constants.EndEffectorConstants;
 import frc.robot.config.ArmConfig;
 import frc.robot.config.ClimberConfig;
 import frc.robot.generated.TunerConstants;
@@ -73,8 +79,7 @@ public class RobotContainer {
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake(intakeConfig);
 
-    public final EndEffector endEffector = new EndEffector();
-    //public EndEffectorCommand endEffectorCommand = new EndEffectorCommand(endEffector);
+
     public ArmConfig armConfig = new ArmConfig();
     public Arm arm = new Arm(armConfig);
     public WristConfig wristConfig = new WristConfig();
@@ -82,7 +87,10 @@ public class RobotContainer {
     public ElevatorConfig elevatorConfig = new ElevatorConfig();
     public Elevator elevator = new Elevator(elevatorConfig);
 
-    public EndEffectorMovement endEffectorMovement = new EndEffectorMovement(arm, wrist, elevator, endEffector);
+    public EndEffector endEffector = new EndEffector(arm.getArmRotation(), wrist.getWristRotation(), elevator.getElevatorRotation(), arm, wrist, elevator);
+
+    public EndEffectorCommand endEffectorCommand = new EndEffectorCommand(arm.armSupplier(), wrist.wristSupplier(), elevator.elevatorSupplier(), endEffector);
+    //public EndEffectorMovement endEffectorMovement = new EndEffectorMovement(arm, wrist, elevator, endEffector);
   
 
     public final ClimberConfig climberConfig = new ClimberConfig();
@@ -195,9 +203,24 @@ public class RobotContainer {
          */
 
         //==========================Intake Coral from Ground=============================
-        driver.rightTrigger(0.1).and(endEffector.isModeAlgae.negate()).and(climber.isClimberReady.negate()).onTrue(endEffectorMovement.toCoralL4());
+        //driver.rightTrigger(0.1).onTrue(endEffector.prepForMovement("CoralL3")
+        //    .andThen(new EndEffectorScheduling(arm, wrist, elevator, endEffector))
+        //);
         
-        driver.leftTrigger(0.1).onTrue(endEffectorMovement.toCoralHumanPickup());
+        //driver.leftTrigger(0.1).onTrue(endEffector.prepForMovement("CoralL4")
+        //    .andThen(new EndEffectorScheduling(arm, wrist, elevator, endEffector))
+        //);
+
+        driver.y().onTrue(
+            new SelectCommand<>(Map.ofEntries(
+                    Map.entry(EndEffectorConstants.movementState.NONE, 
+                    Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow())),
+                    Map.entry(EndEffectorConstants.movementState.MIDDLE_MIDDLE,
+                    Commands.parallel(arm.armCoralL1(), wrist.wristCoralL1(), elevator.elevatorCoralL1()))
+                ), endEffector::getMovementState)
+        );
+
+        driver.x().onTrue(endEffector.prepForMovement("CoralL3").andThen(endEffector.updateDesired()));
         
         //endEffectorCommand.toCoralL4()
         //endEffectorCommand.toCoralL3()
@@ -283,7 +306,7 @@ public class RobotContainer {
 
 
         //===============================Select Mode=====================================
-        //operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
+        operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
         //operator1.rightStick().onTrue(endEffector.setEndEffectorMode("Algae"));  //Algae Mode
 
         //=====================================================================

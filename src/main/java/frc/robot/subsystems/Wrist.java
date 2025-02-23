@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import javax.lang.model.util.ElementScanner14;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -240,6 +242,13 @@ public class Wrist extends SubsystemBase{
         }
     }
 
+    private Wrist getWrist() {
+        return this;
+    }
+
+    public Supplier<Wrist> wristSupplier() {
+        return this::getWrist;
+    }
     //=============================================================
     //========================Commands=============================
     //=============================================================

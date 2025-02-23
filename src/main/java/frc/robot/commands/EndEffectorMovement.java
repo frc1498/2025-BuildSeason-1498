@@ -124,6 +124,7 @@ public class EndEffectorMovement {
                 && ((elevatorDesiredRotation2 + ElevatorConstants.kDeadband) >= elevator.getElevatorRotation().getAsDouble()));
     
     }
+/*
 //====================Goto Coral Locations==============================
     public Command toCoralL1(){
 
@@ -214,5 +215,5 @@ public class EndEffectorMovement {
     public Trigger isEndEffectorAlgaeL2 = new Trigger(() ->{return this.isEndEffectorAtPosition("AlgaeL2");});
     public Trigger isEndEffectorAlgaeL3 = new Trigger(() ->{return this.isEndEffectorAtPosition("AlgaeL3");});
     public Trigger isEndEffectorAlgaeProcessor = new Trigger(() ->{return this.isEndEffectorAtPosition("AlgaeProcessor");});
-
+*/
 }

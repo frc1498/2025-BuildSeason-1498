@@ -118,6 +118,15 @@ public class Elevator extends SubsystemBase {
             return this.getCurrentCommand().getName();
         }
     }
+
+    private Elevator getElevator() {
+        return this;
+    }
+
+    public Supplier<Elevator> elevatorSupplier() {
+        return this::getElevator;
+    }
+
     //======================================================================
     //=====================Public Commands==================================
     //======================================================================

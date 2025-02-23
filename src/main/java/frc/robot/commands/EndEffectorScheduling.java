@@ -1,170 +1,71 @@
 package frc.robot.commands;
 
+import java.util.Map;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.EndEffectorConstants.movementState;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Wrist;
 
-public class EndEffectorScheduling extends Command{
+public class EndEffectorScheduling {
 
     String desiredLocation;
     String previousDesiredLocation;
     double armDesiredRotation;
     double wristDesiredRotation;
     double elevatorDesiredRotation;
+    movementState movement = movementState.MIDDLE_MIDDLE;
+    boolean stateFinished = false;
 
     Arm arm;
     Wrist wrist;
     Elevator elevator;
+    EndEffector state;
 
-    enum movementState {
-        FRONT_PAST_REAR_SAFE,
-        REAR_PAST_FRONT_SAFE,
-        FRONT_MIDDLE,
-        REAR_MIDDLE,
-        MIDDLE_PAST_FRONT_SAFE,
-        MIDDLE_PAST_REAR_SAFE,
-        MIDDLE_MIDDLE,
-        NONE
-    }
-
-    movementState movement;
-
-    public EndEffectorScheduling(String desiredLocation, Arm armSubsystem, Wrist wristSubsystem, Elevator elevatorSubsystem) {
-        this.desiredLocation = desiredLocation;
+    public EndEffectorScheduling(Arm armSubsystem, Wrist wristSubsystem, Elevator elevatorSubsystem, EndEffector state) {
         this.arm = armSubsystem;
         this.wrist = wristSubsystem;
         this.elevator = elevatorSubsystem;
+        this.state = state;
     }
 
-    @Override
+    private String getMovementString() {
+        return this.movement.toString();
+    }
+
+    public Command scheduledMovement(Supplier<movementState> movementState, DoubleSupplier armMovement, DoubleSupplier wristMovement, DoubleSupplier elevatorMovement) {
+        return null;
+        //BAD! FIX!
+    }
+
+    public Command movementSelector(Supplier<movementState> movementState) {
+        return new SelectCommand<>(
+            Map.ofEntries(
+                Map.entry(movement.NONE, this.toFrontSafe().andThen(this.toRearSafe())),
+                Map.entry(movement.FRONT_MIDDLE, this.toFrontSafe())   
+            )
+            , movementState
+        );
+    }
+
+    /*@Override
     public void initialize() {
-        //Check to see the desired location has changed, and then choose the new desired positions
-        //  if (desiredLocation != previousDesiredLocation){
-
-          /*
-            if (endEffector.isModeAlgae.getAsBoolean()){  //Check to see if we are algae mode      
-                switch (desiredLocation) {
-                    case "L1orProcessor":
-                        armDesiredRotation = ArmConstants.kAlgaeProcessor;
-                        wristDesiredRotation = WristConstants.kAlgaeProcessor;
-                        elevatorDesiredRotation = ElevatorConstants.kAlgaeProcessor;
-                    break;
-                    case "L2":
-                        armDesiredRotation = ArmConstants.kAlgaeL2;
-                        wristDesiredRotation = WristConstants.kAlgaeL2;
-                        elevatorDesiredRotation = ElevatorConstants.kAlgaeL2;
-                    break;
-                    case "L3":
-                        armDesiredRotation = ArmConstants.kAlgaeL3;
-                        wristDesiredRotation = WristConstants.kAlgaeL3;
-                        elevatorDesiredRotation = ElevatorConstants.kAlgaeL3;
-                    break;
-                    case "L4orBarge":
-                        armDesiredRotation = ArmConstants.kAlgaeBarge;
-                        wristDesiredRotation = WristConstants.kAlgaeBarge;
-                        elevatorDesiredRotation = ElevatorConstants.kAlgaeBarge;
-                    break;
-                    default:
-                    break;
-                }
-            } else if (!endEffector.isModeAlgae.getAsBoolean()){ //Check to see if we are coral mode
-
-            */
-
-                switch (desiredLocation) {
-                    case "CoralL1":
-                        armDesiredRotation = ArmConstants.kCoralL1;
-                        wristDesiredRotation = WristConstants.kCoralL1;
-                        elevatorDesiredRotation = ElevatorConstants.kCoralL1;
-                    break;
-                    case "CoralL2":
-                        armDesiredRotation = ArmConstants.kCoralL2;
-                        wristDesiredRotation = WristConstants.kCoralL2;
-                        elevatorDesiredRotation = ElevatorConstants.kCoralL2;
-                    break;
-                    case "CoralL3":
-                        armDesiredRotation = ArmConstants.kCoralL3;
-                        wristDesiredRotation = WristConstants.kCoralL3;
-                        elevatorDesiredRotation = ElevatorConstants.kCoralL3;
-                    break;
-                    case "CoralL4":
-                        armDesiredRotation = ArmConstants.kCoralL4;
-                        wristDesiredRotation = WristConstants.kCoralL4;
-                        elevatorDesiredRotation = ElevatorConstants.kCoralL4;
-                    break;
-                    case "CoralGroundPickup":
-                        armDesiredRotation = ArmConstants.kCoralLoadFloor;
-                        wristDesiredRotation = WristConstants.kCoralLoadFloor;
-                        elevatorDesiredRotation = ElevatorConstants.kCoralLoadFloor;
-                    break;
-                    case "CoralHumanPickup":
-                        armDesiredRotation = ArmConstants.kCoralLoadHuman;
-                        wristDesiredRotation = WristConstants.kCoralLoadHuman;
-                        elevatorDesiredRotation = ElevatorConstants.kCoralLoadHuman;
-                    break;
-                    case "CoralStow":
-                        armDesiredRotation = ArmConstants.kCoralStow;
-                        wristDesiredRotation = WristConstants.kCoralStow;
-                        elevatorDesiredRotation = ElevatorConstants.kCoralStow;
-                    break;
-                    default:
-                        armDesiredRotation = arm.getArmRotation().getAsDouble();
-                    break;
-                }
-
-                System.out.println("Arm POS: " + arm.getArmRotation().getAsDouble());
-            //}
-      //  }
-
-        //This statement determines the starting point by looking at the arm position
-        if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kRearSafe)) // We are in front of the robot, rotating past rearsafe
-        {
-            movement = movementState.FRONT_PAST_REAR_SAFE;
-
-
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe)) //We are behind the robot, rotating past frontsafe
-        {
-            movement = movementState.REAR_PAST_FRONT_SAFE;
-
-
-        } else if ((arm.getArmRotation().getAsDouble() < ArmConstants.kFrontSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the front of the robot, rotating middle
-        {
-            movement = movementState.FRONT_MIDDLE;
-
-
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the rear of the robot, rotating middle
-        {
-            movement = movementState.REAR_MIDDLE;
-
-
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kRearSafe) && (armDesiredRotation < ArmConstants.kFrontSafe))  //We are in the middle of the robot, rotating forward
-        {
-            movement = movementState.MIDDLE_PAST_FRONT_SAFE;
-
-
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kIntakeSafe))  //We are in the middle of the robot
-        {
-            movement = movementState.MIDDLE_PAST_REAR_SAFE;  
-        
-        } else if ((arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe) && (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) && (armDesiredRotation < ArmConstants.kIntakeSafe) && (armDesiredRotation > ArmConstants.kFrontSafe))  //We are in the middle of the robot
-        {
-            movement = movementState.MIDDLE_MIDDLE;  //For the rare situation where we are in the middle and tell it to go to the middle
-        
-        
-        }else 
-        {
-            //We are in an unknown position.  Stop.
-            movement = movementState.NONE;
-        }
-
-        previousDesiredLocation = desiredLocation;
-        System.out.println("movement state: " + movement);
+        this.movement = state.getMovementState();
+        this.armDesiredRotation = state.getArmRotation();
+        this.wristDesiredRotation = state.getWristRotation();
+        this.elevatorDesiredRotation = state.getElevatorRotation();
     }
 
     @Override
@@ -222,6 +123,11 @@ public class EndEffectorScheduling extends Command{
                     Commands.print("Arm Desired Rotation: " + armDesiredRotation),
                     Commands.print("General Desired location: " + desiredLocation));
             break;
+            case NONE:
+                //Do Nothing?
+                this.toFrontSafe().andThen(this.toDesired(wristDesiredRotation, armDesiredRotation, elevatorDesiredRotation));
+                stateFinished = true;
+            break;
             default:                     
                 //This sets everything to where it currently is because something is wrong.....
                 Commands.parallel((this.toDesired(wrist.getWristRotation().getAsDouble(), 
@@ -233,9 +139,16 @@ public class EndEffectorScheduling extends Command{
                     Commands.print("General Desired location: " + desiredLocation),
                     Commands.print("(arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe): " + (arm.getArmRotation().getAsDouble() > ArmConstants.kFrontSafe)),
                     Commands.print("(arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe): " + (arm.getArmRotation().getAsDouble() < ArmConstants.kIntakeSafe) ),
-                    Commands.print("armDesiredRotation > ArmConstants.kIntakeSafe: " + (armDesiredRotation > ArmConstants.kIntakeSafe)));     
+                    Commands.print("armDesiredRotation > ArmConstants.kIntakeSafe: " + (armDesiredRotation > ArmConstants.kIntakeSafe)));
+            break;
          }
     }
+
+    @Override
+    public boolean isFinished() {
+        return stateFinished;
+    }*/
+
     public Command toMiddleSafe() {
 
         return Commands.parallel(
@@ -280,4 +193,14 @@ public class EndEffectorScheduling extends Command{
             arm.toArmPosition(armDesiredRotation))),
             Commands.print("EndEffectorCommand:toDesired"));        
     }
+    
+    /*
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        //Sendable data for dashboard debugging will be added here.
+        builder.addStringProperty("State in Command", this::getMovementString, null);
+        builder.addDoubleProperty("Desired Arm", () -> {return this.armDesiredRotation;}, null);
+        builder.addDoubleProperty("Desired Wrist", () -> {return this.wristDesiredRotation;}, null);
+        builder.addDoubleProperty("Desired Elevator", () -> {return this.elevatorDesiredRotation;}, null);
+    }*/
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -136,6 +138,15 @@ public class Arm extends SubsystemBase{
             return this.getCurrentCommand().getName();
         }
     }
+
+    private Arm getArm() {
+        return this;
+    }
+    
+    //This feels wrong.
+    public Supplier<Arm> armSupplier() {
+        return this::getArm;
+    }
     
     //===================================================
     //=====================Public Commands===============
@@ -204,7 +215,7 @@ public class Arm extends SubsystemBase{
 
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL2);}
-        ).until(this.isArmCoralL2);
+        ).until(this.isArmCoralL2).withName("armCoralL2");
     }
 
     public Command armCoralL3() {
