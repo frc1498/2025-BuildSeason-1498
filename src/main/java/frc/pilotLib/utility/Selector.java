@@ -15,6 +15,7 @@ public class Selector extends SubsystemBase{
     private int currentSelection;
     private String currentSelectionName;
     private ArrayList<String> selections;
+    private String filterCriteria = "";
 
     public Selector() {
         //Empty constructor.
@@ -97,6 +98,10 @@ public class Selector extends SubsystemBase{
         this.currentSelectionName = this.selections.get(this.currentSelection);
     }
 
+    private int getCurrentIndex() {
+        return this.currentSelection;
+    }
+
     private void setSelection(int index) {
         if (index < 0) {
             this.currentSelection = 0;
@@ -116,6 +121,9 @@ public class Selector extends SubsystemBase{
         else if (this.currentSelection < 0) {
             this.currentSelection = 0;
         }
+        else {
+            this.currentSelection = 0;
+        }
     }
 
     private void incrementSelection() {
@@ -125,16 +133,21 @@ public class Selector extends SubsystemBase{
         else if (this.currentSelection > this.selections.size() - 1) {
             this.currentSelection = this.selections.size() - 1;
         }
+        else {
+            this.currentSelection = 0;
+        }
     }
 
-    private ArrayList<String> filterSelections(ArrayList<String> list, String filterCriteria) {
+    private ArrayList<String> filterSelections(ArrayList<String> list, Supplier<String> filterCriteria) {
         Iterator<String> filter = list.iterator();
         ArrayList<String> placeholder = new ArrayList<String>();
         String toCheck;
 
+        this.filterCriteria = filterCriteria.get();
+
         while(filter.hasNext()) {
             toCheck = filter.next();
-            if (toCheck.contains(filterCriteria)) {
+            if (toCheck.contains(filterCriteria.get())) {
                 placeholder.add(toCheck);
             }
         }
@@ -146,7 +159,21 @@ public class Selector extends SubsystemBase{
          this.setCurrentSelectionName();
     }
 
-    public Command filterList(String criteria) {
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }
+
+    //For debugging only.
+    private String[] getCurrentListArray() {
+        return this.getSelectionList().toArray(new String[this.getSelectionList().size()]);
+    }
+
+    public Command filterList(Supplier<String> criteria) {
         return runOnce(
             () -> {
                 this.selections = filterSelections(this.selections, criteria);
@@ -179,8 +206,16 @@ public class Selector extends SubsystemBase{
         return this::getSelectionList;
     }
 
+    public Supplier<Integer> currentIndex() {
+        return this::getCurrentIndex;
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
+        builder.addStringProperty("Current Command", this::getCurrentCommandName, null);
         builder.addStringProperty("Current Selection", this::getCurrentSelectionName, null);
+        builder.addStringProperty("Filter String", () -> {return this.filterCriteria;}, null);
+        builder.addIntegerProperty("Number of Selections", () -> {return this.selections.size();}, null);
+        builder.addStringArrayProperty("Current List", this::getCurrentListArray, null);
     }
 }

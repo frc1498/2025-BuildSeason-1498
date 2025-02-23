@@ -12,14 +12,16 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.pilotLib.utility.Selector;
 
 import frc.robot.config.CoralIntakeConfig;
@@ -90,22 +92,27 @@ public class RobotContainer {
 
     public LED leds = new LED();
 
-    public String endEffectorMode="none";
+    public String endEffectorMode = "none";
 
     //Very important, the vision subsystem has to be created after the drivetrain.
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
     public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
 
-    // Was throwing an error.  had to comment out the import as well
     //Future proofing CHRP functionality.
     //File chirpFolder = new File(Filesystem.getDeployDirectory() + "/chirp");
     File autonFolder = new File(Filesystem.getDeployDirectory() + "/pathplanner/autos");
     public Selector autoSelect = new Selector(autonFolder, ".auto", "Auto Selector");
+    //All of these are needed to display and load the correct list of autonomous options.
     public ArrayList<Command> autonCommands = new ArrayList<Command>();
+    public Command selectedAuton;
+    public Alliance allianceColor = Alliance.Blue;
+    public boolean hasDeterminedAlliance;
 
     public RobotContainer() {
+        
+        //autonCommands = loadAllAutonomous(autoSelect.currentList());
+        registerAutonTriggers();
         configureBindings();
-        //loadAllAutonomous();
     }
 
     private void configureBindings() {
@@ -139,6 +146,15 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+        //Makes testing difficult, but sim makes it less annoying.
+        //Does three things:
+        //1. Filters the list of autons by alliance color.
+        //2. Loads all of the routines into auton commands that PathPlanner can run.
+        //3. Select the first auton in the list by default.
+        this.allianceCheck.onTrue(autoSelect.filterList(() -> {return allianceColor.toString();})
+            .andThen(() -> {autonCommands = this.loadAllAutonomous(autoSelect.currentList());}).ignoringDisable(true)
+            .andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
+
         //===================================================================================
         //=============================Driver Commands=======================================
         //===================================================================================
@@ -161,6 +177,7 @@ public class RobotContainer {
         */
 
         driver.leftBumper().onTrue(vision.addMegaTag2(() -> drivetrain));
+        
 
         //====================Operator Commands========================
         //Button Correlation Table
@@ -238,8 +255,8 @@ public class RobotContainer {
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
         
         //Auton Selection
-        driver.povLeft().onTrue(autoSelect.decrement());
-        driver.povRight().onTrue(autoSelect.increment());
+        driver.povLeft().onTrue(autoSelect.decrement().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
+        driver.povRight().onTrue(autoSelect.increment().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
         
         //=====================================================================
         //=============================Operator 1==============================
@@ -299,13 +316,21 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Blue Simple");
+        return selectedAuton;
     }
 
-    public void loadAllAutonomous(Supplier<ArrayList<String>> autonList) {
+    public ArrayList<Command> loadAllAutonomous(Supplier<ArrayList<String>> autonList) {
         ArrayList<Command> commandList= new ArrayList<Command>();
         for (var i : autonList.get()) {
             commandList.add(new PathPlannerAuto(i));
         }
+
+        return commandList;
     }
+
+    public void registerAutonTriggers() {
+        EventTrigger atCoralL4Auton = new EventTrigger("CoralL4");
+    }
+
+    public Trigger allianceCheck = new Trigger(() -> {return this.hasDeterminedAlliance;});
 }

@@ -212,7 +212,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     new PIDConstants(7, 0, 0)
                 ),
                 config,
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                () -> false, //() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this
             );
         } catch (Exception ex) {

@@ -6,8 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,6 +18,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+
+  public boolean hasDeterminedAlliance = false;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -60,6 +64,24 @@ public class Robot extends TimedRobot {
    
     m_robotContainer.climber.climberRotate.setControl(m_robotContainer.climber.rotateDutyCycleControl.withOutput(0));
     */
+
+    //Constantly check for the current alliance.
+    //This 'latches' once it has been retrieved.
+    if (!hasDeterminedAlliance && DriverStation.isDSAttached()) {
+      switch (DriverStation.getAlliance().get()) {
+      case Blue:
+        m_robotContainer.allianceColor = Alliance.Blue;
+      break;
+      case Red:
+        m_robotContainer.allianceColor = Alliance.Red;
+      break;
+      }
+
+      //After determining the alliance, set a flag so any trigger is only run once.
+      hasDeterminedAlliance = true;
+      m_robotContainer.hasDeterminedAlliance = true;
+
+      };
   }
 
   @Override
