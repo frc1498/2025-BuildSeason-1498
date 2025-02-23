@@ -195,6 +195,8 @@ public class RobotContainer {
      
         driver.leftBumper().onTrue(move.wristCoralRollerSpit()).onFalse(move.wristCoralRollerStop());
      
+        //.and(move.wrist.isRangeOk)
+
         //==========================Intake Coral from Human================================    
         //driver.rightBumper().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(    
         //    endEffectorCommand.toCoralHumanPickup().until(endEffectorCommand.isEndEffectorAtCoralHumanPickup)
@@ -256,7 +258,7 @@ public class RobotContainer {
         //operator1.start().onTrue(endEffectorCommand.moveEndEffector("L4orBarge")); //Score L4, Barge
 
         //============================Operator to Stow==============================
-        operator1.rightStick().onTrue(move.coralStow());  //Algae Mode
+        operator1.rightStick().onTrue(move.coralStow());
 
         //===============================Select Mode=====================================
         //operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode

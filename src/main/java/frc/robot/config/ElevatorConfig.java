@@ -29,8 +29,8 @@ public class ElevatorConfig {
         
         rotate.CurrentLimits.SupplyCurrentLimit = 40;
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
-        rotate.MotionMagic.MotionMagicAcceleration = 300;
-        rotate.MotionMagic.MotionMagicCruiseVelocity = 50;
+        rotate.MotionMagic.MotionMagicAcceleration = 150;
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 40;
 
         rotate.Voltage.PeakForwardVoltage = 11;
         rotate.Voltage.PeakReverseVoltage = -11;

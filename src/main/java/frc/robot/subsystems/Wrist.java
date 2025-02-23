@@ -47,12 +47,14 @@ public class Wrist extends SubsystemBase{
     WristSim sim;
 
     double wristDesiredPosition;
-
+    
+    public boolean range_ok;
 
     DigitalInput m_BeamBreakGripperFrontDigital;
     DigitalInput m_BeamBreakGripperRearDigital;
 
-   
+    
+
     Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
 
     public Wrist(WristConfig config) {
@@ -118,9 +120,6 @@ public class Wrist extends SubsystemBase{
     //=============================================================
     private void wristDriveToPosition(double position) {
 
-        //    System.out.println("=============Private Wrist wristDriveToPosition===============");
-        
-
         this.wristDesiredPosition = position;
         if (Constants.kWristRotateMotorEnabled == true) {
             wristRotate.setControl(rotateControl.withPosition(position));
@@ -129,8 +128,6 @@ public class Wrist extends SubsystemBase{
 
     private void wristSpin(double speed) {
 
-        //    System.out.println("=============Private Wrist wristSpin===============");
-        
         if (Constants.kWristSpinMotorEnabled == true) {
             wristSpin.setControl(spinControl.withVelocity(speed));
         }
@@ -162,6 +159,21 @@ public class Wrist extends SubsystemBase{
     private double getReefDistance() {
         return wristReefDistance.getDistance().getValueAsDouble();
     }
+
+    private boolean checkRange(String scoringposition) {
+        if (scoringposition == "CoralL1"){
+            range_ok=true;
+        } else if (scoringposition == "CoralL2"){
+            range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL2);
+        } else if (scoringposition == "CoralL3"){
+            range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3);
+        } else if (scoringposition == "CoralL4"){
+            range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL4);
+        }
+        return range_ok;
+    }
+
+
 
     private void positionCoral(){
 
@@ -399,6 +411,14 @@ public class Wrist extends SubsystemBase{
             () -> {this.wristDriveToPosition(position);}
         );
     }
+
+    /*
+    public Command isRangeOk() {
+        return run(
+            () -> {this.checkRange();}
+        );
+    }
+    */
 
     //===============================================
     //=================Suppliers=====================
