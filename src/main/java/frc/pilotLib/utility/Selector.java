@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.function.Supplier;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +15,7 @@ public class Selector extends SubsystemBase{
     private int currentSelection;
     private String currentSelectionName;
     private ArrayList<String> selections;
+    private String filterCriteria = "";
 
     public Selector() {
         //Empty constructor.
@@ -23,32 +25,32 @@ public class Selector extends SubsystemBase{
     }
 
     public Selector(ArrayList<String> selections) {
-        super();
+        this();
         this.selections = this.addSelectionList(selections);
         this.sortSelections();
     }
 
     public Selector(ArrayList<String> selections, String name) {
-        super();
+        this();
         this.selections = this.addSelectionList(selections);
         this.sortSelections();
         this.setSmartDashboardName(name);
     }
 
     public Selector(File folderPath) {
-        super();
+        this();
         this.selections = addSelectionList(folderPath);
         this.sortSelections();
     }
 
     public Selector(File folderPath, String extension) {
-        super();
+        this();
         this.selections = this.addSelectionList(folderPath, extension);
         this.sortSelections();
     }
 
     public Selector(File folderPath, String extension, String name) {
-        super();
+        this();
         this.selections = this.addSelectionList(folderPath, extension);
         this.sortSelections();
         this.setSmartDashboardName(name);
@@ -84,12 +86,20 @@ public class Selector extends SubsystemBase{
         return this.removeSubstringFromList(this.addSelectionList(folderPath), extension);
     }
 
+    private ArrayList<String> getSelectionList() {
+        return this.selections;
+    }
+
     private String getCurrentSelectionName() {
         return this.currentSelectionName;
     }
 
     private void setCurrentSelectionName() {
         this.currentSelectionName = this.selections.get(this.currentSelection);
+    }
+
+    private int getCurrentIndex() {
+        return this.currentSelection;
     }
 
     private void setSelection(int index) {
@@ -111,6 +121,9 @@ public class Selector extends SubsystemBase{
         else if (this.currentSelection < 0) {
             this.currentSelection = 0;
         }
+        else {
+            this.currentSelection = 0;
+        }
     }
 
     private void incrementSelection() {
@@ -120,16 +133,21 @@ public class Selector extends SubsystemBase{
         else if (this.currentSelection > this.selections.size() - 1) {
             this.currentSelection = this.selections.size() - 1;
         }
+        else {
+            this.currentSelection = 0;
+        }
     }
 
-    private ArrayList<String> filterSelections(ArrayList<String> list, String filterCriteria) {
+    private ArrayList<String> filterSelections(ArrayList<String> list, Supplier<String> filterCriteria) {
         Iterator<String> filter = list.iterator();
         ArrayList<String> placeholder = new ArrayList<String>();
         String toCheck;
 
+        this.filterCriteria = filterCriteria.get();
+
         while(filter.hasNext()) {
             toCheck = filter.next();
-            if (toCheck.contains(filterCriteria)) {
+            if (toCheck.contains(filterCriteria.get())) {
                 placeholder.add(toCheck);
             }
         }
@@ -138,9 +156,24 @@ public class Selector extends SubsystemBase{
 
     private void sortSelections() {
          this.selections.sort(Comparator.naturalOrder());
+         this.setCurrentSelectionName();
     }
 
-    public Command filterList(String criteria) {
+    private String getCurrentCommandName() {
+        if (this.getCurrentCommand() == null) {
+            return "No Command";
+        }
+        else {
+            return this.getCurrentCommand().getName();
+        }
+    }
+
+    //For debugging only.
+    private String[] getCurrentListArray() {
+        return this.getSelectionList().toArray(new String[this.getSelectionList().size()]);
+    }
+
+    public Command filterList(Supplier<String> criteria) {
         return runOnce(
             () -> {
                 this.selections = filterSelections(this.selections, criteria);
@@ -148,7 +181,7 @@ public class Selector extends SubsystemBase{
                 this.setSelection(0);
                 this.setCurrentSelectionName();
             }
-        ).withName("filterList");
+        ).ignoringDisable(true).withName("filterList");
     }
 
     public Command increment() {
@@ -157,7 +190,7 @@ public class Selector extends SubsystemBase{
                 this.incrementSelection();
                 this.setCurrentSelectionName();
             }
-        ).withName("increment");
+        ).ignoringDisable(true).withName("increment");
     }
 
     public Command decrement() {
@@ -166,11 +199,23 @@ public class Selector extends SubsystemBase{
                 this.decrementSelection();
                 this.setCurrentSelectionName();
             }
-        ).withName("decrement");
+        ).ignoringDisable(true).withName("decrement");
+    }
+
+    public Supplier<ArrayList<String>> currentList() {
+        return this::getSelectionList;
+    }
+
+    public Supplier<Integer> currentIndex() {
+        return this::getCurrentIndex;
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
+        builder.addStringProperty("Current Command", this::getCurrentCommandName, null);
         builder.addStringProperty("Current Selection", this::getCurrentSelectionName, null);
+        builder.addStringProperty("Filter String", () -> {return this.filterCriteria;}, null);
+        builder.addIntegerProperty("Number of Selections", () -> {return this.selections.size();}, null);
+        builder.addStringArrayProperty("Current List", this::getCurrentListArray, null);
     }
 }
