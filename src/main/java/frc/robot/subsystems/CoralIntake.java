@@ -240,6 +240,16 @@ public class CoralIntake extends SubsystemBase{
         ).until(isIntakeFloored);
     }
 
+    public Command intakeRaisedForClimb() {
+
+        //    System.out.println("=============Command CoralIntake intakeRaised===============");
+
+
+        return run(
+            () -> {this.goToPosition(CoralIntakeConstants.kIntakeRaisedForClimb);}
+        ).until(isIntakeRaisedForClimb);
+    }
+
     //=======================================================================
     //=========================Triggers======================================
     //=======================================================================
@@ -247,6 +257,7 @@ public class CoralIntake extends SubsystemBase{
     public Trigger isIntakeStowed= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeStowPosition);});
     public Trigger isIntakeRaised= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeRaisedPosition);});
     public Trigger isIntakeFloored= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeFloorPosition);});
+    public Trigger isIntakeRaisedForClimb= new Trigger(() -> {return this.isRotateMotorAtPosition(CoralIntakeConstants.kIntakeRaisedForClimb);});
     
     @Override
     public void initSendable(SendableBuilder builder) {

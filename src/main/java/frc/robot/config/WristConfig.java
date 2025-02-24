@@ -52,7 +52,7 @@ public class WristConfig {
 
         rotate.CurrentLimits.StatorCurrentLimit = 120.0;
         rotate.CurrentLimits.StatorCurrentLimitEnable = true;
-        rotate.CurrentLimits.SupplyCurrentLimit = 5;
+        rotate.CurrentLimits.SupplyCurrentLimit = 20;
         rotate.CurrentLimits.SupplyCurrentLimitEnable = true;
         rotate.CurrentLimits.SupplyCurrentLowerLimit = 40.0;
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;

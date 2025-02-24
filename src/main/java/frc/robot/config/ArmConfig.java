@@ -40,7 +40,7 @@ public class ArmConfig {
 
         rotate.CurrentLimits.StatorCurrentLimit = 120.0;
         rotate.CurrentLimits.StatorCurrentLimitEnable = true;
-        rotate.CurrentLimits.SupplyCurrentLimit = 2;
+        rotate.CurrentLimits.SupplyCurrentLimit = 20;
         rotate.CurrentLimits.SupplyCurrentLimitEnable = true;
         rotate.CurrentLimits.SupplyCurrentLowerLimit = 40.0;
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;
@@ -68,11 +68,7 @@ public class ArmConfig {
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         
-        if (Constants.kSloMo == true){ 
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85 * Constants.kSloMoFactor;
-        } else {
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85;
-        }
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 0.85;
 
         rotate.MotionMagic.MotionMagicAcceleration = 3.5;
         rotate.MotionMagic.MotionMagicJerk = 47.6;

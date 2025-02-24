@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -22,7 +24,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.WristConfig;
 import frc.robot.constants.Constants;
+import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.WristConstants;
+import frc.robot.constants.EndEffectorConstants.endEffectorLocation;
 import frc.robot.sim.WristSim;
 
 public class Wrist extends SubsystemBase{
@@ -53,6 +57,7 @@ public class Wrist extends SubsystemBase{
     DigitalInput m_BeamBreakGripperFrontDigital;
     DigitalInput m_BeamBreakGripperRearDigital;
 
+    public endEffectorLocation endEffectorLocation;
     
 
     Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
@@ -126,10 +131,33 @@ public class Wrist extends SubsystemBase{
         }
     }
 
-    private void wristSpin(double speed) {
+    private void wristSpin(endEffectorLocation endEffectorLocation) {
+        this.endEffectorLocation = endEffectorLocation;
 
         if (Constants.kWristSpinMotorEnabled == true) {
-            wristSpin.setControl(spinControl.withVelocity(speed));
+            switch(this.endEffectorLocation){
+                case NONE:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));
+                break;
+                case CORAL_GROUND_PICKUP:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
+                break;
+                case CORAL_HUMAN_PICKUP:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
+                break;
+                case CORAL_L1:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));
+                break;
+                case CORAL_L2:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                break;
+                case CORAL_L3:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                break;
+                case CORAL_L4:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                break;
+             }  
         }
     }
 
@@ -210,8 +238,7 @@ public class Wrist extends SubsystemBase{
 
     private boolean isPartGripper() {
 
-        //If neither beam break is made, part is in gripper
-        if (!m_Debouncer.calculate(m_BeamBreakGripperFrontDigital.get()) && !m_Debouncer.calculate(m_BeamBreakGripperRearDigital.get()))
+        if (!m_BeamBreakGripperFrontDigital.get() || !m_BeamBreakGripperRearDigital.get())
         {
             return true;
         } else {
@@ -338,9 +365,6 @@ public class Wrist extends SubsystemBase{
     
     public Command wristAlgaeL3() {
 
-        //    System.out.println("=============Command wrist wristAlgaeL3===============");
-        
-
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeL3);}
         ).until(this.isWristAlgaeL3);
@@ -354,9 +378,6 @@ public class Wrist extends SubsystemBase{
 
     public Command wristAlgaeProcessor() {
 
-         //   System.out.println("=============Command wrist wristAlgaeProcesor===============");
-        
-
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeProcessor);}
         ).until(this.isWristAlgaeProcessor);
@@ -364,48 +385,36 @@ public class Wrist extends SubsystemBase{
 
     public Command positionCoralInGripper(){
 
-        //    System.out.println("=============Command wrist positionCoralInGripper===============");
-        
-
         return run(
             () -> {this.positionCoral();}
         ).until(this.isWristAlgaeProcessor);
     }
 
-    public Command suck() {
+    public Command suck(Supplier<endEffectorLocation> endEffectorLocation) {
 
          //   System.out.println("=============Command wrist suck===============");
         
 
         return run(
-            () -> {this.wristSpin(WristConstants.kCoralSuck);}
+            () -> {this.wristSpin(endEffectorLocation.get());}
         );
     }
 
-    public Command spit() {
-
-        //    System.out.println("=============Command wrist spit===============");
-        
+    public Command spit(Supplier<endEffectorLocation> endEffectorLocation) {
 
         return run(
-            () -> {this.wristSpin(WristConstants.kCoralSpit);}
+            () -> {this.wristSpin(endEffectorLocation.get());}
         );
     }
 
     public Command stop() {
 
-        //    System.out.println("=============Command wrist stop spinning===============");
-        
-
         return runOnce(
-            () -> {this.wristSpin(WristConstants.kCoralStop);}
+            () -> {this.wristSpin(endEffectorLocation.NONE);}
         );
     }
 
     public Command toWristPosition(double position) {
-
-        //    System.out.println("=============Command wrist toWristPosition===============");
-        
 
         return run(
             () -> {this.wristDriveToPosition(position);}
@@ -464,6 +473,7 @@ public class Wrist extends SubsystemBase{
         builder.addDoubleProperty("Desired Position", this::getDesiredPosition, null);
         builder.addBooleanProperty("Front Gripper Beam Break", () -> {return isPartForwardGripper();}, null);
         builder.addBooleanProperty("Rear Gripper Beam Break", () -> {return isPartRearwardGripper();}, null);
+        builder.addBooleanProperty("Either Beam Break", () -> {return isPartGripper();}, null);
         builder.addDoubleProperty("CANrange Reef Distance", this::getReefDistance, null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
         builder.addBooleanProperty("Is the wrist at CoralLoadFloor", isWristCoralLoadFloor,null);

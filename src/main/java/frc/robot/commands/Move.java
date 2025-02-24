@@ -1,13 +1,16 @@
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.CoralIntake;
-import frc.robot.subsystems.EndEffector;
+import frc.robot.constants.EndEffectorConstants.endEffectorLocation;
+
+
 
 
 public class Move {
@@ -17,13 +20,13 @@ public class Move {
     public Wrist wrist;
     public Elevator elevator;
 
+    public endEffectorLocation endEffectorLocation;
+
     public Move(Wrist wrist, Arm arm, CoralIntake intake, Elevator elevator) {
-
-    this.intake = intake;
-    this.arm = arm;
-    this.wrist = wrist;
-    this.elevator = elevator;
-
+        this.intake = intake;
+        this.arm = arm;
+        this.wrist = wrist;
+        this.elevator = elevator;
     }
 
     //==========================================================
@@ -37,11 +40,11 @@ public class Move {
     //==========================================================
     //=====================Commands=============================
     //==========================================================
-    public Command intakeCoralFloor() {
+    public Command intakeCoralFloor(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(intake.intakeFloor(), elevator.toIntakeSafe()).
         andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
         andThen(elevator.elevatorCoralLoadFloor()).
-        andThen(Commands.parallel(intake.rollerSuck(),wrist.suck()).until(wrist.isPartForwardGripper)).
+        andThen(Commands.parallel(intake.rollerSuck(),wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper)).
         andThen(Commands.parallel(intake.rollerStop(),wrist.stop())).
         andThen(elevator.toIntakeSafe()).
         andThen(Commands.parallel(arm.armCoralStow(),wrist.wristCoralStow())).
@@ -72,30 +75,40 @@ public class Move {
         andThen(elevator.elevatorCoralL2());
     }
 
-    public Command wristCoralRollerSpit() {
-        return wrist.spit();
+    public Command wristCoralRollerSpit(Supplier<endEffectorLocation> endEffectorLocation) {
+        return wrist.spit(endEffectorLocation);
     }
 
     public Command wristCoralRollerStop() {
         return wrist.stop();
     }
 
-
-
-    public Command intakeCoralHuman() {
+    public Command intakeCoralHuman(Supplier<endEffectorLocation> endEffectorLocation) {
         return elevator.toIntakeSafe().
-        andThen(Commands.parallel(arm.armCoralLoadHuman(), wrist.wristCoralLoadHuman())).
-        andThen(elevator.elevatorCoralLoadHuman());
+        andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralLoadHuman(), wrist.wristCoralLoadHuman())).
+        andThen(elevator.elevatorCoralLoadHuman()).
+        andThen(wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper).
+        andThen(wrist.stop()).
+        andThen(elevator.toIntakeSafe()).
+        andThen(Commands.parallel(arm.armCoralStow(),wrist.wristCoralStow())).
+        andThen(Commands.parallel(intake.intakeRaised(),elevator.elevatorCoralStow()));
     }
 
     public Command coralL1() {
         return elevator.toIntakeSafe().
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralL1(), wrist.wristCoralL1())).
         andThen(elevator.elevatorCoralL1());
-    }    
+    }
 
+    public Command clearClimb() {
+        return elevator.toIntakeSafe().
+        andThen(Commands.parallel(intake.intakeFloor(), arm.armClearClimb(), wrist.wristCoralL1())).
+        andThen(elevator.elevatorCoralL1());
+    }
 
-
+    public Command intakeToRaisedForClimb() {
+        return intake.intakeRaisedForClimb();
+    }
 
 
     //======================================================

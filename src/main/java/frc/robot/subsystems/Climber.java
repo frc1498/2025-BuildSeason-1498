@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +25,9 @@ public class Climber extends SubsystemBase{
     public TalonFX climberRotate;
     MotionMagicVoltage rotateControl;
     public DutyCycleOut rotateDutyCycleControl;
-    
+    Servo climberServo;
+    double desiredServoPosition;
+
     //TalonFX climberSpin;
     //VelocityVoltage spinControl;
 
@@ -41,8 +44,9 @@ public class Climber extends SubsystemBase{
         climberRotate = new TalonFX(config.kclimberRotateCANID, "canivore");
         rotateControl = new MotionMagicVoltage(ClimberConstants.kClimberStowed);
 
-        //climberSpin = new TalonFX(config.kclimberRotateCANID, "canivore");
-        //spinControl = new VelocityVoltage(ClimberConstants.kClimberStop);
+        climberServo = new Servo(9);
+
+        desiredServoPosition = 0;
 
         //Fill in Instantiation
         this.configureMechanism(climberRotate, config.climberRotateConfig);
@@ -72,28 +76,39 @@ public class Climber extends SubsystemBase{
     //===========================================================
     //=======================Private=============================
     //===========================================================
+
+    private void climberLatch() {
+        this.desiredServoPosition = ClimberConstants.kServoLatch;
+        climberServo.set(ClimberConstants.kServoLatch);
+    }
+
+    private void climberUnLatch() {
+        this.desiredServoPosition = ClimberConstants.kServoUnLatch;
+        climberServo.set(ClimberConstants.kServoUnLatch);
+    }
+
+
     private void climberDriveToPosition(double position) {
-
-        //    System.out.println("=============Private climberDriveToPosition===============");
-
         if (Constants.kClimberRotateMotorEnabled == true) {
             climberRotate.setControl(rotateControl.withPosition(position));
         }
     }
 
     private boolean isClimberAtPosition(double position) {
-
-         //   System.out.println("=============Private isClimberAtPosition===============");
-         //   System.out.println("Lower Bound:" + (position - ClimberConstants.kDeadband));
-         //   System.out.println("Climber Position:" + getClimberPosition());
-          //  System.out.println("Upper Bound:" + (position + ClimberConstants.kDeadband));
-
-
         return ((position-ClimberConstants.kDeadband) <= getClimberPosition()) && ((position+ClimberConstants.kDeadband) >= getClimberPosition());
     }
 
     private double getClimberPosition(){
             return climberRotate.getPosition().getValueAsDouble();       
+    }
+
+    private double getServoPosition() {
+        return this.climberServo.get();
+    }
+
+    private double getDesiredServoPosition() {
+        return this.desiredServoPosition;
+        
     }
 
     private String getCurrentCommandName() {
@@ -106,32 +121,30 @@ public class Climber extends SubsystemBase{
     }
 
     private void climberEnable(){
-
-        //    System.out.println("=============Private ClimberEnable===============");
-
-
         climberEnabled=true;
     }
 
     //===============================================================
     //=====================Commands==================================
     //===============================================================
+    public Command commandClimberLatch() {
+        return runOnce(
+            () -> {this.climberLatch();}).withName("Climber Latch");
+    }
+
+    public Command commandClimberUnLatch() {
+        return runOnce(
+            () -> {this.climberUnLatch();}).withName("Climber Unlatch");
+    }
+
     public Command toClimberStow() {
-
-        //    System.out.println("=============Command toClimberStow===============");
-
-        
         return run(
-            () -> {this.climberDriveToPosition(ClimberConstants.kClimberStowed);}).until(isClimberStowed);
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberStowed);}).until(isClimberStowed).withName("To Climber Stow");
     }
 
     public Command toClimberReady() {
-
-        //    System.out.println("=============Command toClimberReady===============");
-
-
         return run(            
-            () -> {this.climberDriveToPosition(ClimberConstants.kClimberReady);}).until(isClimberReady);
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberReady);}).until(isClimberReady).withName("To Climber Ready");
     }
 
     public Command toClimberComplete() {
@@ -140,16 +153,12 @@ public class Climber extends SubsystemBase{
 
         
         return run(
-            () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}).until(isClimberComplete);
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}).until(isClimberComplete).withName("To Climber Complete");
     }
 
     public Command climberTriggered() {
-
-        //    System.out.println("=============Command climberTriggered===============");
-
-        
         return runOnce(
-            () -> {this.climberEnable();});  
+            () -> {this.climberEnable();}).withName("Climber Triggered");  
     
     }
 
@@ -166,6 +175,8 @@ public class Climber extends SubsystemBase{
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
+        builder.addDoubleProperty("Servo Position", this::getServoPosition, null);
+        builder.addDoubleProperty("Desired Servo Position", this::getDesiredServoPosition, null);
     }
 
     @Override

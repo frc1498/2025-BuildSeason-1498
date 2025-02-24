@@ -38,9 +38,12 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.EndEffector;
+import frc.robot.constants.EndEffectorConstants.endEffectorLocation;
 import frc.robot.commands.Move;
 
 public class RobotContainer {
+    endEffectorLocation endEffectorlocation;
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -88,11 +91,11 @@ public class RobotContainer {
     public final ClimberConfig climberConfig = new ClimberConfig();
     public final Climber climber = new Climber(climberConfig);
 
+    public final EndEffector endEffector = new EndEffector();
+
     public final Move move = new Move(wrist, arm, intake, elevator);
 
     public LED leds = new LED();
-
-    public String endEffectorMode = "none";
 
     //Very important, the vision subsystem has to be created after the drivetrain.
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
@@ -131,18 +134,11 @@ public class RobotContainer {
             )
         );
 
-        driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driver.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-        ));
+        //driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        //driver.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        //driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        //driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        //driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        //driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
+        
+     
         // reset the field-centric heading on left bumper press
         //driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
@@ -176,137 +172,55 @@ public class RobotContainer {
         driver.rightBumper().onTrue(endEffector.toCoralSuck());
         */
 
-        driver.leftBumper().onTrue(vision.addMegaTag2(() -> drivetrain));
-        
-
-        //====================Operator Commands========================
-        //Button Correlation Table
-        //===========
-        //Operator 1 - NOTE!  These numbers may be off one, I can't remember if the array starts at 0 or 1.
-        //A - DS 1 - Pickup: Algae Floor
-        //B - DS 2 - 
-        //X - DS 3 - Pickup: Algae L2
-        //Y - DS 4 - Socre: Coral L1
-        //leftBumper - DS 5 - Pikcup: Algae L3 
-        //rightBumper - DS 6  - Score: Coral L2
-        // Select - DS 7 - Pickup: Coral Human
-        // Start - DS 8  - Score: Coral L3
-        // Left Stick Press - DS 9 - Pickup: Coral Floor
-        // Right Stick Press - DS 10 - Score: Coral L4 / Barge
-        //===========
-        //Operator 2
-        //A - DS 1 - 
-        //B - DS 2 - Stow
-        //X - DS 3 - 
-        //Y - DS 4 - 
-        //leftBumper - DS 5  - 
-        //rightBumper - DS 6  - 
-        // Select - DS 7 - Climber - Load
-        // Start - DS 8  - Descore: Algae L2
-        // Left Stick Press - DS 9 - Climber - Load
-        // Right Stick Press - DS 10 - Descore: Algae L3
-
-        /* PseudoCode - Intake Suck in coral ground mode
-         * When Right trigger and not algae mode,
-         * then move intake to floor and wait until it is there
-         * then move endeffector into coral pickup position
-         * then turn on intake rollers and end effector wrist rollers until a part breaks the forward gripper
-         * then stop the rollers and start the position code for the coral 
-         * and then move end effector to coral stow
-         * then raise the intake
-         */
-
-        //==========================Intake Coral from Ground=============================
-        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(move.intakeCoralFloor());
-     
-        driver.leftBumper().onTrue(move.wristCoralRollerSpit()).onFalse(move.wristCoralRollerStop());
-     
-        //.and(move.wrist.isRangeOk)
-
-        //==========================Intake Coral from Human================================    
-        //driver.rightBumper().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(    
-        //    endEffectorCommand.toCoralHumanPickup().until(endEffectorCommand.isEndEffectorAtCoralHumanPickup)
-        //    .andThen(endEffectorCommand.wrist.suck()).until(endEffectorCommand.wrist.isPartForwardGripper)
-        //    .andThen(endEffectorCommand.wrist.positionCoralInGripper()).andThen(endEffectorCommand.toCoralStow()));
-
-        //==============================Algae Intake=====================================    
-        /*  Algae suck 
-            Move End effector to algae pickup location while raising the intake
-            then
-            
-            driver.rightTrigger(0.1).and(endEffector.isModeAlgae).onTrue();  //Intake Suck in algae mode*/
-
-        //=================================Spit Coral====================================    
-        //driver.y().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(
-        //intake.intakeFloor().andThen(Commands.parallel(intake.rollerSpit(), endEffectorCommand.wrist.suck()))).onFalse(intake.intakeRaised());
-
-        //=============================== Spit Algae=====================================
-        
-        //================================Score Coral=====================================
-        //driver.leftBumper().and(climber.isClimberReady.negate()).and(endEffector.isModeAlgae.negate()).onTrue(
-        //endEffectorCommand.wrist.spit().until(endEffectorCommand.wrist.isPartInGripper)
-        //.andThen(endEffectorCommand.toCoralStow()));      
-        
-        /* =================================Score Algae====================================
-        driver.leftBumper().onTrue();
-        */
-
-        //==================================Climb==========================================
-        driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
+        //driver.leftBumper().onTrue(vision.addMegaTag2(() -> drivetrain));
         
         //Auton Selection
         driver.povLeft().onTrue(autoSelect.decrement().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
         driver.povRight().onTrue(autoSelect.increment().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
-        
+
+        //=====================================================================
+        //==============================Driver=================================
+        //=====================================================================
+        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
+            andThen(move.intakeCoralFloor(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Ground
+ 
+        driver.leftBumper().and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
+            andThen(move.intakeCoralHuman(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Human
+ 
+        driver.rightBumper().onTrue(move.wristCoralRollerSpit(endEffector.whatIsEndEffectorLocation()).
+            until(wrist.isPartInGripper.negate()).
+            andThen(move.coralStow()));  //Spit Coral
+ 
+        driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete().
+        andThen(climber.commandClimberLatch())); //Climb
+          
         //=====================================================================
         //=============================Operator 1==============================
         //=====================================================================
-        //operator1.a().onTrue();
-        //operator1.x().onTrue();
-        //operator1.back().onTrue();
-        //operator1.leftBumper().onTrue();
+        operator1.b().and(climber.isClimberReady.negate()).onTrue(move.coralL1().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); //Score L1
 
-        //============================Operator to Coral L1=======================
-        operator1.b().and(climber.isClimberReady.negate()).onTrue(move.coralL1()); //Score L1, Processor
-        
-        //============================Operator to Processor=======================
-        //operator1.b().and(endEffector.isModeAlgae.negate())onTrue(endEffectorCommand.moveEndEffector("L1orProcessor")); //Score L1, Processor
+        operator1.y().and(climber.isClimberReady.negate()).onTrue(move.coralL2().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}))); //Score L3
 
-        //============================Operator ot Coral L3====================================
-        operator1.y().and(climber.isClimberReady.negate()).onTrue(move.coralL2()); //Score L3
+        operator1.rightBumper().and(climber.isClimberReady.negate()).onTrue(move.coralL3().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;}))); //Score L3
 
-        //============================Operator ot Algae L3====================================
-        operator1.rightBumper().and(climber.isClimberReady.negate()).onTrue(move.coralL3()); //Score L3
+        operator1.start().and(climber.isClimberReady.negate()).onTrue(move.coralL4().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}))); //Score L4
 
-        //============================Operator to Coral L4=============================
-        operator1.start().and(climber.isClimberReady.negate()).onTrue(move.coralL4()); //Score L4, Barge
+        operator1.rightStick().onTrue(move.coralStow().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));  //Coral Stow
 
-        //============================Operator to Barge=============================
-        //operator1.start().onTrue(endEffectorCommand.moveEndEffector("L4orBarge")); //Score L4, Barge
-
-        //============================Operator to Stow==============================
-        operator1.rightStick().onTrue(move.coralStow());
+        operator1.x().and(operator1.a()).onTrue(climber.commandClimberUnLatch().
+        andThen(move.clearClimb()).
+        andThen(climber.climberTriggered()).
+        andThen(climber.toClimberReady()).
+        andThen(move.intakeToRaisedForClimb()).withName("Climber Ready"));
 
         //===============================Select Mode=====================================
         //operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
         //
-
-        //=====================================================================
-        //=============================Operator 2==============================
-        //=====================================================================
-
-        //==============Trigger Climber========================================
-        //operator1.a().and(climber.isClimberReady.negate()).and(operator1.x()).onTrue(climber.climberTriggered().andThen(endEffectorCommand.toCoralL1()).andThen(climber.toClimberReady()));
-
-
-        //operator2.b().onTrue();
-        //operator2.x().onTrue();
-        //operator2.back().onTrue();
-        //operator2.start().onTrue());  //Descore Algae L2
-        //operator2.rightBumper().onTrue();
-        //operator2.leftBumper().onTrue();
-        //operator2.leftStick().onTrue();
-        //operator2.rightStick().onTrue();  //Descore Algae L3
 
         //=============LED System==============================================
         //intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
