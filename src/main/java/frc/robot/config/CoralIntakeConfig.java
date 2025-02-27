@@ -109,9 +109,9 @@ public class CoralIntakeConfig {
     }
 
     public void configureCoralIntakeCANcoder(CANcoderConfiguration CANcoderConfig){
-        CANcoderConfig.MagnetSensor.MagnetOffset = 0.00952148;
+        CANcoderConfig.MagnetSensor.MagnetOffset = -0.23876953125;
         CANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
-        CANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        CANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     }
   
 

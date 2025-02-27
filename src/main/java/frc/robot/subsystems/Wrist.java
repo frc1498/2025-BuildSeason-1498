@@ -355,9 +355,6 @@ public class Wrist extends SubsystemBase{
 
     public Command wristAlgaeL2() {
 
-        //    System.out.println("=============Command wrist wristAlgaeL2===============");
-        
-        
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kAlgaeL2);}
         ).until(this.isWristAlgaeL2);
@@ -392,9 +389,6 @@ public class Wrist extends SubsystemBase{
 
     public Command suck(Supplier<endEffectorLocation> endEffectorLocation) {
 
-         //   System.out.println("=============Command wrist suck===============");
-        
-
         return run(
             () -> {this.wristSpin(endEffectorLocation.get());}
         );
@@ -405,6 +399,13 @@ public class Wrist extends SubsystemBase{
         return run(
             () -> {this.wristSpin(endEffectorLocation.get());}
         );
+    }
+
+    public Command clearWristCoral() {
+
+        return run(
+            () -> {wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralClear));}
+        ).withTimeout(2);
     }
 
     public Command stop() {

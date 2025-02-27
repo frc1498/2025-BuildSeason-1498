@@ -45,11 +45,24 @@ public class Move {
         andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
         andThen(elevator.elevatorCoralLoadFloor()).
         andThen(Commands.parallel(intake.rollerSuck(),wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper)).
+        andThen(Commands.parallel(intake.clearCoralIntake(),wrist.stop(),elevator.toIntakeSafe())).
+        andThen(Commands.parallel(intake.clearCoralIntake(),arm.armCoralStow(),wrist.wristCoralStow())).
+        andThen(Commands.parallel(intake.intakeRaised(),elevator.elevatorCoralStow()).
+        andThen(intake.rollerStop()));
+    }
+
+    /*
+    public Command intakeCoralFloorFast(Supplier<endEffectorLocation> endEffectorLocation) {
+        return Commands.parallel(intake.intakeFloor(), elevator.toIntakeSafe()).
+        andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
+        andThen(elevator.elevatorCoralLoadFloor()).
+        andThen(Commands.parallel(intake.rollerSuck(),wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper)).
         andThen(Commands.parallel(intake.rollerStop(),wrist.stop())).
-        andThen(elevator.toIntakeSafe()).
-        andThen(Commands.parallel(arm.armCoralStow(),wrist.wristCoralStow())).
+        andThen(Commands.parallel(elevator.elevatorCoralStowFast(), wrist.wristCoralStow()).
+        andThen(arm.armCoralStow()).
         andThen(Commands.parallel(intake.intakeRaised(),elevator.elevatorCoralStow()));
     }
+    */
 
     public Command coralStow() {
         return elevator.toIntakeSafe().
@@ -102,14 +115,25 @@ public class Move {
 
     public Command clearClimb() {
         return elevator.toIntakeSafe().
-        andThen(Commands.parallel(intake.intakeFloor(), arm.armClearClimb(), wrist.wristCoralL1())).
-        andThen(elevator.elevatorCoralL1());
+        andThen(Commands.parallel(intake.intakeRaisedForClimb(), arm.armClearClimb(), wrist.wristCoralL1())).
+        andThen(elevator.elevatorCoralLoadFloor());
     }
 
     public Command intakeToRaisedForClimb() {
         return intake.intakeRaisedForClimb();
     }
 
+    public Command clearCoralIntake() {
+        return intake.clearCoralIntake();
+    }
+
+    public Command clearJams() {
+        return Commands.parallel(elevator.toIntakeSafe(), intake.intakeRaisedForClimb()).
+        andThen(Commands.parallel(intake.clearCoralIntake(), arm.armCoralLoadHuman(), wrist.wristCoralLoadHuman())).
+        andThen(wrist.clearWristCoral()).
+        andThen(Commands.parallel(arm.armCoralStow(),wrist.wristCoralStow())).
+        andThen(Commands.parallel(intake.intakeRaised(),elevator.elevatorCoralStow()));
+    }
 
     //======================================================
     //========================Triggers======================

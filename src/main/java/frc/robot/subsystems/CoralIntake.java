@@ -51,9 +51,10 @@ public class CoralIntake extends SubsystemBase{
         //Constructor - only runs once
 
         //Instantiate
+        rotateCANcoder = new CANcoder(config.kRotateCANcoderID, "canivore");
         rotateMotor = new TalonFX(config.kRotateCANID, "canivore");
         spinMotor = new TalonFX(config.kSpinCANID, "canivore");
-        rotateCANcoder = new CANcoder(config.kRotateCANcoderID);
+
         spinMotorMode = new VelocityVoltage(CoralIntakeConstants.kSuckSpeed);
         rotateMotorMode = new MotionMagicVoltage(CoralIntakeConstants.kIntakeStowPosition);
 
@@ -248,6 +249,13 @@ public class CoralIntake extends SubsystemBase{
         return run(
             () -> {this.goToPosition(CoralIntakeConstants.kIntakeRaisedForClimb);}
         ).until(isIntakeRaisedForClimb);
+    }
+
+    public Command clearCoralIntake() {
+    return run(
+        () -> {spit();}
+    ).withTimeout(1);
+
     }
 
     //=======================================================================

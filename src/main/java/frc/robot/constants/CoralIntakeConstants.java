@@ -3,10 +3,10 @@ package frc.robot.constants;
 public class CoralIntakeConstants {
 
     //These numbers are completely made up.
-    public static final double kIntakeFloorPosition = -0.209;
-    public static final double kIntakeRaisedPosition = 0.19;
-    public static final double kIntakeStowPosition = 0.23;
-    public static final double kIntakeRaisedForClimb = 0.12;
+    public static final double kIntakeFloorPosition = -0.209; //-0.209  difference, add .098 new -0.111
+    public static final double kIntakeRaisedPosition = 0.15; //0.19 new 0.288
+    public static final double kIntakeStowPosition = 0.22; //0.23 new 0.328
+    public static final double kIntakeRaisedForClimb = 0.13; //0.12 new 0.218
 
     //Safeties - the allowable range of movement.
     public static final double kIntakeMinPosition = -0.098145;

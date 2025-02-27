@@ -4,7 +4,7 @@ public class WristConstants {
 
     //===============Coral Positions======================
     public static final double kCoralStow = 0.0;  //Stow Position - 0 degrees
-    public static final double kCoralLoadFloor = -0.22;  //  Load Coral Floor Position - 0 degrees - 0 radians - 0 rotations
+    public static final double kCoralLoadFloor = -0.18;  //  Load Coral Floor Position - 0 degrees - 0 radians - 0 rotations
     public static final double kCoralLoadHuman = -0.0;  //  Load Coral Floor Position - 0 degrees - 0 radians - 0 rotations
     public static final double kCoralL1 = -0.08; // Level 1 Score Coral Position - Changing to real measurements, was:-15 degrees - -0.262 radians - -3.127 rotations
     public static final double kCoralL2 = 0.09; // Level 2 Score Coral Position - Changing to real measurements, was:-20 degrees - -0.349 radians - -4.166 rotations
@@ -31,6 +31,7 @@ public class WristConstants {
     public static final double kCoralL4Spit = 30.0;  //  Load Coral Floor Position 
     public final static double kCoralSlowBackward = -10; //Move coral slowly in gripper forward
     public final static double kCoralSlowForward = 10; //Move coral slowly in gripper backward
+    public final static double kCoralClear = -15;
 
     //Safeties - the allowable range of movement.
     public static final double kWristMinPosition = -0.572266;
