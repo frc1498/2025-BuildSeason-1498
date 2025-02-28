@@ -222,6 +222,14 @@ public class RobotContainer {
     public void registerAutonCommands() {
         NamedCommands.registerCommand("toCoralL1", move.coralL1().
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;})));
+        NamedCommands.registerCommand("toCoralL2", move.coralL2().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;})));
+        NamedCommands.registerCommand("toCoralL3", move.coralL3().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;})));
+        NamedCommands.registerCommand("toCoralL4", move.coralL4().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;})));
+        NamedCommands.registerCommand("toCoralStow", move.coralStow().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
         NamedCommands.registerCommand("spit", move.wristCoralRollerSpit(endEffector.whatIsEndEffectorLocation()).
         until(wrist.isPartInGripper.negate()).
         andThen(move.coralStow()));
