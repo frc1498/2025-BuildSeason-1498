@@ -11,15 +11,13 @@ public class ElevatorConstants {
     public static final double kCoralMin = 0.5; //Rotations
 
     //===========Coral Positions===================
-    public static final double kCoralStow = 3.0;
-    public static final double kCoralLoadFloor = 5; //was 5, changing to 2 for testing
+    public static final double kCoralStow = 0.0;
+    public static final double kCoralLoadFloor = 4.5; //was 5, changing to 2 for testing
     public static final double kCoralLoadHuman = 18.5; //0.1 meters
     public static final double kCoralL1 = 10; //0.46 meters
     public static final double kCoralL2 = 26; //0.81 meters
     public static final double kCoralL3 = .5; //1.21 meters
     public static final double kCoralL4 = 25; //1.83 meters
-
-    public static final double kCoralLoadFloorBetter = 0.5; //NOT BEING USED FOR SOME REASON NOT USED NOT USED
 
     //=============Algae Positions=============
     public static final double kAlgaeStow = 0.0;

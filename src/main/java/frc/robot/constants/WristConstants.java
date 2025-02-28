@@ -12,7 +12,7 @@ public class WristConstants {
     public static final double kCoralL4 =-0.41; // Level 4 Score Coral Position - Changing to real measurements, was: 30 degrees - -0.524 radians - -6.255 rotations
 
     public static final double kCoralLoadFloorBetterInitial = -0.25;
-    public static final double kCoralLoadFloorBetterFinal = -0.2;
+    public static final double kCoralLoadFloorBetterFinal = -0.165;
     
 
     //==================Algae Positions====================
