@@ -25,7 +25,7 @@ public class ElevatorConstants {
     public static final double kAlgaeStow = 0.0;
     public static final double kAlgaeLoadFloor = 5; //0.1 meters  
     public static final double kAlgaeL2 = 10; //0.81 meters
-    public static final double kAlgaeL3 = 15; //1.21 meters
+    public static final double kAlgaeL3 = 25; //1.21 meters
     public static final double kAlgaeBarge = 20; //2.2 meters
     public static final double kAlgaeProcessor = 25; //0.3 meters
 

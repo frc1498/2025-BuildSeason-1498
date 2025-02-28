@@ -179,8 +179,6 @@ public class RobotContainer {
  
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete()); //Climb
           
-//andThen(climber.commandClimberLatch()
-
         driver.b().and(driver.x()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));  //ReZero Gyro
 
         driver.a().and(climber.isClimberReady.negate()).onTrue(move.clearCoralIntake().andThen(move.clearJams())); //clear jams
@@ -208,6 +206,12 @@ public class RobotContainer {
         andThen(climber.climberTriggered()).
         andThen(climber.toClimberReady()).
         andThen(move.intakeToRaisedForClimb()).withName("Climber Ready"));
+
+        operator1.back().onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
+        andThen(move.goToRemoveAlgaeL2(endEffector.whatIsEndEffectorLocation())));
+
+        operator1.leftStick().onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
+        andThen(move.goToRemoveAlgaeL3(endEffector.whatIsEndEffectorLocation())));
 
         //===============================Select Mode=====================================
         //operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode

@@ -157,6 +157,20 @@ public class Move {
         andThen(Commands.parallel(intake.intakeRaised(),elevator.elevatorCoralStow()));
     }
 
+
+    public Command goToRemoveAlgaeL2(Supplier<endEffectorLocation> endEffectorLocation) {
+        return elevator.toIntakeSafe().
+        andThen(Commands.parallel(wrist.wristAlgaeL2(),arm.armAlgaeL2())).
+        andThen(elevator.elevatorAlgaeL2(), wrist.spit(endEffectorLocation));
+    }
+
+    
+    public Command goToRemoveAlgaeL3(Supplier<endEffectorLocation> endEffectorLocation) {
+        return elevator.toIntakeSafe().
+        andThen(Commands.parallel(wrist.wristAlgaeL3(),arm.armAlgaeL3())).
+        andThen(elevator.elevatorAlgaeL3(), wrist.spit(endEffectorLocation));
+    }
+
     //======================================================
     //========================Triggers======================
     //======================================================

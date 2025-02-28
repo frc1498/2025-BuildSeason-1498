@@ -156,6 +156,10 @@ public class Wrist extends SubsystemBase{
                 break;
                 case CORAL_L4:
                 wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                case ALGAE_L2:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));    
+                case ALGAE_L3:
+                wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
              }  
         }
