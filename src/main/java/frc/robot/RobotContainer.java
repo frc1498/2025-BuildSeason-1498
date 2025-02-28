@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 
@@ -103,6 +104,9 @@ public class RobotContainer {
     public boolean hasDeterminedAlliance;
 
     public RobotContainer() {
+        //Auton commands need to be registered BEFORE the autons are loaded.
+        //Autons are loaded after a trigger in configureBindings triggers, so this should be safe.
+        registerAutonCommands();
         configureBindings();
     }
 
@@ -215,6 +219,13 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
+    public void registerAutonCommands() {
+        NamedCommands.registerCommand("toCoralL1", move.coralL1().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;})));
+        NamedCommands.registerCommand("spit", move.wristCoralRollerSpit(endEffector.whatIsEndEffectorLocation()).
+        until(wrist.isPartInGripper.negate()).
+        andThen(move.coralStow()));
+    }
 
     public Command getAutonomousCommand() {
         return selectedAuton;

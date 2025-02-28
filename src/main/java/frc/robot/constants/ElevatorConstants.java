@@ -42,6 +42,6 @@ public class ElevatorConstants {
     public static final double kElevatorCarriageMass = 6.80; //kg - Estimating the arm and wrist together weigh ~15 lb., so ~ 6.8 kg.
     public static final double kElevatorDrumRadius = 0.2159; //m - The 'drum' is linear, and it is 17 in tall, so estimate an 8.5 in. 'radius'
     public static final double kElevatorMinHeight = 0.0; //m
-    public static final double kElevatorMaxHeight = 3.0; //m - Assume each stage is 17 in., and there are 3 stages.
+    public static final double kElevatorMaxHeight = 5.0; //m - Assume each stage is 17 in., and there are 3 stages.
     public static final double kElevatorStartingHeight = 0.0; //m
 }
