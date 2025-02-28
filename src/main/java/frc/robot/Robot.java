@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
    
     m_robotContainer.climber.climberRotate.setControl(m_robotContainer.climber.rotateDutyCycleControl.withOutput(0));
     */
-/*
+
     //Constantly check for the current alliance.
     //This 'latches' once it has been retrieved.
     if (!hasDeterminedAlliance && DriverStation.isDSAttached()) {
@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
       m_robotContainer.hasDeterminedAlliance = true;
 
       };
-*/
+
 
       }
 

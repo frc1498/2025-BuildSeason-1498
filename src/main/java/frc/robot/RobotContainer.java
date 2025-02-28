@@ -10,6 +10,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -81,6 +83,9 @@ public class RobotContainer {
 
     public LED leds = new LED();
 
+    public boolean hasDeterminedAlliance = false;
+    public DriverStation.Alliance allianceColor = Alliance.Blue;
+
     //Very important, the vision subsystem has to be created after the drivetrain.
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
     public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
@@ -141,7 +146,7 @@ public class RobotContainer {
         //==============================Driver=================================
         //=====================================================================
         driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
-            andThen(move.intakeCoralFloor(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Ground
+            andThen(move.intakeCoralFloorBetter(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Ground
  
         driver.leftBumper().and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
             andThen(move.intakeCoralHuman(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Human

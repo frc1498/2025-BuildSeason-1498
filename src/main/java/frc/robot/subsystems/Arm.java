@@ -178,6 +178,17 @@ public class Arm extends SubsystemBase{
         ).until(this.isArmCoralLoadFloor);
     }
 
+    public Command armCoralLoadFloorBetter() {
+
+        //System.out.println("=============Command Arm armCoralLoadFloor===============");
+
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kCoralLoadFloorBetter);}
+        ).until(this.isArmCoralLoadFloorBetter);
+    }
+
+
+
     public Command armCoralLoadHuman() {
         
         //System.out.println("=============Command Arm armCoralLoadHuman===============");
@@ -309,6 +320,7 @@ public class Arm extends SubsystemBase{
     public Trigger isArmCoralL2 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL2);});
     public Trigger isArmCoralL3 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL3);});
     public Trigger isArmCoralL4 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL4);});
+    public Trigger isArmCoralLoadFloorBetter = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralLoadFloorBetter);});
 
     //===========================================
     //===============Algae Triggers==============

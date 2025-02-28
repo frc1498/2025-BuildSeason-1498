@@ -51,6 +51,28 @@ public class Move {
         andThen(intake.rollerStop()));
     }
 
+    public Command intakeCoralFloorBetter(Supplier<endEffectorLocation> endEffectorLocation) {
+        return Commands.parallel(intake.intakeFloor(), elevator.toIntakeSafe()).
+        andThen(Commands.parallel(arm.armCoralLoadFloorBetter(),wrist.wristCoralLoadFloorBetterInitial())).
+        andThen(elevator.elevatorCoralLoadFloor()).
+        andThen(wrist.wristCoralLoadFloorBetterFinal()).
+        andThen(Commands.parallel(intake.rollerSuck(),wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper)).
+        andThen(Commands.parallel(wrist.stop())).
+        andThen(Commands.parallel(wrist.wristCoralLoadFloorBetterInitial()),elevator.toIntakeSafe()).
+        andThen(Commands.parallel(intake.intakeRaised(),wrist.wristCoralStow(),arm.armCoralStow())).
+        andThen(elevator.elevatorCoralStow(),intake.clearCoralIntake());
+    }
+
+
+/*
+    .
+        andThen(Commands.parallel(intake.rollerSuck(),wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper)).
+        andThen(Commands.parallel(intake.clearCoralIntake(),wrist.stop(),elevator.toIntakeSafe())).
+        andThen(Commands.parallel(intake.clearCoralIntake(),arm.armCoralStow(),wrist.wristCoralStow())).
+        andThen(Commands.parallel(intake.intakeRaised(),elevator.elevatorCoralStow()).
+        andThen(intake.rollerStop())
+*/
+
     /*
     public Command intakeCoralFloorFast(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(intake.intakeFloor(), elevator.toIntakeSafe()).

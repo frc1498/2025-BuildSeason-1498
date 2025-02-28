@@ -422,6 +422,26 @@ public class Wrist extends SubsystemBase{
         );
     }
 
+    public Command wristCoralLoadFloorBetterInitial() {
+        
+        return run(
+            () -> {this.wristDriveToPosition(WristConstants.kCoralLoadFloorBetterInitial);}
+        ).until(this.isCoralWristLoadFloorBetterInitial)
+        .withName("wristCoralLoadFloorBetterInitial");
+    }
+
+    public Command wristCoralLoadFloorBetterFinal() {
+        
+        return run(
+            () -> {this.wristDriveToPosition(WristConstants.kCoralLoadFloorBetterFinal);}
+        ).until(this.isCoralWristLoadFloorBetterFinal)
+        .withName("wristCoralLoadFloorBetterFinal");
+    }
+
+
+
+
+
     /*
     public Command isRangeOk() {
         return run(
@@ -451,6 +471,9 @@ public class Wrist extends SubsystemBase{
     public final Trigger isWristCoralL2 = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralL2);});
     public final Trigger isWristCoralL3 = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralL3);});
     public final Trigger isWristCoralL4 = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralL4);});
+
+    public final Trigger isCoralWristLoadFloorBetterInitial = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralLoadFloorBetterInitial);});
+    public final Trigger isCoralWristLoadFloorBetterFinal = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralLoadFloorBetterFinal);});
 
     //========================================================
     //===================Triggers for Wrist Algae=============
