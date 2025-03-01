@@ -35,6 +35,17 @@ public class Arm extends SubsystemBase{
 
     private double desiredPosition;
 
+    enum armState {
+        FRONT,
+        REAR,
+        MIDDLE,
+        NONE
+    }
+
+    private armState currentArmState;
+    private armState previousArmState;
+    private armState desiredArmState;
+
     public Arm(ArmConfig config) {
         //Constructor - only runs once
 
@@ -51,6 +62,10 @@ public class Arm extends SubsystemBase{
         armEncoderSim = armRotateEncoder.getSimState();
 
         sim = new ArmSim(config, armSim, armEncoderSim);
+
+        previousArmState = armState.NONE;
+        currentArmState = armState.NONE;
+        desiredArmState = armState.NONE;
 
         SmartDashboard.putData("Arm", this);
     }
@@ -135,6 +150,33 @@ public class Arm extends SubsystemBase{
         }
         else {
             return this.getCurrentCommand().getName();
+        }
+    }
+
+    private armState getCurrentArmState() {
+        return currentArmState;
+    }
+
+    private armState getDesiredArmState() {
+        return desiredArmState;
+    }
+
+    private armState getPreviousArmState() {
+        return previousArmState;
+    }
+
+    private armState checkArmState(double currentArmPosition) {
+        if (currentArmPosition < ArmConstants.kFrontSafe) {
+            return armState.FRONT;
+        }
+        else if (currentArmPosition > ArmConstants.kRearSafe) {
+            return armState.REAR;
+        }
+        else if ((currentArmPosition > ArmConstants.kFrontSafe) && (currentArmPosition < ArmConstants.kRearSafe)) {
+            return armState.MIDDLE;
+        }
+        else {
+            return armState.NONE;
         }
     }
     
@@ -338,7 +380,12 @@ public class Arm extends SubsystemBase{
     public final Trigger isArmFrontSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kFrontSafe);});
     public final Trigger isArmRearSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kRearSafe);});
     public final Trigger isArmClearClimb = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kClearClimb);});
+    public final Trigger isArmFront = new Trigger(() -> {return this.currentArmState == armState.FRONT;});
+    public final Trigger isArmMiddle = new Trigger(() -> {return this.currentArmState == armState.MIDDLE;});
+    public final Trigger isArmRear = new Trigger(() -> {return this.currentArmState == armState.REAR;});
+
     public final Trigger isArmIntakeSafe = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kIntakeSafe);});
+
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -349,11 +396,19 @@ public class Arm extends SubsystemBase{
         builder.addBooleanProperty("Is Arm at Human Coral Load", isArmCoralLoadHuman, null);
         builder.addBooleanProperty("Is the Arm at CoralLoadFloor", isArmCoralLoadFloor,null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
+        builder.addStringProperty("Previous Arm State", () -> {return this.getPreviousArmState().toString();}, null);
+        builder.addStringProperty("Current Arm State", () -> {return this.getCurrentArmState().toString();}, null);
+        builder.addStringProperty("Desired Arm State", () -> {return this.getDesiredArmState().toString();}, null);
+
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        //Cache the previous arm state, then update the current arm state and the desired arm state.
+        this.previousArmState = this.currentArmState;
+        this.currentArmState = this.checkArmState(this.GetArmPosition());
+        this.desiredArmState = this.checkArmState(this.getDesiredArmPosition());
     }
   
     @Override
