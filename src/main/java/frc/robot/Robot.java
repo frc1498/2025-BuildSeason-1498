@@ -8,6 +8,7 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,8 @@ public class Robot extends TimedRobot {
     }
     //Get the deploy directory for Elastic.
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+
+    RobotController.setBrownoutVoltage(6.75);
     
     SmartDashboard.putData(CommandScheduler.getInstance());
   }
