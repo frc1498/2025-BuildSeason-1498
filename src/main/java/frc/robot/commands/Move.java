@@ -52,6 +52,17 @@ public class Move {
     }
 
     public Command intakeCoralFloorBetter(Supplier<endEffectorLocation> endEffectorLocation) {
+        return Commands.parallel(intake.intakeFloor(), Commands.sequence(elevator.toIntakeSafe(),Commands.parallel(arm.armCoralLoadFloorBetter(),wrist.wristCoralLoadFloorBetterInitial()))).
+        andThen(elevator.elevatorCoralLoadFloor()).
+        andThen(wrist.wristCoralLoadFloorBetterFinal()).
+        andThen(Commands.parallel(intake.rollerSuck(),wrist.suck(endEffectorLocation)).until(wrist.isPartForwardGripper)).
+        andThen(Commands.parallel(wrist.stop(),intake.rollerStop())).
+        andThen(Commands.parallel(wrist.wristCoralLoadFloorBetterInitial()),elevator.toIntakeSafe(),intake.clearCoralIntake()).
+        andThen(Commands.parallel(intake.intakeRaised(),wrist.wristCoralStow(),arm.armCoralStow())).
+        andThen(elevator.elevatorCoralStow(),intake.rollerStop());
+    }
+/*
+    public Command intakeCoralFloorBetter(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(intake.intakeFloor(), elevator.toIntakeSafe()).
         andThen(Commands.parallel(arm.armCoralLoadFloorBetter(),wrist.wristCoralLoadFloorBetterInitial())).
         andThen(elevator.elevatorCoralLoadFloor()).
@@ -62,7 +73,7 @@ public class Move {
         andThen(Commands.parallel(intake.intakeRaised(),wrist.wristCoralStow(),arm.armCoralStow())).
         andThen(elevator.elevatorCoralStow(),intake.clearCoralIntake());
     }
-
+*/
 
 /*
     .
@@ -87,25 +98,25 @@ public class Move {
     */
 
     public Command coralStow() {
-        return elevator.toIntakeSafe().
+        return Commands.parallel(elevator.toIntakeSafe(),wrist.stop()).
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(Commands.parallel(elevator.elevatorCoralStow(), wrist.stop(), intake.rollerStop()));
     }    
 
     public Command coralL4() {
-        return elevator.toIntakeSafe().
+        return Commands.parallel(elevator.toIntakeSafe(),wrist.stop()).
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralL4(), wrist.wristCoralL4())).
         andThen(elevator.elevatorCoralL4());
     }
 
     public Command coralL3() {
-        return elevator.toIntakeSafe().
+        return Commands.parallel(elevator.toIntakeSafe(),wrist.stop()).
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralL3(), wrist.wristCoralL3())).
         andThen(elevator.elevatorCoralL3());
     }
 
     public Command coralL2() {
-        return elevator.toIntakeSafe().
+        return Commands.parallel(elevator.toIntakeSafe(),wrist.stop()).
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralL2(), wrist.wristCoralL2())).
         andThen(elevator.elevatorCoralL2());
     }
@@ -130,13 +141,13 @@ public class Move {
     }
 
     public Command coralL1() {
-        return elevator.toIntakeSafe().
+        return Commands.parallel(elevator.toIntakeSafe(),wrist.stop()).
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralL1(), wrist.wristCoralL1())).
         andThen(elevator.elevatorCoralL1());
     }
 
     public Command clearClimb() {
-        return elevator.toIntakeSafe().
+        return Commands.parallel(elevator.toIntakeSafe(),wrist.stop()).
         andThen(Commands.parallel(intake.intakeRaisedForClimb(), arm.armClearClimb(), wrist.wristCoralL1())).
         andThen(elevator.elevatorCoralLoadFloor());
     }

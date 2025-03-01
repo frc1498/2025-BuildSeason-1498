@@ -27,13 +27,13 @@ public class WristConstants {
     public static final double kRearSafe = 0;
     
     //===============Wrist Intake Spin Velocities======================
-    public static final double kCoralStop = 0.0;  //Stow Position 
-    public static final double kCoralSuck = 9.0;  //  Load Coral Floor Position
-    public static final double kCoralL1Spit = 15.0;  //  Load Coral Floor Position 
-    public static final double kCoralL2Spit = 30.0;  //  Load Coral Floor Position 
-    public static final double kCoralL3Spit = 30.0;  //  Load Coral Floor Position 
-    public static final double kCoralL4Spit = 30.0;  //  Load Coral Floor Position 
-    public final static double kCoralSlowBackward = -10; //Move coral slowly in gripper forward
+    public static final double kCoralStop = 0.0;  // Stop speed 
+    public static final double kCoralSuck = 9.0;  //  Suck speed
+    public static final double kCoralL1Spit = 15.0;  //  L1 spit speed 
+    public static final double kCoralL2Spit = 25.0;  //  L2 spit speed 
+    public static final double kCoralL3Spit = 25.0;  //  L3 spit speed 
+    public static final double kCoralL4Spit = 25.0;  //  L4 spit speed 
+    public final static double kCoralSlowBackward = -10; // Move coral slowly in gripper forward
     public final static double kCoralSlowForward = 10; //Move coral slowly in gripper backward
     public final static double kCoralClear = -15;
     public final static double kAlgaeRemove = 60.0;

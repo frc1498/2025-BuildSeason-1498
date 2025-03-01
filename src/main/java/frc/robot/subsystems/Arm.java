@@ -384,6 +384,8 @@ public class Arm extends SubsystemBase{
     public final Trigger isArmMiddle = new Trigger(() -> {return this.currentArmState == armState.MIDDLE;});
     public final Trigger isArmRear = new Trigger(() -> {return this.currentArmState == armState.REAR;});
 
+    public final Trigger isArmIntakeSafe = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kIntakeSafe);});
+
 
     @Override
     public void initSendable(SendableBuilder builder) {
