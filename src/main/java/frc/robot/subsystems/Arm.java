@@ -338,7 +338,7 @@ public class Arm extends SubsystemBase{
     public final Trigger isArmFrontSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kFrontSafe);});
     public final Trigger isArmRearSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kRearSafe);});
     public final Trigger isArmClearClimb = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kClearClimb);});
-
+    public final Trigger isArmIntakeSafe = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kIntakeSafe);});
 
     @Override
     public void initSendable(SendableBuilder builder) {

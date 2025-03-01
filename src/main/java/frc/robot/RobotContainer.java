@@ -167,6 +167,7 @@ public class RobotContainer {
         //=====================================================================
         //==============================Driver=================================
         //=====================================================================
+        
         driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloorBetter(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Ground
  
