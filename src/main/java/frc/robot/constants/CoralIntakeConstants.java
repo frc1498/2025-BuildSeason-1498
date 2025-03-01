@@ -12,7 +12,7 @@ public class CoralIntakeConstants {
     public static final double kIntakeMinPosition = -0.098145;
     public static final double kIntakeMaxPosition = 0.216309;
 
-    public static final double kSuckSpeed = 40;
+    public static final double kSuckSpeed = 50;
     public static final double kSpitSpeed = -20;
     public static final double kStopSpeed = 0.0;
 
