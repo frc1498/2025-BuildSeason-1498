@@ -380,6 +380,9 @@ public class Arm extends SubsystemBase{
     public final Trigger isArmFrontSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kFrontSafe);});
     public final Trigger isArmRearSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kRearSafe);});
     public final Trigger isArmClearClimb = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kClearClimb);});
+    public final Trigger isArmFront = new Trigger(() -> {return this.currentArmState == armState.FRONT;});
+    public final Trigger isArmMiddle = new Trigger(() -> {return this.currentArmState == armState.MIDDLE;});
+    public final Trigger isArmRear = new Trigger(() -> {return this.currentArmState == armState.REAR;});
 
 
     @Override
