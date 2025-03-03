@@ -180,6 +180,12 @@ public class Arm extends SubsystemBase{
         }
     }
     
+    private boolean IsArmIntakeSafe() {
+
+        return (armRotate.getPosition().getValueAsDouble() < ArmConstants.kIntakeSafe);
+
+    }
+
     //===================================================
     //=====================Public Commands===============
     //===================================================    
@@ -384,7 +390,7 @@ public class Arm extends SubsystemBase{
     public final Trigger isArmMiddle = new Trigger(() -> {return this.currentArmState == armState.MIDDLE;});
     public final Trigger isArmRear = new Trigger(() -> {return this.currentArmState == armState.REAR;});
 
-    public final Trigger isArmIntakeSafe = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kIntakeSafe);});
+    public final Trigger isArmIntakeSafe = new Trigger(() ->{return this.IsArmIntakeSafe();});
 
 
     @Override

@@ -149,6 +149,13 @@ public class Elevator extends SubsystemBase {
         ).until(this.isElevatorCoralLoadFloor);
     }
 
+    public Command elevatorCoralLoadFloorBetter2() {
+        
+        return run(
+            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralLoadFloorBetter2);}
+        ).until(this.isElevatorCoralLoadFloorBetter2);
+    }
+
     public Command elevatorCoralLoadHuman() {
         
         return run(
@@ -262,6 +269,7 @@ public class Elevator extends SubsystemBase {
     public final Trigger isElevatorCoralL2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL2);});
     public final Trigger isElevatorCoralL3 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL3);});
     public final Trigger isElevatorCoralL4 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL4);});
+    public final Trigger isElevatorCoralLoadFloorBetter2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralLoadFloorBetter2);});
 
     //=====================================================
     //==============Triggers for Elevator Algae============

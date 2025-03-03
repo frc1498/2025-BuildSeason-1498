@@ -167,10 +167,10 @@ public class RobotContainer {
         //=====================================================================
         //==============================Driver=================================
         //=====================================================================
-        
-        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
+    // We are not in a safe position - we can collide with the intake    
+        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).and(arm.isArmIntakeSafe.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloorBetter(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Ground
- 
+
         driver.leftBumper().and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
             andThen(move.intakeCoralHuman(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Human
  
