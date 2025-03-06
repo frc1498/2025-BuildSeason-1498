@@ -190,6 +190,10 @@ public class Wrist extends SubsystemBase{
         }
     }
 
+    private String getScoringPosition() {
+        return this.scoringPosition;
+    }
+
     private boolean isWristAtPosition(double position) {
 
             return ((position-WristConstants.kDeadband) <= getWristPosition()) && ((position+WristConstants.kDeadband) >= getWristPosition());
@@ -516,7 +520,7 @@ public class Wrist extends SubsystemBase{
     //=====================================================
     public final Trigger isWristFrontSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kFrontSafe);});
     public final Trigger isWristRearSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kRearSafe);});
-    public final Trigger isCanRange = new Trigger(() -> {return this.checkRange(scoringPosition);});
+    public final Trigger isCanRange = new Trigger(() -> {return this.checkRange(this.getScoringPosition());});
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -530,6 +534,7 @@ public class Wrist extends SubsystemBase{
         builder.addBooleanProperty("Is the wrist at CoralLoadFloor", isWristCoralLoadFloor,null);
         builder.addBooleanProperty("Can In Range to Spit", isCanRange, null);
         builder.addStringProperty("Can Range Mode", this::getCurrentCanRangeMode,null);
+        builder.addStringProperty("Scoring Position", this::getScoringPosition, null);
     }  
 
     @Override
