@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.CoralIntakeConfig;
-import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.Constants;
 import frc.robot.constants.CoralIntakeConstants;
 import frc.robot.sim.CoralIntakeSim;
@@ -254,7 +252,7 @@ public class CoralIntake extends SubsystemBase{
     public Command clearCoralIntake() {
     return runOnce(
         () -> {spit();}
-    ).withTimeout(2);
+    ).withTimeout(1);
 
     }
 

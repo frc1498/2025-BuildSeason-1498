@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
@@ -42,10 +41,6 @@ public class Arm extends SubsystemBase{
         NONE
     }
 
-    private armState currentArmState;
-    private armState previousArmState;
-    private armState desiredArmState;
-
     public Arm(ArmConfig config) {
         //Constructor - only runs once
 
@@ -62,10 +57,6 @@ public class Arm extends SubsystemBase{
         armEncoderSim = armRotateEncoder.getSimState();
 
         sim = new ArmSim(config, armSim, armEncoderSim);
-
-        previousArmState = armState.NONE;
-        currentArmState = armState.NONE;
-        desiredArmState = armState.NONE;
 
         SmartDashboard.putData("Arm", this);
     }
@@ -107,40 +98,20 @@ public class Arm extends SubsystemBase{
     //===================================================
     private void armDriveToPosition(double position) {
         this.desiredPosition = position;
-
-        //    System.out.println("=========================Private armDriveToPosition=====================");
-        //    System.out.println("armDriveToPosition:"+this.desiredPosition);
-
-        
         if (Constants.kArmRotateMotorEnabled == true) {
             armRotate.setControl(rotateControl.withPosition(position));
         }
     }
 
     private boolean isArmAtPosition(double position) {
-
-        //    System.out.println("=========================Private isArmAtPosition=====================");
-        //    System.out.println("LowerBound:"+(position+ArmConstants.kDeadband));
-        //    System.out.println("Actual:"+position);
-        //    System.out.println("UpperBound:"+(position-ArmConstants.kDeadband));
-
             return ((position-ArmConstants.kDeadband) <= GetArmPosition()) && ((position+ArmConstants.kDeadband) >= GetArmPosition());
     }
 
     private double getDesiredArmPosition() {
- 
-        //    System.out.println("=========================Private Arm getDesiredPosition=====================");
-        //    System.out.println("Desired Position:"+this.desiredPosition);
-
         return this.desiredPosition;
     }
 
     private double GetArmPosition(){
-        
-        // System.out.println("========================= Private Arm getArmPosition=====================");
-        // System.out.println("Arm Position:"+armRotate.getPosition().getValueAsDouble());
-
-
         return armRotate.getPosition().getValueAsDouble();
     }
 
@@ -153,205 +124,112 @@ public class Arm extends SubsystemBase{
         }
     }
 
-    private armState getCurrentArmState() {
-        return currentArmState;
-    }
-
-    private armState getDesiredArmState() {
-        return desiredArmState;
-    }
-
-    private armState getPreviousArmState() {
-        return previousArmState;
-    }
-
-    private armState checkArmState(double currentArmPosition) {
-        if (currentArmPosition < ArmConstants.kFrontSafe) {
-            return armState.FRONT;
-        }
-        else if (currentArmPosition > ArmConstants.kRearSafe) {
-            return armState.REAR;
-        }
-        else if ((currentArmPosition > ArmConstants.kFrontSafe) && (currentArmPosition < ArmConstants.kRearSafe)) {
-            return armState.MIDDLE;
-        }
-        else {
-            return armState.NONE;
-        }
-    }
-    
-    private boolean IsArmIntakeSafe() {
-
+    private boolean IsArmInFrontOfIntake() {
         return (armRotate.getPosition().getValueAsDouble() < ArmConstants.kIntakeSafe);
+    }
 
+    private boolean IsArmAboveIntake45() {
+        return (armRotate.getPosition().getValueAsDouble() > ArmConstants.kArmAboveIntake45);
     }
 
     //===================================================
     //=====================Public Commands===============
     //===================================================    
-
-    public Command armFrontSafe() {
-
-        //    System.out.println("=============Command Arm armFrontSafe===============");
-
-
-        return run(    
-            () -> {this.armDriveToPosition(ArmConstants.kFrontSafe);}
-        ).until(this.isArmFrontSafe);
-    }
-    
-    public Command armRearSafe() {
-
-        //    System.out.println("=============Command Arm armRearSafe===============");
-
-
-        return run(
-            () -> {this.armDriveToPosition(ArmConstants.kRearSafe);}
-        ).until(this.isArmRearSafe);
-    }
-
     public Command armCoralStow() {
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralStow);}
         ).until(this.isArmCoralStow);
     }
 
     public Command armCoralLoadFloor() {
-
-        //System.out.println("=============Command Arm armCoralLoadFloor===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralLoadFloor);}
         ).until(this.isArmCoralLoadFloor);
     }
 
-    public Command armCoralLoadFloorBetter() {
-
-        //System.out.println("=============Command Arm armCoralLoadFloor===============");
-
-        return run(
-            () -> {this.armDriveToPosition(ArmConstants.kCoralLoadFloorBetter);}
-        ).until(this.isArmCoralLoadFloorBetter);
-    }
-
-
-
     public Command armCoralLoadHuman() {
-        
-        //System.out.println("=============Command Arm armCoralLoadHuman===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralLoadHuman);}
         ).until(this.isArmCoralLoadHuman);
     }
 
     public Command armCoralL1() {
-
-        //System.out.println("=============Command Arm armCoralL1===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL1);}
         ).until(this.isArmCoralL1);
     }
 
     public Command armCoralL2() {
-
-        //    System.out.println("=============Command Arm armCoralL2===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL2);}
         ).until(this.isArmCoralL2);
     }
 
     public Command armCoralL3() {
-
-        //System.out.println("=============Command Arm armCoralL3===============");
-
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL3);}
         ).until(this.isArmCoralL3);
     }
 
     public Command armCoralL4() {
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kCoralL4);}
         ).until(this.isArmCoralL4);
     }
 
     public Command armAlgaeStow() {
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeStow);}
         ).until(this.isArmAlgaeStow);
     }
 
     public Command armAlgaeLoadFloor() {
-
-         //   System.out.println("=============Command Arm armAlgaeLoadFloor===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeLoadFloor);}
         ).until(this.isArmAlgaeLoadFloor);
     }
 
     public Command armAlgaeL2() {
-
-        //    System.out.println("=============Command Arm armAlgaeL2===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeL2);}
         ).until(this.isArmAlgaeL2);
     }
 
     public Command armAlgaeL3() {
-
-        //    System.out.println("=============Command Arm armAlgaeL3===============");
-
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeL3);}
         ).until(this.isArmAlgaeL3);
     }
 
     public Command armAlgaeBarge() {
-
-        //    System.out.println("=============Command Arm armAlgaeBarge===============");
-
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeBarge);}
         ).until(this.isArmAlgaeBarge);
     }
 
     public Command armAlgaeProcessor() {
-        
-        //System.out.println("=============Command Arm armAlgaeProcessor===============");
-        
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kAlgaeProcessor);}
         ).until(this.isArmAlgaeProcessor);
     }
 
     public DoubleSupplier getArmRotation() {
-
-        //   System.out.println("=============Command Arm getArmRotation===============");
-
-
         return this::GetArmPosition; 
     }
 
     public Command toArmPosition(double position) {
-         //   System.out.println("=============Command Arm toArmPosition===============");
-
         return run(
             () -> {this.armDriveToPosition(position);}
         );
     }
 
-    public Command armClearClimb() {
+    public Command armAboveIntake45() {
+        return run(
+            () -> {this.armDriveToPosition(ArmConstants.kArmAboveIntake45);}
+        ).until(this.isArmAboveIntake45);
+    }
 
+    public Command armClearClimb() {
         return run(
             () -> {this.armDriveToPosition(ArmConstants.kClearClimb);}
         ).until(this.isArmClearClimb);
@@ -368,7 +246,6 @@ public class Arm extends SubsystemBase{
     public Trigger isArmCoralL2 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL2);});
     public Trigger isArmCoralL3 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL3);});
     public Trigger isArmCoralL4 = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralL4);});
-    public Trigger isArmCoralLoadFloorBetter = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kCoralLoadFloorBetter);});
 
     //===========================================
     //===============Algae Triggers==============
@@ -386,12 +263,8 @@ public class Arm extends SubsystemBase{
     public final Trigger isArmFrontSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kFrontSafe);});
     public final Trigger isArmRearSafe = new Trigger(() -> {return this.isArmAtPosition(ArmConstants.kRearSafe);});
     public final Trigger isArmClearClimb = new Trigger(() ->{return this.isArmAtPosition(ArmConstants.kClearClimb);});
-    public final Trigger isArmFront = new Trigger(() -> {return this.currentArmState == armState.FRONT;});
-    public final Trigger isArmMiddle = new Trigger(() -> {return this.currentArmState == armState.MIDDLE;});
-    public final Trigger isArmRear = new Trigger(() -> {return this.currentArmState == armState.REAR;});
-
-    public final Trigger isArmIntakeSafe = new Trigger(() ->{return this.IsArmIntakeSafe();});
-
+    public final Trigger isArmInFrontOfIntake = new Trigger(() ->{return this.IsArmInFrontOfIntake();});
+    public final Trigger isArmAboveIntake45 = new Trigger(() ->{return this.IsArmAboveIntake45();});
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -402,19 +275,12 @@ public class Arm extends SubsystemBase{
         builder.addBooleanProperty("Is Arm at Human Coral Load", isArmCoralLoadHuman, null);
         builder.addBooleanProperty("Is the Arm at CoralLoadFloor", isArmCoralLoadFloor,null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
-        builder.addStringProperty("Previous Arm State", () -> {return this.getPreviousArmState().toString();}, null);
-        builder.addStringProperty("Current Arm State", () -> {return this.getCurrentArmState().toString();}, null);
-        builder.addStringProperty("Desired Arm State", () -> {return this.getDesiredArmState().toString();}, null);
-
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
         //Cache the previous arm state, then update the current arm state and the desired arm state.
-        this.previousArmState = this.currentArmState;
-        this.currentArmState = this.checkArmState(this.GetArmPosition());
-        this.desiredArmState = this.checkArmState(this.getDesiredArmPosition());
     }
   
     @Override

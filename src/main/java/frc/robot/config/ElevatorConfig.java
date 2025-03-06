@@ -5,8 +5,6 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import frc.robot.constants.Constants;
-
 public class ElevatorConfig {
 
     public final int kElevatorDriveFrontCANID = 11;

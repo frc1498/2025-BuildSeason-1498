@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ElevatorConfig;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.Constants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.sim.ElleySim;
@@ -113,13 +111,6 @@ public class Elevator extends SubsystemBase {
     //======================================================================
     //=====================Public Commands==================================
     //======================================================================
-    public Command elevatorMiddleSafe() {
-               
-        return run(
-            () -> {this.elevatorDriveToPosition(ElevatorConstants.kMiddleSafe);}
-        ).until(this.isElevatorMiddleSafe);
-    }
-    
     
     public Command elevatorFrontSafe() {
                
@@ -147,13 +138,6 @@ public class Elevator extends SubsystemBase {
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralLoadFloor);}
         ).until(this.isElevatorCoralLoadFloor);
-    }
-
-    public Command elevatorCoralLoadFloorBetter2() {
-        
-        return run(
-            () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralLoadFloorBetter2);}
-        ).until(this.isElevatorCoralLoadFloorBetter2);
     }
 
     public Command elevatorCoralLoadHuman() {
@@ -247,13 +231,6 @@ public class Elevator extends SubsystemBase {
         );
     }
 
-    public Command toIntakeSafe() {
-        
-        return run(
-            () -> {elevatorDriveToPosition(ElevatorConstants.kIntakeSafe);}
-            ).until(isElevatorIntakeSafe);
-    }
-
     public DoubleSupplier getElevatorRotation() {
 
         return this::getElevatorPosition;
@@ -269,7 +246,6 @@ public class Elevator extends SubsystemBase {
     public final Trigger isElevatorCoralL2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL2);});
     public final Trigger isElevatorCoralL3 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL3);});
     public final Trigger isElevatorCoralL4 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralL4);});
-    public final Trigger isElevatorCoralLoadFloorBetter2 = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kCoralLoadFloorBetter2);});
 
     //=====================================================
     //==============Triggers for Elevator Algae============
@@ -286,9 +262,7 @@ public class Elevator extends SubsystemBase {
     //=====================================================
     public final Trigger isElevatorFrontSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kFrontSafe);});
     public final Trigger isElevatorRearSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kRearSafe);});
-    public final Trigger isElevatorMiddleSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kMiddleSafe);});
-    public final Trigger isElevatorIntakeSafe = new Trigger(() -> {return this.isElevatorAtPosition(ElevatorConstants.kIntakeSafe);});
-
+ 
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.

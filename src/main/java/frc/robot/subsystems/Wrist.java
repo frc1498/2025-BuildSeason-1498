@@ -4,8 +4,8 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANrange;
@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.WristConfig;
 import frc.robot.constants.Constants;
-import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.constants.EndEffectorConstants.endEffectorLocation;
 import frc.robot.sim.WristSim;
@@ -59,6 +58,7 @@ public class Wrist extends SubsystemBase{
 
     public endEffectorLocation endEffectorLocation;
     
+    String scoringPosition;
 
     Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
 
@@ -80,13 +80,29 @@ public class Wrist extends SubsystemBase{
         this.configureMechanism(wristSpin, config.wristSpinConfig);  //Fill in framework
         this.configureMechanism(wristRotate, config.wristRotateConfig);  //Fill in framework
         this.configureCancoder(wristRotateCancoder, config.wristRotateCANcoderConfig);  //Fill in framework
+        this.configureCANRange(wristReefDistance, config.canRangeConfig);
       
         wristRotateSim = wristRotate.getSimState();
         wristEncoderSim = wristRotateCancoder.getSimState();
         wristRollerSim = wristSpin.getSimState();
         sim = new WristSim(config, wristRotateSim, wristEncoderSim, wristRollerSim);
-        
+
         SmartDashboard.putData("Wrist", this);
+    }
+
+    public void configureCANRange(CANrange CANRangeSensor, CANrangeConfiguration config ) {
+
+      //Start Configuring CANRange
+      StatusCode canRangeRotateStatus = StatusCode.StatusCodeNotInitialized;
+
+      for(int i = 0; i < 5; ++i) {
+          canRangeRotateStatus = CANRangeSensor.getConfigurator().apply(config);
+          if (canRangeRotateStatus.isOK()) break;
+      }
+      if (!canRangeRotateStatus.isOK()) {
+          System.out.println("Could not configure device. Error: " + canRangeRotateStatus.toString());
+      }
+
     }
     
     public void configureCancoder(CANcoder coralIntakeRotate, CANcoderConfiguration config){       
@@ -137,29 +153,38 @@ public class Wrist extends SubsystemBase{
         if (Constants.kWristSpinMotorEnabled == true) {
             switch(this.endEffectorLocation){
                 case NONE:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));
+                    scoringPosition = "";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));                
                 break;
                 case CORAL_GROUND_PICKUP:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
+                    scoringPosition = "";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_HUMAN_PICKUP:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
+                    scoringPosition = "";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_L1:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));
+                    scoringPosition = "CoralL1";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));
                 break;
                 case CORAL_L2:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                    scoringPosition = "CoralL2";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
                 break;
                 case CORAL_L3:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                    scoringPosition = "CoralL3";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
                 break;
                 case CORAL_L4:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                    scoringPosition = "CoralL4";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
                 case ALGAE_L2:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));    
+                    scoringPosition = "";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 case ALGAE_L3:
-                wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
+                    scoringPosition = "";
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
              }  
         }
@@ -167,23 +192,15 @@ public class Wrist extends SubsystemBase{
 
     private boolean isWristAtPosition(double position) {
 
-        //    System.out.println("=============Private Wrist isWristAtPosition===============");
-
-
             return ((position-WristConstants.kDeadband) <= getWristPosition()) && ((position+WristConstants.kDeadband) >= getWristPosition());
     }
 
     private double getDesiredPosition() {
 
-            //System.out.println("=============Private Wrist getDesiredPosition===============");
-        
-
         return wristDesiredPosition;
     }
 
     private double getWristPosition(){
-
-           //System.out.println("=============Private Wrist wristDriveToPosition===============");
         
             return wristRotate.getPosition().getValueAsDouble();       
     }
@@ -192,21 +209,21 @@ public class Wrist extends SubsystemBase{
         return wristReefDistance.getDistance().getValueAsDouble();
     }
 
-    private boolean checkRange(String scoringposition) {
-        if (scoringposition == "CoralL1"){
+    private boolean checkRange(String localPosition) {
+        if ((localPosition == "CoralL1") || (localPosition == "")){
             range_ok=true;
-        } else if (scoringposition == "CoralL2"){
+        } else if (localPosition == "CoralL2"){
             range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL2);
-        } else if (scoringposition == "CoralL3"){
+        } else if (localPosition == "CoralL3"){
             range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3);
-        } else if (scoringposition == "CoralL4"){
+        } else if (localPosition == "CoralL4"){
             range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL4);
         }
         return range_ok;
     }
 
 
-
+/*
     private void positionCoral(){
 
          //   System.out.println("=============Private Wrist wristDriveToPosition===============");
@@ -220,6 +237,7 @@ public class Wrist extends SubsystemBase{
             wristSpin.set(WristConstants.kCoralStop); //stop motor
         }
     }
+*/
 
     private boolean isPartForwardGripper() {
         //If either beam break is made, part is in gripper
@@ -257,6 +275,10 @@ public class Wrist extends SubsystemBase{
         else {
             return this.getCurrentCommand().getName();
         }
+    }
+
+    private String getCurrentCanRangeMode () {
+        return scoringPosition;
     }
 
     //=============================================================
@@ -384,12 +406,14 @@ public class Wrist extends SubsystemBase{
         ).until(this.isWristAlgaeProcessor);
     }
 
+    /*
     public Command positionCoralInGripper(){
 
         return run(
             () -> {this.positionCoral();}
         ).until(this.isWristAlgaeProcessor);
     }
+    */
 
     public Command suck(Supplier<endEffectorLocation> endEffectorLocation) {
 
@@ -426,6 +450,7 @@ public class Wrist extends SubsystemBase{
         );
     }
 
+    /*
     public Command wristCoralLoadFloorBetterInitial() {
         
         return run(
@@ -433,7 +458,9 @@ public class Wrist extends SubsystemBase{
         ).until(this.isCoralWristLoadFloorBetterInitial)
         .withName("wristCoralLoadFloorBetterInitial");
     }
+    */
 
+    /*
     public Command wristCoralLoadFloorBetterFinal() {
         
         return run(
@@ -441,18 +468,13 @@ public class Wrist extends SubsystemBase{
         ).until(this.isCoralWristLoadFloorBetterFinal)
         .withName("wristCoralLoadFloorBetterFinal");
     }
+    */
 
-
-
-
-
-    /*
-    public Command isRangeOk() {
+    public Command isCanAtRange(String localposition) {
         return run(
-            () -> {this.checkRange();}
+            () -> {this.checkRange(localposition);}
         );
     }
-    */
 
     //===============================================
     //=================Suppliers=====================
@@ -494,6 +516,7 @@ public class Wrist extends SubsystemBase{
     //=====================================================
     public final Trigger isWristFrontSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kFrontSafe);});
     public final Trigger isWristRearSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kRearSafe);});
+    public final Trigger isCanRange = new Trigger(() -> {return this.checkRange(scoringPosition);});
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -505,6 +528,8 @@ public class Wrist extends SubsystemBase{
         builder.addDoubleProperty("CANrange Reef Distance", this::getReefDistance, null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
         builder.addBooleanProperty("Is the wrist at CoralLoadFloor", isWristCoralLoadFloor,null);
+        builder.addBooleanProperty("Can In Range to Spit", isCanRange, null);
+        builder.addStringProperty("Can Range Mode", this::getCurrentCanRangeMode,null);
     }  
 
     @Override

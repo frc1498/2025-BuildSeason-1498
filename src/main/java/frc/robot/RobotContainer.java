@@ -12,16 +12,10 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.events.EventTrigger;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.pilotLib.utility.Selector;
@@ -166,65 +160,158 @@ public class RobotContainer {
 
         //=====================================================================
         //==============================Driver=================================
-        //=====================================================================
-    // We are not in a safe position - we can collide with the intake    
-        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).and(arm.isArmIntakeSafe.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
-            andThen(move.intakeCoralFloorBetter(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Ground
+        //=====================================================================    
+        //Drive - Coral Floor Intake
+            //Front To Front    
+        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
+            andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())));
 
-        driver.leftBumper().and(climber.isClimberReady.negate()).onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
-            andThen(move.intakeCoralHuman(endEffector.whatIsEndEffectorLocation())));  //Intake Coral from Human
- 
-        driver.rightBumper().and(climber.isClimberReady.negate()).onTrue(move.wristCoralRollerSpit(endEffector.whatIsEndEffectorLocation()).
-            until(wrist.isPartInGripper.negate()).
-            andThen(move.coralStow()));  //Spit Coral
- 
-        driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete()); //Climb
+            //Rear To Front 
+        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
+            andThen(move.intakeCoralFloorRearToFront(endEffector.whatIsEndEffectorLocation())));
+/*
+        //Driver - Coral Human Intake
+            //Front To Rear
+        driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
+            andThen(move.intakeCoralHumanFrontToRear(endEffector.whatIsEndEffectorLocation())));
+        
+            //Rear To Rear
+        driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
+            andThen(move.intakeCoralHumanRearToRear(endEffector.whatIsEndEffectorLocation())));
+ */
+
+
+        //Driver - Spit Coral
+            //Front To Front
+        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
+        onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
+            
+        //Driver - Spit Coral
+            //Rear To Front
+        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.and(wrist.isCanRange).negate()).
+        onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+
+        //Driver - Climb
+        driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
           
-        driver.b().and(driver.x()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));  //ReZero Gyro
+        //Driver - Rezero Gyro
+        driver.b().and(driver.x()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        driver.a().and(climber.isClimberReady.negate()).onTrue(move.clearCoralIntake().andThen(move.clearJams())); //clear jams
+        /*
+        //Driver Clear Jams
+        driver.a().and(climber.isClimberReady.negate()).onTrue(move.clearCoralIntake().andThen(move.clearJams()));
+        */
 
         //=====================================================================
         //=============================Operator 1==============================
         //=====================================================================
-        operator1.b().and(climber.isClimberReady.negate()).onTrue(move.coralL1().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); //Score L1
+        // To Do:  If we use finite states
+        //  Check trevor's arm state.  How many positions do we need?  Taken from a trigger:
+        //      Forward of intake
+        //      Behind intake
+        //  Each button press will need these 2 states
+        //
+        //  How many Commands will we need in move for general moves?
+        //      Front To Front
+        //      Front To Rear
+        //      Rear To Rear
+        //      Rear To Front
 
-        operator1.y().and(climber.isClimberReady.negate()).onTrue(move.coralL2().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}))); //Score L3
 
-        operator1.rightBumper().and(climber.isClimberReady.negate()).onTrue(move.coralL3().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;}))); //Score L3
+        //Operator - Score Coral L1
+            //Front To Front
+        operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            move.coralL1FrontToFront().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
+            //Rear To Front
+        operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.coralL1RearToFront().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
 
-        operator1.start().and(climber.isClimberReady.negate()).onTrue(move.coralL4().
+        //Operator - Score Coral L2
+            //Front To Front
+        operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            move.coralL2FrontToFront().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;})));
+    
+            //Rear To Front
+        operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.coralL2RearToFront().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;})));
+
+        //Operator - Score Coral L3
+            //Front To Rear
+        operator1.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            move.coralL3FrontToRear().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;})));
+    
+            //Rear To Rear
+        operator1.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.coralL3RearToRear().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;})));
+
+        //Operator - Score Coral L4
+            //Front To Rear
+        operator1.start().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            move.coralL4FrontToRear().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}))); //Score L4
+    
+            //Rear To Rear
+        operator1.start().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.coralL4RearToRear().
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}))); //Score L4
 
-        operator1.rightStick().and(climber.isClimberReady.negate()).onTrue(move.coralStow().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));  //Coral Stow
+        //Operator - Coral Stow
+            //Front To Front
+        operator1.rightStick().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            move.coralStowFrontToFront().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
 
-        operator1.x().and(operator1.a()).and(climber.isClimberReady.negate()).onTrue(climber.commandClimberUnLatch().
-        andThen(move.clearClimb()).
-        andThen(climber.climberTriggered()).
-        andThen(climber.toClimberReady()).
-        andThen(move.intakeToRaisedForClimb()).withName("Climber Ready"));
+            //Rear To Front
+        operator1.rightStick().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.coralStowRearToFront().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
 
-        operator1.back().onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
-        andThen(move.goToRemoveAlgaeL2(endEffector.whatIsEndEffectorLocation())));
+        //Operator - Remove Algae L2
+            //Front To Front
+        operator1.back().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
+            andThen(move.goToRemoveAlgaeL2FrontToFront(endEffector.whatIsEndEffectorLocation())));
+            //Rear To Front
+        operator1.back().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
+            andThen(move.goToRemoveAlgaeL2RearToFront(endEffector.whatIsEndEffectorLocation())));
 
-        operator1.leftStick().onTrue(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
-        andThen(move.goToRemoveAlgaeL3(endEffector.whatIsEndEffectorLocation())));
+        //Operator - Remove Algae L3
+            //Front To Rear
+        operator1.leftStick().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
+            andThen(move.goToRemoveAlgaeL3FrontToRear(endEffector.whatIsEndEffectorLocation())));
+            //Rear To Rear
+        operator1.leftStick().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
+            andThen(move.goToRemoveAlgaeL3RearToRear(endEffector.whatIsEndEffectorLocation())));
 
-        //===============================Select Mode=====================================
-        //operator1.leftStick().onTrue(endEffector.setEndEffectorMode("Coral"));  //Coral Mode
-        //
+       //Operator - Climb
+       operator1.x().and(operator1.a()).and(climber.isClimberReady.negate()).onTrue(climber.commandClimberUnLatch().
+       andThen(move.clearClimb()).
+       andThen(climber.climberTriggered()).
+       andThen(climber.toClimberReady()).
+       andThen(move.intakeToRaisedForClimb()).withName("Climber Ready"));
 
         //=============LED System==============================================
         //intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
     }
 
     public void registerAutonCommands() {
+/*
         NamedCommands.registerCommand("toCoralL1", move.coralL1().
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;})));
         NamedCommands.registerCommand("toCoralL2", move.coralL2().
@@ -238,7 +325,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("spit", move.wristCoralRollerSpit(endEffector.whatIsEndEffectorLocation()).
         until(wrist.isPartInGripper.negate()).
         andThen(move.coralStow()));
-    }
+  */
+        }
 
     public Command getAutonomousCommand() {
         return selectedAuton;

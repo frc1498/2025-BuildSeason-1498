@@ -1,15 +1,15 @@
 package frc.robot.config;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
-import frc.robot.constants.Constants;
 
 public class WristConfig {
     public final int kRotateCANID = 14;  //Rotate Motor
@@ -23,12 +23,13 @@ public class WristConfig {
     public CANcoderConfiguration wristRotateCANcoderConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration wristRotateConfig;  //Create variable of type CANcoderConfiguration
     public TalonFXConfiguration wristSpinConfig;  //Create variable of type CANcoderConfiguration
-
+    public CANrangeConfiguration canRangeConfig;  //Create variable of type CanRangeConfig
 
 
      public class WristRotateConfig {
 
     }
+
 
     //Constructor
     public WristConfig() {
@@ -40,7 +41,18 @@ public class WristConfig {
 
         wristSpinConfig = new TalonFXConfiguration();  //Instantiate - make a framework
         this.configureWristSpin(wristSpinConfig);  //Fill in framework
+
+        canRangeConfig = new CANrangeConfiguration(); //Instantiate - make a framework
+        this.configureCANRange(canRangeConfig); //Fill in framework
     }
+
+    public void configureCANRange(CANrangeConfiguration canconfig){
+        //configure the canRange
+        canconfig.FovParams.FOVRangeX = 6.75;
+        canconfig.FovParams.FOVRangeY = 6.75;
+        canconfig.ProximityParams.MinSignalStrengthForValidMeasurement=2500;
+    }
+
 
     public void configureWristRotate(TalonFXConfiguration rotate){
 
@@ -79,14 +91,7 @@ public class WristConfig {
         rotate.Feedback.SensorToMechanismRatio = 1;
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
-
-        if (Constants.kSloMo == true){ 
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.9 * Constants.kSloMoFactor;
-        } else {
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.9;
-        }
-        
-
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 0.9;
         rotate.MotionMagic.MotionMagicAcceleration = 6.67;
         rotate.MotionMagic.MotionMagicJerk = 66.7;
 

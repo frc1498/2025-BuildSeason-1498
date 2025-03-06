@@ -9,8 +9,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
-import frc.robot.constants.Constants;
-
 public class ArmConfig {
     //Contants
     public static final int kArmRotateCANID = 13;
