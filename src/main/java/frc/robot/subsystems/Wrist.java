@@ -81,7 +81,7 @@ public class Wrist extends SubsystemBase{
         this.configureMechanism(wristSpin, config.wristSpinConfig);  //Fill in framework
         this.configureMechanism(wristRotate, config.wristRotateConfig);  //Fill in framework
         this.configureCancoder(wristRotateCancoder, config.wristRotateCANcoderConfig);  //Fill in framework
-        this.configureCANRange(wristReefDistance, config.canRangeConfig);
+        this.configureCANRange(wristReefDistance, config.canRangeConfig); //Fill in framework
       
         wristRotateSim = wristRotate.getSimState();
         wristEncoderSim = wristRotateCancoder.getSimState();
@@ -178,7 +178,7 @@ public class Wrist extends SubsystemBase{
                 case ALGAE_L3:
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
-             }  
+           }  
         }
     }
 
@@ -466,11 +466,13 @@ public class Wrist extends SubsystemBase{
     }
     */
 
+    /*
     public Command isCanAtRange(String localposition) {
         return run(
             () -> {this.checkRange(localposition);}
         );
     }
+     */
 
     //===============================================
     //=================Suppliers=====================
