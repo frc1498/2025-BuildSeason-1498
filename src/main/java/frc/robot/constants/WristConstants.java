@@ -56,8 +56,8 @@ public class WristConstants {
     public static final double kWristRollerGearing = 3.0; //3:1 reduction
 
     //=================Can Range Values===============
-    public static final double krangeL2 = 0;
-    public static final double krangeL3 = 0;
-    public static final double krangeL4 = 0;
+    public static final double krangeL2 = 0.8;
+    public static final double krangeL3 = 0.6;
+    public static final double krangeL4 = 0.4;
     
 }

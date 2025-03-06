@@ -150,7 +150,7 @@ public class Wrist extends SubsystemBase{
     private void wristSpin(endEffectorLocation endEffectorLocation) {
         this.endEffectorLocation = endEffectorLocation;
 
-        if (Constants.kWristSpinMotorEnabled == true) {
+       if (Constants.kWristSpinMotorEnabled == true) {
             switch(this.endEffectorLocation){
                 case NONE:
                     scoringPosition = "";
@@ -186,7 +186,7 @@ public class Wrist extends SubsystemBase{
                     scoringPosition = "";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
-             }  
+           }  
         }
     }
 
@@ -474,11 +474,13 @@ public class Wrist extends SubsystemBase{
     }
     */
 
+    /*
     public Command isCanAtRange(String localposition) {
         return run(
             () -> {this.checkRange(localposition);}
         );
     }
+     */
 
     //===============================================
     //=================Suppliers=====================
