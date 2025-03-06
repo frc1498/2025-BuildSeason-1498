@@ -58,7 +58,7 @@ public class Wrist extends SubsystemBase{
 
     public endEffectorLocation endEffectorLocation;
     
-    String scoringPosition;
+    String scoringPosition = "";
 
     Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
 
@@ -80,7 +80,7 @@ public class Wrist extends SubsystemBase{
         this.configureMechanism(wristSpin, config.wristSpinConfig);  //Fill in framework
         this.configureMechanism(wristRotate, config.wristRotateConfig);  //Fill in framework
         this.configureCancoder(wristRotateCancoder, config.wristRotateCANcoderConfig);  //Fill in framework
-        this.configureCANRange(wristReefDistance, config.canRangeConfig);
+        this.configureCANRange(wristReefDistance, config.canRangeConfig); //Fill in framework
       
         wristRotateSim = wristRotate.getSimState();
         wristEncoderSim = wristRotateCancoder.getSimState();
