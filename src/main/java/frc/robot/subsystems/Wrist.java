@@ -196,6 +196,11 @@ public class Wrist extends SubsystemBase{
         return wristDesiredPosition;
     }
 
+    private double getSignalStrength () {
+
+        return wristReefDistance.getSignalStrength().getValueAsDouble();
+    }
+
     private double getWristPosition(){
         
             return wristRotate.getPosition().getValueAsDouble();       
@@ -208,12 +213,15 @@ public class Wrist extends SubsystemBase{
     private boolean checkRange(String localPosition) {
         if ((localPosition == "CoralL1") || (localPosition == "")){
             range_ok=true;
-        } else if (localPosition == "CoralL2"){
-            range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL2);
+        } else if (localPosition == "CoralL2"){  
+            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL2) && 
+                (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
         } else if (localPosition == "CoralL3"){
-            range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3);
+            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3) && 
+            (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
         } else if (localPosition == "CoralL4"){
-            range_ok=(wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL4);
+            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL4) && 
+            (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
         }
         return range_ok;
     }
@@ -529,6 +537,7 @@ public class Wrist extends SubsystemBase{
         builder.addBooleanProperty("Can In Range to Spit", isCanRange, null);
         builder.addStringProperty("Can Range Mode", this::getCurrentCanRangeMode,null);
         builder.addStringProperty("Scoring Position", this::getScoringPosition, null);
+        builder.addDoubleProperty("CANrange Signal Strength", this::getSignalStrength, null);
     }  
 
     @Override

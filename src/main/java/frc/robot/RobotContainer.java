@@ -16,6 +16,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.pilotLib.utility.Selector;
@@ -224,6 +225,12 @@ public class RobotContainer {
 
         //Operator - Score Coral L1
             //Front To Front
+            operator1.b().and(arm.isArmInFrontOfIntake).onTrue(
+                Commands.parallel(move.coralL1FrontToFront(), endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}))); 
+            operator1.b().and(arm.isArmInFrontOfIntake.negate()).onTrue(
+                    Commands.parallel(move.coralL1RearToFront(), endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}))); 
+  
+                /*
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             move.coralL1FrontToFront().
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
@@ -231,7 +238,10 @@ public class RobotContainer {
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             move.coralL1RearToFront().
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
+        */
 
+
+        
         //Operator - Score Coral L2
             //Front To Front
         operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
