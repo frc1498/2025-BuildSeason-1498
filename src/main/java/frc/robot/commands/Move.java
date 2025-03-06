@@ -46,7 +46,7 @@ public class Move {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
         andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor())).
         andThen(wrist.wristCoralLoadFloor(),arm.armCoralLoadFloor()).
-        andThen(wrist.suck(endEffectorLocation),intake.rollerSuck()).until(wrist.isPartForwardGripper).
+        andThen(wrist.suck(/*endEffectorLocation*/),intake.rollerSuck()).until(wrist.isPartForwardGripper).
         andThen(Commands.parallel(wrist.stop(), arm.armCoralStow(), wrist.wristCoralStow(), intake.clearCoralIntake())).
         andThen(intake.intakeRaised()).
         andThen(intake.clearCoralIntake());
@@ -58,7 +58,7 @@ public class Move {
         andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(), wrist.wristCoralStow())).
         andThen(Commands.parallel(arm.armCoralStow(), elevator.elevatorCoralStow())). 
         andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
-        andThen(wrist.suck(endEffectorLocation),intake.rollerSuck()).until(wrist.isPartForwardGripper).
+        andThen(wrist.suck(/*endEffectorLocation*/),intake.rollerSuck()).until(wrist.isPartForwardGripper).
         andThen(Commands.parallel(wrist.stop(), arm.armCoralStow(), wrist.wristCoralStow(), intake.clearCoralIntake())).
         andThen(intake.intakeRaised()).
         andThen(intake.clearCoralIntake());
@@ -166,7 +166,7 @@ public class Move {
     public Command goToRemoveAlgaeL2FrontToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()).
         andThen(Commands.parallel(elevator.elevatorAlgaeL2(), wrist.wristAlgaeL2(),arm.armAlgaeL2())).
-        andThen(wrist.spit(endEffectorLocation));
+        andThen(wrist.spit(/*endEffectorLocation*/));
     }
     
     //Algae Remove L2 - Rear to Front - first draft
@@ -175,7 +175,7 @@ public class Move {
         andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(), wrist.wristCoralStow(), intake.intakeRaised())).
         andThen(arm.armCoralStow()).
         andThen(Commands.parallel(wrist.wristAlgaeL2(), arm.armAlgaeL2(), elevator.elevatorAlgaeL2())).
-        andThen(wrist.spit(endEffectorLocation));
+        andThen(wrist.spit(/*endEffectorLocation*/));
     }
 
     //Algae Remove L3 - Front to Rear - second draft    
@@ -184,14 +184,14 @@ public class Move {
         andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralStow(), wrist.wristCoralStow(), intake.intakeRaised())).
         andThen(arm.armAboveIntake45()).
         andThen(Commands.parallel(wrist.wristAlgaeL3(),arm.armAlgaeL3(),elevator.elevatorAlgaeL3())).
-        andThen(wrist.spit(endEffectorLocation));
+        andThen(wrist.spit(/*endEffectorLocation*/));
     }
 
     //Algae Remove L3 - Rear to Rear - first draft
     public Command goToRemoveAlgaeL3RearToRear(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()).
         andThen(Commands.parallel(elevator.elevatorAlgaeL3(), wrist.wristAlgaeL3(), arm.armAlgaeL3())).
-        andThen(wrist.spit(endEffectorLocation));
+        andThen(wrist.spit(/*endEffectorLocation*/));
     }
 
 
@@ -218,14 +218,14 @@ public class Move {
     */
 
     public Command wristCoralRollerSpitFrontToFront(Supplier<endEffectorLocation> endEffectorLocation) {
-        return wrist.spit(endEffectorLocation).
+        return wrist.spit(/*endEffectorLocation*/).
         until(wrist.isPartInGripper.negate()).
         andThen(wrist.stop()).
         andThen(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow());
     }
 
     public Command wristCoralRollerSpitRearToFront(Supplier<endEffectorLocation> endEffectorLocation) {
-        return wrist.spit(endEffectorLocation).
+        return wrist.spit(/*endEffectorLocation*/).
         until(wrist.isPartInGripper.negate()).
         andThen(wrist.stop()).
         andThen(arm.armCoralLoadHuman(), wrist.wristCoralStow(), elevator.elevatorRearSafe()).

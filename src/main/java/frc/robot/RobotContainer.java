@@ -62,6 +62,8 @@ public class RobotContainer {
     //=======================================================================
     //=======================Assign Subsystem Names==========================
     //=======================================================================
+    public final EndEffector endEffector = new EndEffector();
+    
     public final CoralIntakeConfig intakeConfig = new CoralIntakeConfig();
     public CoralIntake intake = new CoralIntake(intakeConfig);
 
@@ -69,15 +71,13 @@ public class RobotContainer {
     public Arm arm = new Arm(armConfig);
     
     public WristConfig wristConfig = new WristConfig();
-    public Wrist wrist = new Wrist(wristConfig);
+    public Wrist wrist = new Wrist(wristConfig, endEffector.whatIsEndEffectorLocation());
     
     public ElevatorConfig elevatorConfig = new ElevatorConfig();
     public Elevator elevator = new Elevator(elevatorConfig);
 
     public final ClimberConfig climberConfig = new ClimberConfig();
     public final Climber climber = new Climber(climberConfig);
-
-    public final EndEffector endEffector = new EndEffector();
 
     public final Move move = new Move(wrist, arm, intake, elevator);
 

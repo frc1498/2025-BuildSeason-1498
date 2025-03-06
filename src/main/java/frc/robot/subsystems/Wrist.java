@@ -56,15 +56,16 @@ public class Wrist extends SubsystemBase{
     DigitalInput m_BeamBreakGripperFrontDigital;
     DigitalInput m_BeamBreakGripperRearDigital;
 
-    public endEffectorLocation endEffectorLocation;
+    Supplier<endEffectorLocation> endEffectorLocation;
     
     String scoringPosition = "";
 
     Debouncer m_Debouncer = new Debouncer(0.05, Debouncer.DebounceType.kBoth);
 
-    public Wrist(WristConfig config) {
+    public Wrist(WristConfig config, Supplier<endEffectorLocation> endEffectorLocation) {
         //Constructor
         this.config = config;
+        this.endEffectorLocation = endEffectorLocation;
 
         wristRotate = new TalonFX(config.kRotateCANID, "canivore");
         wristRotateCancoder = new CANcoder(config.kEncoderCANID,"canivore");
@@ -147,43 +148,34 @@ public class Wrist extends SubsystemBase{
         }
     }
 
-    private void wristSpin(endEffectorLocation endEffectorLocation) {
-        this.endEffectorLocation = endEffectorLocation;
+    private void wristSpin(/*endEffectorLocation endEffectorLocation*/) {
+        //this.endEffectorLocation = endEffectorLocation;
 
         if (Constants.kWristSpinMotorEnabled == true) {
-            switch(this.endEffectorLocation){
+            switch(this.endEffectorLocation.get()){
                 case NONE:
-                    scoringPosition = "";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));                
                 break;
                 case CORAL_GROUND_PICKUP:
-                    scoringPosition = "";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_HUMAN_PICKUP:
-                    scoringPosition = "";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_L1:
-                    scoringPosition = "CoralL1";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));
                 break;
                 case CORAL_L2:
-                    scoringPosition = "CoralL2";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
                 break;
                 case CORAL_L3:
-                    scoringPosition = "CoralL3";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
                 break;
                 case CORAL_L4:
-                    scoringPosition = "CoralL4";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
                 case ALGAE_L2:
-                    scoringPosition = "";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 case ALGAE_L3:
-                    scoringPosition = "";
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
              }  
@@ -419,17 +411,17 @@ public class Wrist extends SubsystemBase{
     }
     */
 
-    public Command suck(Supplier<endEffectorLocation> endEffectorLocation) {
+    public Command suck(/*Supplier<endEffectorLocation> endEffectorLocation*/) {
 
         return run(
-            () -> {this.wristSpin(endEffectorLocation.get());}
+            () -> {this.wristSpin(/*endEffectorLocation.get()*/);}
         );
     }
 
-    public Command spit(Supplier<endEffectorLocation> endEffectorLocation) {
+    public Command spit(/*Supplier<endEffectorLocation> endEffectorLocation*/) {
 
         return run(
-            () -> {this.wristSpin(endEffectorLocation.get());}
+            () -> {this.wristSpin(/*endEffectorLocation.get()*/);}
         );
     }
 
@@ -443,7 +435,7 @@ public class Wrist extends SubsystemBase{
     public Command stop() {
 
         return runOnce(
-            () -> {this.wristSpin(endEffectorLocation.NONE);}
+            () -> {this.wristSpin(/*endEffectorLocation.NONE*/);}
         );
     }
 
@@ -540,6 +532,33 @@ public class Wrist extends SubsystemBase{
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        switch(this.endEffectorLocation.get()) {
+            case NONE:
+                scoringPosition = "";               
+            break;
+            case CORAL_GROUND_PICKUP:
+                scoringPosition = "";
+            break;
+            case CORAL_HUMAN_PICKUP:
+                scoringPosition = "";
+            break;
+            case CORAL_L1:
+                scoringPosition = "CoralL1";
+            break;
+            case CORAL_L2:
+                scoringPosition = "CoralL2";
+            break;
+            case CORAL_L3:
+                scoringPosition = "CoralL3";
+            break;
+            case CORAL_L4:
+                scoringPosition = "CoralL4";
+            case ALGAE_L2:
+                scoringPosition = "";
+            case ALGAE_L3:
+                scoringPosition = "";
+            break;
+        }
     }
     
     public void simulationInit() {
