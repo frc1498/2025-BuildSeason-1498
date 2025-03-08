@@ -49,6 +49,8 @@ public class Telemetry {
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
     private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
+    //Adding a new pose for the limelight estimated pose.
+    private final DoubleArrayPublisher limelightPub = table.getDoubleArrayTopic("limelightPose").publish();
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
 
     /* Mechanisms to represent the swerve module states */
@@ -78,6 +80,8 @@ public class Telemetry {
     };
 
     private final double[] m_poseArray = new double[3];
+    //Adding a custom array for telemeterizing the vision pose;
+    private final double[] m_visionPoseArray = new double[3];
     private final double[] m_moduleStatesArray = new double[8];
     private final double[] m_moduleTargetsArray = new double[8];
 
@@ -120,5 +124,14 @@ public class Telemetry {
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
+    }
+
+    public void visionTelemeterize(Pose2d visionPose) {
+        m_visionPoseArray[0] = visionPose.getX();
+        m_visionPoseArray[1] = visionPose.getY();
+        m_visionPoseArray[2] = visionPose.getRotation().getDegrees();
+
+        fieldTypePub.set("Field2d");
+        limelightPub.set(m_visionPoseArray);
     }
 }

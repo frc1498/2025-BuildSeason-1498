@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -91,7 +92,7 @@ public class RobotContainer {
 
     //Very important, the vision subsystem has to be created after the drivetrain.
     //The vision subsystem relies on creating a lambda that gets the drivetrain heading.
-    public Vision vision = new Vision(() -> {return drivetrain.getPigeon2().getYaw().getValueAsDouble();});
+    public Vision vision = new Vision(() -> {return drivetrain.getPigeon2();});
 
     //Future proofing CHRP functionality.
     //File chirpFolder = new File(Filesystem.getDeployDirectory() + "/chirp");
@@ -221,7 +222,11 @@ public class RobotContainer {
         //=============LED System==============================================
         //intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
 
+        driver.leftBumper().and(driver.rightBumper()).onTrue(vision.takePicture());
+        vision.addLimelightPose.whileTrue(vision.addMegaTag2(() -> {return drivetrain;}));
+
         drivetrain.registerTelemetry(logger::telemeterize);
+        vision.registerTelemetry(logger::visionTelemeterize);
     }
 
     public void registerAutonCommands() {
