@@ -271,9 +271,10 @@ public class Arm extends SubsystemBase{
         //Sendable data for dashboard debugging will be added here.
         builder.addDoubleProperty("Desired Position", this::getDesiredArmPosition, null);
         builder.addDoubleProperty("Current Position", this::GetArmPosition, null);
-        builder.addBooleanProperty("Is Arm at L1 Position", isArmCoralL1, null);
-        builder.addBooleanProperty("Is Arm at Human Coral Load", isArmCoralLoadHuman, null);
-        builder.addBooleanProperty("Is the Arm at CoralLoadFloor", isArmCoralLoadFloor,null);
+        builder.addBooleanProperty("Arm L1 Position", isArmCoralL1, null);
+        builder.addBooleanProperty("Arm Human Coral Load", isArmCoralLoadHuman, null);
+        builder.addBooleanProperty("Arm CoralLoadFloor", isArmCoralLoadFloor,null);
+        builder.addBooleanProperty("Arm Front of Intake", isArmInFrontOfIntake,null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
     }
 

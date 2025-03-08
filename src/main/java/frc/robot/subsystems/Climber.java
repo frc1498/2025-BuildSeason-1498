@@ -91,7 +91,10 @@ public class Climber extends SubsystemBase{
     }
 
     private boolean isClimberAtPosition(double position) {
-        return ((position-ClimberConstants.kDeadband) <= getClimberPosition()) && ((position+ClimberConstants.kDeadband) >= getClimberPosition());
+        /* climber is removed (position-ClimberConstants.kDeadband) <= getClimberPosition()) &&
+         ((position+ClimberConstants.kDeadband) >= getClimberPosition() */
+        
+        return (false);
     }
 
     private double getClimberPosition(){
@@ -173,6 +176,7 @@ public class Climber extends SubsystemBase{
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
         builder.addDoubleProperty("Servo Position", this::getServoPosition, null);
         builder.addDoubleProperty("Desired Servo Position", this::getDesiredServoPosition, null);
+        builder.addBooleanProperty("Climber Ready?", isClimberReady, null);
     }
 
     @Override

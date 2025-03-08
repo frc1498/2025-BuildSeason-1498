@@ -46,10 +46,12 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.005).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+    //  <- deadband
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -115,8 +117,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(-(Math.pow(driver.getLeftY(),3)) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-(Math.pow(driver.getLeftX(),3)) * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
@@ -163,13 +165,16 @@ public class RobotContainer {
         //==============================Driver=================================
         //=====================================================================    
         //Drive - Coral Floor Intake
+
+        //had to remove climber crap .and(climber.isClimberReady.negate())
             //Front To Front    
-        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+        driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())));
 
+        // had to remove climber crap and(climber.isClimberReady.negate()).
             //Rear To Front 
-        driver.rightTrigger(0.1).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+        driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloorRearToFront(endEffector.whatIsEndEffectorLocation())));
 /*
@@ -184,7 +189,7 @@ public class RobotContainer {
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
             andThen(move.intakeCoralHumanRearToRear(endEffector.whatIsEndEffectorLocation())));
  */
-
+        //
 
         //Driver - Spit Coral
             //Front To Front
@@ -225,12 +230,6 @@ public class RobotContainer {
 
         //Operator - Score Coral L1
             //Front To Front
-            operator1.b().and(arm.isArmInFrontOfIntake).onTrue(
-                Commands.parallel(move.coralL1FrontToFront(), endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}))); 
-            operator1.b().and(arm.isArmInFrontOfIntake.negate()).onTrue(
-                    Commands.parallel(move.coralL1RearToFront(), endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}))); 
-  
-                /*
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             move.coralL1FrontToFront().
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
@@ -238,10 +237,7 @@ public class RobotContainer {
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             move.coralL1RearToFront().
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
-        */
 
-
-        
         //Operator - Score Coral L2
             //Front To Front
         operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(

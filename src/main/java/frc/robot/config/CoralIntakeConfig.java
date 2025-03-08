@@ -46,7 +46,7 @@ public class CoralIntakeConfig {
 
         rotate.CurrentLimits.StatorCurrentLimit = 120.0;
         rotate.CurrentLimits.StatorCurrentLimitEnable = true;
-        rotate.CurrentLimits.SupplyCurrentLimit = 40;
+        rotate.CurrentLimits.SupplyCurrentLimit = 20;  //was 40
         rotate.CurrentLimits.SupplyCurrentLimitEnable = true;
         rotate.CurrentLimits.SupplyCurrentLowerLimit = 40.0;
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;

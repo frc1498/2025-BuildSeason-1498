@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,9 +24,11 @@ public class Robot extends TimedRobot {
 
   public boolean hasDeterminedAlliance = false;
 
+
+
   public Robot() {
     m_robotContainer = new RobotContainer();
-    CameraServer.startAutomaticCapture();
+
   }
 
   @Override
@@ -37,9 +40,16 @@ public class Robot extends TimedRobot {
     //Get the deploy directory for Elastic.
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
-    RobotController.setBrownoutVoltage(6.75);
+    RobotController.setBrownoutVoltage(4.5);
     
     SmartDashboard.putData(CommandScheduler.getInstance());
+
+    //setup the camera
+    
+    UsbCamera camera = CameraServer.startAutomaticCapture(0);
+    camera.setResolution(640, 480);
+
+
   }
 
   @Override
@@ -56,19 +66,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    /*
-    m_robotContainer.endEffectorCommand.wrist.wristSpin.setControl(m_robotContainer.endEffectorCommand.wrist.spinControl.withVelocity(0));
-    m_robotContainer.endEffectorCommand.wrist.wristRotate.setControl(m_robotContainer.endEffectorCommand.wrist.rotateDutyCycleControl.withOutput(0));
- 
-    m_robotContainer.endEffectorCommand.arm.armRotate.setControl(m_robotContainer.endEffectorCommand.arm.rotateDutyCycleControl.withOutput(0));
- 
-    m_robotContainer.endEffectorCommand.elevator.elevatorDriveFront.setControl(m_robotContainer.endEffectorCommand.elevator.rotateDutyCycleControl.withOutput(0));
-
-    m_robotContainer.intake.rotateMotor.setControl(m_robotContainer.intake.rotateDutyCycleControl.withOutput(0));
-    m_robotContainer.intake.spinMotor.setControl(m_robotContainer.intake.spinMotorMode.withVelocity(0));
-   
-    m_robotContainer.climber.climberRotate.setControl(m_robotContainer.climber.rotateDutyCycleControl.withOutput(0));
-    */
 
     //Constantly check for the current alliance.
     //This 'latches' once it has been retrieved.

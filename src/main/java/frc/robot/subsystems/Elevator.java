@@ -130,7 +130,7 @@ public class Elevator extends SubsystemBase {
         
         return run(
             () -> {this.elevatorDriveToPosition(ElevatorConstants.kCoralStow);}
-        ).until(this.isElevatorCoralStow).andThen(()->{elevatorDriveFront.setPosition(-0.73);});
+        ).until(this.isElevatorCoralStow);
     }
 
     public Command elevatorCoralLoadFloor() {
