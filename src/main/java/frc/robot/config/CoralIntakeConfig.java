@@ -9,9 +9,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
-import frc.robot.constants.Constants;
-import frc.robot.constants.CoralIntakeConstants;
-
 public class CoralIntakeConfig {
     public final int kRotateCANID = 9;
     public final int kSpinCANID = 10;
@@ -49,7 +46,7 @@ public class CoralIntakeConfig {
 
         rotate.CurrentLimits.StatorCurrentLimit = 120.0;
         rotate.CurrentLimits.StatorCurrentLimitEnable = true;
-        rotate.CurrentLimits.SupplyCurrentLimit = 40;
+        rotate.CurrentLimits.SupplyCurrentLimit = 20;  //was 40
         rotate.CurrentLimits.SupplyCurrentLimitEnable = true;
         rotate.CurrentLimits.SupplyCurrentLowerLimit = 40.0;
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;
@@ -77,11 +74,8 @@ public class CoralIntakeConfig {
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
 
-        if (Constants.kSloMo == true){ 
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.8 * Constants.kSloMoFactor;
-        } else {
-            rotate.MotionMagic.MotionMagicCruiseVelocity = 0.8;
-        }
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 0.8;
+
         
         rotate.MotionMagic.MotionMagicAcceleration = 4;
         rotate.MotionMagic.MotionMagicJerk = 22.22;

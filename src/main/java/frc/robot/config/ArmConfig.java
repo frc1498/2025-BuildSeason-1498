@@ -9,8 +9,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
-import frc.robot.constants.Constants;
-
 public class ArmConfig {
     //Contants
     public static final int kArmRotateCANID = 13;
@@ -40,7 +38,7 @@ public class ArmConfig {
 
         rotate.CurrentLimits.StatorCurrentLimit = 120.0;
         rotate.CurrentLimits.StatorCurrentLimitEnable = true;
-        rotate.CurrentLimits.SupplyCurrentLimit = 20;
+        rotate.CurrentLimits.SupplyCurrentLimit = 20;    //Was 20
         rotate.CurrentLimits.SupplyCurrentLimitEnable = true;
         rotate.CurrentLimits.SupplyCurrentLowerLimit = 40.0;
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;
