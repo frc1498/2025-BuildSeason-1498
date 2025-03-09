@@ -54,6 +54,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    var driveState = m_robotContainer.drivetrain.getState();
   }
 
   @Override

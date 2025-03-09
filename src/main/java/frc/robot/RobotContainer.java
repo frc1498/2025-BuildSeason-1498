@@ -89,7 +89,7 @@ public class RobotContainer {
 
     //Very important, the vision subsystem has to be created after the drivetrain.
     //The vision subsystem relies on creating a lambda that gets the drivetrain gyro.
-    public Vision vision = new Vision(() -> {return drivetrain.getPigeon2();});
+    public Vision vision = new Vision(drivetrain);
 
     //Future proofing CHRP functionality.
     //File chirpFolder = new File(Filesystem.getDeployDirectory() + "/chirp");
@@ -315,7 +315,7 @@ public class RobotContainer {
         //intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
 
         driver.leftBumper().and(driver.rightBumper()).onTrue(vision.takePicture());
-        //vision.addLimelightPose.whileTrue(vision.addMegaTag2(() -> {return drivetrain;}));
+        vision.addLimelightPose.whileTrue(vision.addMegaTag2(() -> {return drivetrain;}));
         //autonomousStarted.onTrue(vision.switchToInternalIMU());
 
         drivetrain.registerTelemetry(logger::telemeterize);

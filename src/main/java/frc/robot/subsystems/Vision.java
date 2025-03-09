@@ -24,17 +24,20 @@ public class Vision extends SubsystemBase{
 
     public LimelightHelpers.PoseEstimate megaTag2 = new PoseEstimate();
     public Supplier<Pigeon2> drivetrainState;
+    public Consumer<Pose2d> visionPose;
+    public CommandSwerveDrivetrain drivetrain;
 
     public Pose2d testPose;
     public double testTimestamp;
     public RawFiducial[] fiducials;
 
     private int cameraRoll;
+    private double latestRobotHeading;
+    private double latestRobotRotationRate;
 
-
-    public Vision(Supplier<Pigeon2> drivetrainState) {
+    public Vision(CommandSwerveDrivetrain drivetrain) {
         //Constructor.
-        this.drivetrainState = drivetrainState;
+        this.drivetrain = drivetrain;
 
         this.setLimelightRobotPosition();
         //In the constructor, set the IMU mode to 1, so the limelight IMU is seeded with the robot gyro heading.
@@ -43,6 +46,8 @@ public class Vision extends SubsystemBase{
         this.testPose = new Pose2d(8.5, 4.0, new Rotation2d(0.0)); //Center of the field
 
         cameraRoll = 0;
+        latestRobotHeading = 0;
+        latestRobotRotationRate = 0;
 
         SmartDashboard.putData("Vision", this);
     }
@@ -86,8 +91,8 @@ public class Vision extends SubsystemBase{
      * @param rotationRate
      * @return
      */
-    private boolean isRobotSlowEnough(double rotationRate) {
-        return this.getRobotRotationRate() <= rotationRate;
+    private boolean isRobotSlowEnough(double maximumRotationRate) {
+        return this.latestRobotRotationRate <= maximumRotationRate;
     }
 
     private boolean isPoseValid() {
@@ -112,7 +117,7 @@ public class Vision extends SubsystemBase{
     }
 
     private double getRobotHeading() {
-        return this.drivetrainState.get().getYaw().getValueAsDouble();
+        return this.drivetrain.getState().Pose.getRotation().getDegrees();
     }
 
     /**
@@ -121,7 +126,7 @@ public class Vision extends SubsystemBase{
      * @return
      */
     private double getRobotRotationRate() {
-        return Math.abs(this.drivetrainState.get().getAngularVelocityZDevice().getValueAsDouble());
+        return Math.abs(this.drivetrain.getState().Speeds.omegaRadiansPerSecond);
     }
 
     private Pose2d getCurrentPose() {
@@ -150,10 +155,9 @@ public class Vision extends SubsystemBase{
      * @param visionPose
      */
     public void registerTelemetry(Consumer<Pose2d> visionPose) {
-        visionPose.accept(this.getPose().get());
-        this.setDefaultCommand( this.runOnce(() -> {
-            visionPose.accept(this.getPose().get());
-        }).ignoringDisable(true));
+        this.visionPose = visionPose;
+        this.visionPose.accept(this.getPose().get());
+        this.setDefaultCommand(this.updateLimelightTelemetry(this.visionPose));
     }
 
     public Trigger addLimelightPose = new Trigger(this::isPoseValid);
@@ -162,14 +166,20 @@ public class Vision extends SubsystemBase{
     public Trigger processorInView = new Trigger(this::processorInView);
     public Trigger reefInView = new Trigger(this::reefInView);
 
+    public Command updateLimelightTelemetry(Consumer<Pose2d> visionPose) {
+        return runOnce(() -> {
+            this.visionPose.accept(this.getPose().get());
+        }).ignoringDisable(true);
+    }
+
     public Command addMegaTag2(Supplier<CommandSwerveDrivetrain> drivetrain) {
-        return run(
+        return this.updateLimelightTelemetry(this.visionPose).andThen(run(
             () -> {
                 testTimestamp = Utils.getCurrentTimeSeconds();
                 drivetrain.get().setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 9999999));
                 drivetrain.get().addVisionMeasurement(megaTag2.pose, megaTag2.timestampSeconds);
             }
-        ).withName("Adding Vision Measurement").ignoringDisable(true);
+        ).withName("Adding Vision Measurement").ignoringDisable(true));
     }
 
     public Command takePicture() {
@@ -190,9 +200,9 @@ public class Vision extends SubsystemBase{
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
-        builder.addDoubleProperty("Robot Heading", this::getRobotHeading, null);
-        builder.addDoubleProperty("Robot Rotation Velocity", this::getRobotRotationRate, null);
-        builder.addBooleanProperty("Is Robot Slow Enough?", () -> {return this.isRobotSlowEnough(189.5);}, null);
+        builder.addDoubleProperty("Robot Heading", () -> {return this.latestRobotHeading;}, null);
+        builder.addDoubleProperty("Robot Rotation Velocity", () -> {return this.latestRobotRotationRate;}, null);
+        builder.addBooleanProperty("Is Robot Slow Enough?", () -> {return this.isRobotSlowEnough(3.3);}, null);
         builder.addIntegerProperty("Camera Roll", () -> {return this.cameraRoll;}, null);
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
         builder.addDoubleProperty("megaTagPose X", () -> {return this.megaTag2.pose.getX();}, null);
@@ -204,7 +214,9 @@ public class Vision extends SubsystemBase{
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        LimelightHelpers.SetRobotOrientation(VisionConstants.kLimelightName, this.getRobotHeading(), 0.0, 0.0, 0.0, 0.0, 0.0);
+        latestRobotHeading = this.getRobotHeading();
+        latestRobotRotationRate = this.getRobotRotationRate();
+        LimelightHelpers.SetRobotOrientation(VisionConstants.kLimelightName, latestRobotHeading, 0.0, 0.0, 0.0, 0.0, 0.0);
         //THIS LINE IS EXTREMELY IMPORTANT
         //Only update the megaTag if the estimate isn't null.
         if (this.isMegaTagValid(LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.kLimelightName))) {
