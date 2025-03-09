@@ -16,6 +16,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -314,7 +315,8 @@ public class RobotContainer {
         //intake.isPartPresent.onTrue(leds.LEDsOn()).onFalse(leds.LEDsMode());  //Is a part in the intake OR in the gripper
 
         driver.leftBumper().and(driver.rightBumper()).onTrue(vision.takePicture());
-        vision.addLimelightPose.whileTrue(vision.addMegaTag2(() -> {return drivetrain;}));
+        //vision.addLimelightPose.whileTrue(vision.addMegaTag2(() -> {return drivetrain;}));
+        //autonomousStarted.onTrue(vision.switchToInternalIMU());
 
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
@@ -352,4 +354,6 @@ public class RobotContainer {
     }
 
     public Trigger allianceCheck = new Trigger(() -> {return this.hasDeterminedAlliance;});
+    public Trigger autonomousStarted = new Trigger(RobotState::isAutonomous);
+    
 }

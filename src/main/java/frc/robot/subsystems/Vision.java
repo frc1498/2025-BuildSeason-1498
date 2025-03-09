@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,7 +23,7 @@ import frc.robot.constants.VisionConstants;
 public class Vision extends SubsystemBase{
 
     public LimelightHelpers.PoseEstimate megaTag2 = new PoseEstimate();
-    public Supplier<Pigeon2> drivetrainGyro;
+    public Supplier<Pigeon2> drivetrainState;
 
     public Pose2d testPose;
     public double testTimestamp;
@@ -31,12 +32,13 @@ public class Vision extends SubsystemBase{
     private int cameraRoll;
 
 
-    public Vision(Supplier<Pigeon2> drivetrainGyro) {
+    public Vision(Supplier<Pigeon2> drivetrainState) {
         //Constructor.
-        this.drivetrainGyro = drivetrainGyro;
+        this.drivetrainState = drivetrainState;
 
         this.setLimelightRobotPosition();
-        LimelightHelpers.SetIMUMode(VisionConstants.kLimelightName, 0);
+        //In the constructor, set the IMU mode to 1, so the limelight IMU is seeded with the robot gyro heading.
+        LimelightHelpers.SetIMUMode(VisionConstants.kLimelightName, 1);
         LimelightHelpers.SetRobotOrientation(VisionConstants.kLimelightName, this.getRobotHeading(), 0.0, 0.0, 0.0, 0.0, 0.0);
         this.testPose = new Pose2d(8.5, 4.0, new Rotation2d(0.0)); //Center of the field
 
@@ -54,6 +56,10 @@ public class Vision extends SubsystemBase{
             VisionConstants.kLimelightRollOffset,
             VisionConstants.kLimelightPitchOffset,
             VisionConstants.kLimelightYawOffset);
+    }
+
+    private void setLimelightToInternalIMU() {
+        LimelightHelpers.SetIMUMode(VisionConstants.kLimelightName, 2);
     }
 
     /**
@@ -85,8 +91,8 @@ public class Vision extends SubsystemBase{
     }
 
     private boolean isPoseValid() {
-        //189.5 degrees per second is currently 75% of our maximum rotational speed.
-        return this.isMegaTagValid(this.megaTag2) && this.areTagsSeen(1) && this.isRobotSlowEnough(189.5);
+        //3.3 radians per second is currently 75% of our maximum rotational speed.
+        return this.isMegaTagValid(this.megaTag2) && this.areTagsSeen(1) && this.isRobotSlowEnough(3.3);
     }
 
     private boolean coralStationInView() {
@@ -106,16 +112,16 @@ public class Vision extends SubsystemBase{
     }
 
     private double getRobotHeading() {
-        return this.drivetrainGyro.get().getYaw().getValueAsDouble();
+        return this.drivetrainState.get().getYaw().getValueAsDouble();
     }
 
     /**
      * Return the absolute angular velocity of the robot.
-     * In degrees per second.
+     * In radians per second.
      * @return
      */
     private double getRobotRotationRate() {
-        return Math.abs(this.drivetrainGyro.get().getAngularVelocityZDevice().getValueAsDouble());
+        return Math.abs(this.drivetrainState.get().getAngularVelocityZDevice().getValueAsDouble());
     }
 
     private Pose2d getCurrentPose() {
@@ -163,7 +169,7 @@ public class Vision extends SubsystemBase{
                 drivetrain.get().setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 9999999));
                 drivetrain.get().addVisionMeasurement(megaTag2.pose, megaTag2.timestampSeconds);
             }
-        ).ignoringDisable(true);
+        ).withName("Adding Vision Measurement").ignoringDisable(true);
     }
 
     public Command takePicture() {
@@ -171,6 +177,10 @@ public class Vision extends SubsystemBase{
             this.takeSnapshot();
         }
         ).withName("Take Picture").ignoringDisable(true);
+    }
+
+    public Command switchToInternalIMU() {
+        return runOnce(() -> {this.setLimelightToInternalIMU();}).withName("Setting Limelight to IMU Mode 2").ignoringDisable(true);
     }
 
     private Supplier<Pose2d> getPose() {
