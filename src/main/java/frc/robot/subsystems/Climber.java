@@ -2,12 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.sim.TalonFXSimState;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,10 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.ClimberConfig;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.Constants;
-import frc.robot.sim.ClimberSim;
 
 public class Climber extends SubsystemBase{
     //Declare Variables
@@ -95,7 +91,10 @@ public class Climber extends SubsystemBase{
     }
 
     private boolean isClimberAtPosition(double position) {
-        return ((position-ClimberConstants.kDeadband) <= getClimberPosition()) && ((position+ClimberConstants.kDeadband) >= getClimberPosition());
+        /* climber is removed (position-ClimberConstants.kDeadband) <= getClimberPosition()) &&
+         ((position+ClimberConstants.kDeadband) >= getClimberPosition() */
+        
+        return (false);
     }
 
     private double getClimberPosition(){
@@ -177,6 +176,7 @@ public class Climber extends SubsystemBase{
         builder.addStringProperty("Command", this::getCurrentCommandName, null);
         builder.addDoubleProperty("Servo Position", this::getServoPosition, null);
         builder.addDoubleProperty("Desired Servo Position", this::getDesiredServoPosition, null);
+        builder.addBooleanProperty("Climber Ready?", isClimberReady, null);
     }
 
     @Override

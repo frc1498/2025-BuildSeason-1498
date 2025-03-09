@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.CoralIntakeConfig;
-import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.Constants;
 import frc.robot.constants.CoralIntakeConstants;
 import frc.robot.sim.CoralIntakeSim;
@@ -127,7 +125,6 @@ public class CoralIntake extends SubsystemBase{
     }
 
     private void stop() {
-        //System.out.println("=============Private CoralIntake suck===============");
 
         if (Constants.kCoralIntakeSpinMotorEnabled == true) {
             spinMotor.setControl(spinMotorMode.withVelocity(CoralIntakeConstants.kStopSpeed));
@@ -136,41 +133,23 @@ public class CoralIntake extends SubsystemBase{
 
     private void goToPosition(double position) {
 
-        //System.out.println("=============Private CoralIntake goToPosition===============");
-
         if (Constants.kCoralIntakeRotateMotorEnabled == true) {
-            System.out.println("We Set Position" + position);
             rotateMotor.setControl(rotateMotorMode.withPosition(position));
         }
     }
     
     private double getPivotPosition() {
-        //if (CoralIntakeConstants.kCoralIntakePrint){
-        //    System.out.println("=============Private CoralIntake getPivotPosition===============");
-        //    System.out.println("Position:" + rotateMotor.getPosition().getValueAsDouble());
-        //}
 
         return rotateMotor.getPosition().getValueAsDouble();
     }
 
     private boolean isRotateMotorAtPosition(double position) {
-       // if (CoralIntakeConstants.kCoralIntakePrintTriggers){
-            System.out.println("=============Private CoralIntake isRotateMotorAtPosition===============");
-            System.out.println("Lower Bound:" + (position - CoralIntakeConstants.kDeadband));
-            System.out.println("Coral Intake Rotate Position:" + this.getPivotPosition());
-            System.out.println("Upper Bound:" + (position + CoralIntakeConstants.kDeadband));
-      //  }
-            
-        
+   
         return ((position - CoralIntakeConstants.kDeadband) <= this.getPivotPosition()) && ((position + CoralIntakeConstants.kDeadband) >= this.getPivotPosition());
     }
 
     private boolean isPartPresent() {
 
-         //   System.out.println("=============Private CoralIntake isPartPresent===============");
-         //   System.out.println("BeamBreak:" + m_Debouncer.calculate(m_BeamBreakIntakeDigital.get()));
-
-            
 
         if (m_Debouncer.calculate(m_BeamBreakIntakeDigital.get()))
         {
@@ -223,8 +202,6 @@ public class CoralIntake extends SubsystemBase{
 
     public Command intakeRaised() {
 
-        //    System.out.println("=============Command CoralIntake intakeRaised===============");
-
 
         return run(
             () -> {this.goToPosition(CoralIntakeConstants.kIntakeRaisedPosition);}
@@ -232,18 +209,13 @@ public class CoralIntake extends SubsystemBase{
     }
 
     public Command intakeFloor() {
-
-        //    System.out.println("=============Command CoralIntake intakeFloor===============");
-
-            
+  
         return run(
             () -> {this.goToPosition(CoralIntakeConstants.kIntakeFloorPosition);}
         ).until(isIntakeFloored);
     }
 
     public Command intakeRaisedForClimb() {
-
-        //    System.out.println("=============Command CoralIntake intakeRaised===============");
 
 
         return run(
@@ -254,7 +226,7 @@ public class CoralIntake extends SubsystemBase{
     public Command clearCoralIntake() {
     return runOnce(
         () -> {spit();}
-    ).withTimeout(2);
+    ).withTimeout(1);
 
     }
 

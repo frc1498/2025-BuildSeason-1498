@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.EndEffectorConstants.endEffectorLocation;
 
 public class EndEffector extends SubsystemBase{

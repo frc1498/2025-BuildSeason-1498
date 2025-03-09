@@ -11,8 +11,8 @@ public class ElevatorConstants {
     public static final double kCoralMin = 0.5; //Rotations
 
     //===========Coral Positions===================
-    public static final double kCoralStow = 0.0;
-    public static final double kCoralLoadFloor = 4.5; //was 5, changing to 2 for testing
+    public static final double kCoralStow = 6; //Keep this the same as KCoral Load Floor to save motion
+    public static final double kCoralLoadFloor = 6; //was 5, changing to 2 for testing
     public static final double kCoralLoadHuman = 18.5; //0.1 meters
     public static final double kCoralL1 = 10; //0.46 meters
     public static final double kCoralL2 = 30; //0.81 meters
@@ -30,10 +30,8 @@ public class ElevatorConstants {
     //==================General===================
     //Deadband to determine if the elevator is 'at' a position.
     public static final double kDeadband = 0.15;
-    public static final double kFrontSafe = 30;
-    public static final double kRearSafe = 25;
-    public static final double kMiddleSafe = 10;
-    public static final double kIntakeSafe = 25;
+    public static final double kFrontSafe = 25;
+    public static final double kRearSafe = 28;  //Keep this the same as L4 to speed that motion
     
     //==================Sim Values================
     public static final double kElevatorGearing = 7.75;  //Assumes the form of X:1, so anything greater than 1 is a reduction.
