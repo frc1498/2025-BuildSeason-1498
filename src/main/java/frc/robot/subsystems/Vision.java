@@ -157,7 +157,7 @@ public class Vision extends SubsystemBase{
     public void registerTelemetry(Consumer<Pose2d> visionPose) {
         this.visionPose = visionPose;
         this.visionPose.accept(this.getPose().get());
-        this.setDefaultCommand(this.updateLimelightTelemetry(this.visionPose));
+        this.setDefaultCommand(this.updateLimelightTelemetry());
     }
 
     public Trigger addLimelightPose = new Trigger(this::isPoseValid);
@@ -166,14 +166,14 @@ public class Vision extends SubsystemBase{
     public Trigger processorInView = new Trigger(this::processorInView);
     public Trigger reefInView = new Trigger(this::reefInView);
 
-    public Command updateLimelightTelemetry(Consumer<Pose2d> visionPose) {
+    public Command updateLimelightTelemetry() {
         return runOnce(() -> {
             this.visionPose.accept(this.getPose().get());
         }).ignoringDisable(true);
     }
 
     public Command addMegaTag2(Supplier<CommandSwerveDrivetrain> drivetrain) {
-        return this.updateLimelightTelemetry(this.visionPose).andThen(run(
+        return this.updateLimelightTelemetry().andThen(run(
             () -> {
                 testTimestamp = Utils.getCurrentTimeSeconds();
                 drivetrain.get().setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, 9999999));
