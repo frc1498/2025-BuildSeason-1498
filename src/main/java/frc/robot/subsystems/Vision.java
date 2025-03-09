@@ -1,13 +1,11 @@
 package frc.robot.subsystems;
 
 import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -60,12 +58,12 @@ public class Vision extends SubsystemBase{
 
     /**
      * Returns true is the pose estimate is not 'null.'
-     * 'Valid' in this case means the limelight actually sent data; I'm not actually checking if the data makes sense.
+     * 'Valid' in this case means the limelight actually sent data and sees a valid target; I'm not actually checking if the data makes sense.
      * @param poseEstimate
      * @return
      */
     private boolean isMegaTagValid(LimelightHelpers.PoseEstimate poseEstimate) {
-        return (poseEstimate != null);
+        return (poseEstimate != null) && LimelightHelpers.getTV(VisionConstants.kLimelightName);
     }
 
     /**
