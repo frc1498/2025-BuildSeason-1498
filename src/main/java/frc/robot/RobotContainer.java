@@ -166,7 +166,7 @@ public class RobotContainer {
         //=====================================================================    
         //Drive - Coral Floor Intake
 
-        //had to remove climber crap .and(climber.isClimberReady.negate())
+        //had to remove climber.and(climber.isClimberReady.negate())
             //Front To Front    
         driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
@@ -177,6 +177,7 @@ public class RobotContainer {
         driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloorRearToFront(endEffector.whatIsEndEffectorLocation())));
+
 /*
         //Driver - Coral Human Intake
             //Front To Rear
@@ -284,21 +285,21 @@ public class RobotContainer {
 
         //Operator - Remove Algae L2
             //Front To Front
-        operator1.back().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+        operator1.back().and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
             andThen(move.goToRemoveAlgaeL2FrontToFront(endEffector.whatIsEndEffectorLocation())));
             //Rear To Front
-        operator1.back().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+        operator1.back().and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
             andThen(move.goToRemoveAlgaeL2RearToFront(endEffector.whatIsEndEffectorLocation())));
 
         //Operator - Remove Algae L3
             //Front To Rear
-        operator1.leftStick().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+        operator1.leftStick().and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
             andThen(move.goToRemoveAlgaeL3FrontToRear(endEffector.whatIsEndEffectorLocation())));
             //Rear To Rear
-        operator1.leftStick().and(arm.isArmInFrontOfIntake.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+        operator1.leftStick().and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
             andThen(move.goToRemoveAlgaeL3RearToRear(endEffector.whatIsEndEffectorLocation())));
 

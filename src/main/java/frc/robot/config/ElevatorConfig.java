@@ -25,7 +25,7 @@ public class ElevatorConfig {
 
         //configure motor
         
-        rotate.CurrentLimits.SupplyCurrentLimit = 25; //was 40
+        rotate.CurrentLimits.SupplyCurrentLimit = 40; //was 40
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         rotate.MotionMagic.MotionMagicAcceleration = 200;
         rotate.MotionMagic.MotionMagicCruiseVelocity = 60;

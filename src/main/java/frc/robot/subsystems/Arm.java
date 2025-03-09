@@ -129,7 +129,7 @@ public class Arm extends SubsystemBase{
     }
 
     private boolean IsArmAboveIntake45() {
-        return (armRotate.getPosition().getValueAsDouble() > ArmConstants.kArmAboveIntake45);
+        return (armRotate.getPosition().getValueAsDouble() > (ArmConstants.kArmAboveIntake45-0.05));
     }
 
     //===================================================
@@ -223,9 +223,9 @@ public class Arm extends SubsystemBase{
         );
     }
 
-    public Command armAboveIntake45() {
+    public Command armAboveIntake45L3() {
         return run(
-            () -> {this.armDriveToPosition(ArmConstants.kArmAboveIntake45);}
+            () -> {this.armDriveToPosition(ArmConstants.kCoralL3);}
         ).until(this.isArmAboveIntake45);
     }
 
@@ -234,6 +234,7 @@ public class Arm extends SubsystemBase{
             () -> {this.armDriveToPosition(ArmConstants.kClearClimb);}
         ).until(this.isArmClearClimb);
     }
+
 
     
     //============================================

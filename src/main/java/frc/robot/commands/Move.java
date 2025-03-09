@@ -123,8 +123,8 @@ public class Move {
     public Command coralL3FrontToRear() {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
         andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralStow(), wrist.wristCoralStow(), intake.intakeRaised())).
-        andThen(arm.armAboveIntake45()).
-        andThen(Commands.parallel(elevator.elevatorCoralL3(), arm.armCoralL3()));
+        andThen(arm.armAboveIntake45L3()).
+        andThen(Commands.parallel(elevator.elevatorCoralL3(), arm.armCoralL3(), wrist.wristCoralL3()));
     }
 
     //Coral Score L3 - Rear to Rear - first draft
@@ -181,20 +181,19 @@ public class Move {
         andThen(wrist.spit(/*endEffectorLocation*/));
     }
 
-    //Algae Remove L3 - Front to Rear - second draft    
+    //Algae Remove L3 - Front to Front - second draft    
     public Command goToRemoveAlgaeL3FrontToRear(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
-        andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralStow(), wrist.wristCoralStow(), intake.intakeRaised())).
-        andThen(arm.armAboveIntake45()).
         andThen(Commands.parallel(wrist.wristAlgaeL3(),arm.armAlgaeL3(),elevator.elevatorAlgaeL3())).
         andThen(wrist.spit(/*endEffectorLocation*/));
     }
 
-    //Algae Remove L3 - Rear to Rear - first draft
+    //Algae Remove L3 - Rear to Front - first draft
     public Command goToRemoveAlgaeL3RearToRear(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()).
-        andThen(Commands.parallel(elevator.elevatorAlgaeL3(), wrist.wristAlgaeL3(), arm.armAlgaeL3())).
-        andThen(wrist.spit(/*endEffectorLocation*/));
+        andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(),wrist.wristCoralStow()).
+        andThen(Commands.parallel( wrist.wristAlgaeL3(), arm.armAlgaeL3()))).
+        andThen(Commands.parallel(elevator.elevatorAlgaeL3(), wrist.spit(/*endEffectorLocation*/)));
     }
 
 
