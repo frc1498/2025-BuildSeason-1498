@@ -30,6 +30,7 @@ public class ClimberConfig {
         rotate.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         rotate.CurrentLimits.SupplyCurrentLimitEnable = true;
         rotate.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        rotate.Audio.AllowMusicDurDisable = true;
 
         //Slot 0 Configs
         rotate.Slot0.kP = 5;  // An error of 1 rotation per second results in 2V output

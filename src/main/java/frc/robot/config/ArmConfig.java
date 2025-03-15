@@ -57,6 +57,8 @@ public class ArmConfig {
         rotate.Voltage.PeakForwardVoltage = 11;
         rotate.Voltage.PeakReverseVoltage = -11;
 
+        rotate.Audio.AllowMusicDurDisable = true;
+
         //Fuse the Cancoder here
         rotate.Feedback.FeedbackRemoteSensorID = 32;
         rotate.Feedback.FeedbackRotorOffset = 0;

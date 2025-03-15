@@ -93,6 +93,7 @@ public class CoralIntakeConfig {
         spin.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         spin.CurrentLimits.SupplyCurrentLimitEnable = true;
         spin.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        spin.Audio.AllowMusicDurDisable = true;
 
         //Slot 0 Configs
         spin.Slot0.kP = 0; // An error of 1 rotation per second results in 2V output

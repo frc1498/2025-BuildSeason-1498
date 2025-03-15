@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -130,6 +132,10 @@ public class Arm extends SubsystemBase{
 
     private boolean IsArmAboveIntake45() {
         return (armRotate.getPosition().getValueAsDouble() > (ArmConstants.kArmAboveIntake45-0.05));
+    }
+
+    private void addToOrchestra(Orchestra robotOrchestra) {
+        robotOrchestra.addInstrument(this.armRotate);
     }
 
     //===================================================
