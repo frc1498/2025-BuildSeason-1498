@@ -97,9 +97,10 @@ public class RobotContainer {
     public Orchestra music = new Orchestra();
 
     //Future proofing CHRP functionality.
-    //File chirpFolder = new File(Filesystem.getDeployDirectory() + "/chirp");
+    File chirpFolder = new File(Filesystem.getDeployDirectory() + "/chirp");
     File autonFolder = new File(Filesystem.getDeployDirectory() + "/pathplanner/autos");
     public Selector autoSelect = new Selector(autonFolder, ".auto", "Auto Selector");
+    public Selector chirpSelect = new Selector(chirpFolder, ".chrp", "Chirp Selector");
     //All of these are needed to display and load the correct list of autonomous options.
     public ArrayList<Command> autonCommands = new ArrayList<Command>();
     public Command selectedAuton;
@@ -146,10 +147,14 @@ public class RobotContainer {
         driver.povLeft().onTrue(autoSelect.decrement().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
         driver.povRight().onTrue(autoSelect.increment().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));            
 
+        //Music Selection
+        driver.povUp().onTrue(chirpSelect.decrement().andThen(() -> {music.loadMusic(Filesystem.getDeployDirectory() + "/chirp/" + chirpSelect.getCurrentSelectionName() + ".chrp");}).ignoringDisable(true));
+        driver.povDown().onTrue(chirpSelect.increment().andThen(() -> {music.loadMusic(Filesystem.getDeployDirectory() + "/chirp/" + chirpSelect.getCurrentSelectionName() + ".chrp");}).ignoringDisable(true));
+        
         //===================================================================================
         //=============================Driver Commands=======================================
         //===================================================================================
-
+        
         /* SIMULATION PRACTICE COMMANDS
         //Elevator Simulation Practice Commands
         driver.povDown().onTrue(elevator.elevatorCoralL1());
