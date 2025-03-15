@@ -362,6 +362,7 @@ public class RobotContainer {
         wrist.addToOrchestra(music);
         elevator.addToOrchestra(music);
         climber.addToOrchestra(music);
+        drivetrain.addToOrchestra(music);
     }
 
     public Command getAutonomousCommand() {
