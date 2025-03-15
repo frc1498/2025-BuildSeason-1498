@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.pilotLib.utility.Selector;
@@ -91,6 +93,9 @@ public class RobotContainer {
     //The vision subsystem relies on creating a lambda that gets the drivetrain gyro.
     public Vision vision = new Vision(drivetrain);
 
+    //Makin' music.
+    public Orchestra music = new Orchestra();
+
     //Future proofing CHRP functionality.
     //File chirpFolder = new File(Filesystem.getDeployDirectory() + "/chirp");
     File autonFolder = new File(Filesystem.getDeployDirectory() + "/pathplanner/autos");
@@ -105,6 +110,7 @@ public class RobotContainer {
         //Auton commands need to be registered BEFORE the autons are loaded.
         //Autons are loaded after a trigger in configureBindings triggers, so this should be safe.
         registerAutonCommands();
+        registerOrchestra();
         configureBindings();
     }
 
@@ -318,6 +324,11 @@ public class RobotContainer {
         vision.addLimelightPose.whileTrue(vision.addMegaTag2(() -> {return drivetrain;}));
         //autonomousStarted.onTrue(vision.switchToInternalIMU());
 
+        //Music
+        driver.rightBumper().and(RobotState::isDisabled)
+        .onTrue(new InstantCommand(() -> {music.play();}).ignoringDisable(true))
+        .onFalse(new InstantCommand(() -> {music.stop();}).ignoringDisable(true));
+        
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
     }
@@ -338,7 +349,15 @@ public class RobotContainer {
         until(wrist.isPartInGripper.negate()).
         andThen(move.coralStow()));
   */
-        }
+    }
+
+    public void registerOrchestra() {
+        intake.addToOrchestra(music);
+        arm.addToOrchestra(music);
+        wrist.addToOrchestra(music);
+        elevator.addToOrchestra(music);
+        climber.addToOrchestra(music);
+    }
 
     public Command getAutonomousCommand() {
         return selectedAuton;

@@ -170,7 +170,7 @@ public class CoralIntake extends SubsystemBase{
         }
     }
 
-    private void addToOrchestra(Orchestra robotOrchestra) {
+    public void addToOrchestra(Orchestra robotOrchestra) {
         robotOrchestra.addInstrument(this.rotateMotor);
         robotOrchestra.addInstrument(this.spinMotor);
     }

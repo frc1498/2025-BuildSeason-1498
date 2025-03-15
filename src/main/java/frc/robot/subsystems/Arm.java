@@ -134,7 +134,7 @@ public class Arm extends SubsystemBase{
         return (armRotate.getPosition().getValueAsDouble() > (ArmConstants.kArmAboveIntake45-0.05));
     }
 
-    private void addToOrchestra(Orchestra robotOrchestra) {
+    public void addToOrchestra(Orchestra robotOrchestra) {
         robotOrchestra.addInstrument(this.armRotate);
     }
 

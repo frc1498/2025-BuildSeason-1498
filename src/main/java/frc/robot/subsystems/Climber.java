@@ -124,7 +124,7 @@ public class Climber extends SubsystemBase{
         climberEnabled=true;
     }
 
-    private void addToOrchestra(Orchestra robotOrchestra) {
+    public void addToOrchestra(Orchestra robotOrchestra) {
         robotOrchestra.addInstrument(this.climberRotate);
     }
 
