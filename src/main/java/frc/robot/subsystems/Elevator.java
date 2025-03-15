@@ -111,7 +111,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void addToOrchestra(Orchestra robotOrchestra) {
-        robotOrchestra.addInstrument(this.elevatorDriveFront);
+        robotOrchestra.addInstrument(this.elevatorDriveFront, 1);
     }
 
     //======================================================================

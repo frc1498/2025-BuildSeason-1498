@@ -287,8 +287,8 @@ public class Wrist extends SubsystemBase{
     }
 
     public void addToOrchestra(Orchestra robotOrchestra) {
-        robotOrchestra.addInstrument(this.wristRotate);
-        robotOrchestra.addInstrument(this.wristSpin);
+        robotOrchestra.addInstrument(this.wristRotate, 1);
+        robotOrchestra.addInstrument(this.wristSpin, 1);
     }
 
     //=============================================================

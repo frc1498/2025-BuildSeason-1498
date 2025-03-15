@@ -229,8 +229,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void addToOrchestra(Orchestra robotOrchestra) {
         for (var module : this.getModules()) {
-            robotOrchestra.addInstrument(module.getDriveMotor());
-            robotOrchestra.addInstrument(module.getSteerMotor());
+            robotOrchestra.addInstrument(module.getDriveMotor(), 1);
+            robotOrchestra.addInstrument(module.getSteerMotor(), 1);
         }
     }
 

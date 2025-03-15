@@ -135,7 +135,7 @@ public class Arm extends SubsystemBase{
     }
 
     public void addToOrchestra(Orchestra robotOrchestra) {
-        robotOrchestra.addInstrument(this.armRotate);
+        robotOrchestra.addInstrument(this.armRotate, 1);
     }
 
     //===================================================
