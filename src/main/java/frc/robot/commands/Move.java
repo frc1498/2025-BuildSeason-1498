@@ -44,13 +44,12 @@ public class Move {
     //Coral Intake Floor - Front to Front - second draft
     public Command intakeCoralFloorFrontToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
-        andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor())).
+        andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor(), arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(Commands.parallel(wrist.wristCoralLoadFloor(), arm.armCoralLoadFloor())).
         andThen(Commands.parallel(wrist.suck(),intake.rollerSuck())).until(wrist.isPartForwardGripper).
         andThen(wrist.stop()).
-        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), intake.clearCoralIntake())).
-        andThen(intake.intakeRaised()).
-        andThen(intake.clearCoralIntake());
+        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow())).
+        andThen(intake.intakeRaised());
     }
 
     //Coral Intake Floor - Rear to Front - second draft
@@ -61,9 +60,8 @@ public class Move {
         andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
         andThen(wrist.suck(/*endEffectorLocation*/),intake.rollerSuck()).until(wrist.isPartForwardGripper).
         andThen(wrist.stop()).
-        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), intake.clearCoralIntake())).
-        andThen(intake.intakeRaised()).
-        andThen(intake.clearCoralIntake());
+        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow())).
+        andThen(intake.intakeRaised());
     }
 
     /*
@@ -137,8 +135,9 @@ public class Move {
     //Coral Score L2 - Front to Front - second draft
     public Command coralL2FrontToFront() {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
-        andThen(Commands.parallel(elevator.elevatorCoralL2(), arm.armCoralL2()), wrist.wristCoralL2()).
-        andThen(Commands.parallel(intake.intakeRaised()));
+        andThen(Commands.parallel(elevator.elevatorCoralL2(), arm.armCoralL2(), intake.intakeRaised(), wrist.wristCoralL2()))
+        /*.andThen(Commands.parallel(intake.intakeRaised()))*/
+        .withName("Coral L2 Front To Front");
     }
 
     //Coral Score L2 - Rear to Front - second draft
@@ -151,8 +150,10 @@ public class Move {
 
     //Coral Score L1 - Front to Front - second draft
     public Command coralL1FrontToFront() {
-        return Commands.parallel(wrist.stop(), intake.rollerStop()).
-        andThen(Commands.parallel(elevator.elevatorCoralL1(), arm.armCoralL1(), intake.intakeRaised(), wrist.wristCoralL1()));
+        return Commands.parallel(wrist.stop(), intake.rollerStop())
+        .andThen(Commands.parallel(elevator.elevatorCoralL1(), arm.armCoralL1(), intake.intakeRaised()))
+        .andThen(wrist.wristCoralL1())
+        .withName("Coral L1 Front To Front");
     }
 
 
@@ -223,16 +224,16 @@ public class Move {
         return wrist.spit(/*endEffectorLocation*/).
         until(wrist.isPartInGripper.negate()).
         andThen(wrist.stop()).
-        andThen(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow());
+        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow()));
     }
 
     public Command wristCoralRollerSpitRearToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return wrist.spit(/*endEffectorLocation*/).
         until(wrist.isPartInGripper.negate()).
-        andThen(wrist.stop()).
-        andThen(arm.armCoralLoadHuman(), wrist.wristCoralStow(), elevator.elevatorRearSafe()).
-        andThen(arm.armCoralStow()).
-        andThen(elevator.elevatorCoralStow());
+        andThen(wrist.stop())
+        .andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(), wrist.wristCoralStow()))
+        .andThen(arm.armCoralStow())
+        .andThen(elevator.elevatorCoralStow());
     }
 
     //======================================================

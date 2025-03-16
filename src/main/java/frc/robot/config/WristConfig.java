@@ -120,7 +120,7 @@ public class WristConfig {
     }
 
     public void configureWristRotateCANcoder(CANcoderConfiguration CANcoderConfig){
-        CANcoderConfig.MagnetSensor.MagnetOffset = -0.34765625;
+        CANcoderConfig.MagnetSensor.MagnetOffset = 0.43115234375;
         CANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         CANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     }

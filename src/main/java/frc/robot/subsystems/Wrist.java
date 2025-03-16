@@ -51,6 +51,7 @@ public class Wrist extends SubsystemBase{
     WristSim sim;
 
     double wristDesiredPosition;
+    double wristDesiredSpeed;
     
     public boolean range_ok;
 
@@ -67,6 +68,7 @@ public class Wrist extends SubsystemBase{
         //Constructor
         this.config = config;
         this.endEffectorLocation = endEffectorLocation;
+        this.wristDesiredSpeed = 0;
 
         wristRotate = new TalonFX(config.kRotateCANID, "canivore");
         wristRotateCancoder = new CANcoder(config.kEncoderCANID,"canivore");
@@ -149,34 +151,49 @@ public class Wrist extends SubsystemBase{
         }
     }
 
+    private void wristStop() {
+        wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));
+    }
+
     private void wristSpin(/*endEffectorLocation endEffectorLocation*/) {
         //this.endEffectorLocation = endEffectorLocation;
 
         if (Constants.kWristSpinMotorEnabled == true) {
             switch(this.endEffectorLocation.get()){
                 case NONE:
+                    this.wristDesiredSpeed = WristConstants.kCoralStop;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));                
                 break;
                 case CORAL_GROUND_PICKUP:
+                    this.wristDesiredSpeed = WristConstants.kCoralSuck;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_HUMAN_PICKUP:
+                    this.wristDesiredSpeed = WristConstants.kCoralSuck;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_L1:
+                    this.wristDesiredSpeed = WristConstants.kCoralL1Spit;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));
                 break;
                 case CORAL_L2:
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                    this.wristDesiredSpeed = WristConstants.kCoralL2Spit;
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL2Spit));
                 break;
                 case CORAL_L3:
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                    this.wristDesiredSpeed = WristConstants.kCoralL3Spit;
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL3Spit));
                 break;
                 case CORAL_L4:
+                    this.wristDesiredSpeed = WristConstants.kCoralL4Spit;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                break;
                 case ALGAE_L2:
+                    this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
+                break;
                 case ALGAE_L3:
+                    this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
            }  
@@ -213,16 +230,14 @@ public class Wrist extends SubsystemBase{
 
     private boolean checkRange(String localPosition) {
         if ((localPosition == "CoralL1") || (localPosition == "")){
-            range_ok=true;
-        } else if (localPosition == "CoralL2"){  
-            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL2) && 
-                (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
-        } else if (localPosition == "CoralL3"){
-            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3) && 
-            (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
-        } else if (localPosition == "CoralL4"){
+            range_ok = true;
+        } else if (localPosition == "CoralL2") {  
+            range_ok = true;
+        } else if (localPosition == "CoralL3") {
+            range_ok = true;
+        } else if (localPosition == "CoralL4") {
             range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL4) && 
-            (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
+            (wristReefDistance.getSignalStrength().getValueAsDouble() > WristConstants.kRangeL4SignalStrength));
         }
         return range_ok;
     }
@@ -271,6 +286,10 @@ public class Wrist extends SubsystemBase{
         } else {
             return false;
         }
+    }
+
+    private Double getDesiredWristSpeed() {
+        return this.wristDesiredSpeed;
     }
 
     private String getCurrentCommandName() {
@@ -449,7 +468,7 @@ public class Wrist extends SubsystemBase{
     public Command stop() {
 
         return runOnce(
-            () -> {this.wristSpin(/*endEffectorLocation.NONE*/);}
+            () -> {this.wristStop(/*endEffectorLocation.NONE*/);}
         );
     }
 
@@ -544,6 +563,7 @@ public class Wrist extends SubsystemBase{
         builder.addStringProperty("Can Range Mode", this::getCurrentCanRangeMode,null);
         builder.addStringProperty("Scoring Position", this::getScoringPosition, null);
         builder.addDoubleProperty("CANrange Signal Strength", this::getSignalStrength, null);
+        builder.addDoubleProperty("Desired Wrist Spit Speed", this::getDesiredWristSpeed, null);
     }  
 
     @Override
