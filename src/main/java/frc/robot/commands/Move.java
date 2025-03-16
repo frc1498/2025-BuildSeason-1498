@@ -137,8 +137,9 @@ public class Move {
     //Coral Score L2 - Front to Front - second draft
     public Command coralL2FrontToFront() {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
-        andThen(Commands.parallel(elevator.elevatorCoralL2(), arm.armCoralL2()), wrist.wristCoralL2()).
-        andThen(Commands.parallel(intake.intakeRaised()));
+        andThen(Commands.parallel(elevator.elevatorCoralL2(), arm.armCoralL2(), intake.intakeRaised(), wrist.wristCoralL2()))
+        /*.andThen(Commands.parallel(intake.intakeRaised()))*/
+        .withName("Coral L2 Front To Front");
     }
 
     //Coral Score L2 - Rear to Front - second draft
@@ -152,7 +153,8 @@ public class Move {
     //Coral Score L1 - Front to Front - second draft
     public Command coralL1FrontToFront() {
         return Commands.parallel(wrist.stop(), intake.rollerStop()).
-        andThen(Commands.parallel(elevator.elevatorCoralL1(), arm.armCoralL1(), intake.intakeRaised(), wrist.wristCoralL1()));
+        andThen(Commands.parallel(elevator.elevatorCoralL1(), arm.armCoralL1(), intake.intakeRaised(), wrist.wristCoralL1()))
+        .withName("Coral L1 Front To Front");
     }
 
 

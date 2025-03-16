@@ -11,21 +11,21 @@ public class ElevatorConstants {
     public static final double kCoralMin = 0.5; //Rotations
 
     //===========Coral Positions===================
-    public static final double kCoralStow = 6; //Keep this the same as KCoral Load Floor to save motion
-    public static final double kCoralLoadFloor = 6; //was 5, changing to 2 for testing
-    public static final double kCoralLoadHuman = 18.5; //0.1 meters
-    public static final double kCoralL1 = 10; //0.46 meters
-    public static final double kCoralL2 = 30; //0.81 meters
-    public static final double kCoralL3 = .5; //1.21 meters
-    public static final double kCoralL4 = 28; //1.83 meters
+    public static final double kCoralStow = 5; //Keep this the same as KCoral Load Floor to save motion
+    public static final double kCoralLoadFloor = 5; //was 5, changing to 2 for testing
+    public static final double kCoralLoadHuman = 17.5; //0.1 meters
+    public static final double kCoralL1 = 7; //0.46 meters
+    public static final double kCoralL2 = 29; //0.81 meters
+    public static final double kCoralL3 = 0.5; //1.21 meters
+    public static final double kCoralL4 = 27; //1.83 meters
 
     //=============Algae Positions=============
     public static final double kAlgaeStow = 0.0;
-    public static final double kAlgaeLoadFloor = 5; //0.1 meters  
-    public static final double kAlgaeL2 = 10; //0.81 meters
-    public static final double kAlgaeL3 = 25; //1.21 meters
-    public static final double kAlgaeBarge = 20; //2.2 meters
-    public static final double kAlgaeProcessor = 25; //0.3 meters
+    public static final double kAlgaeLoadFloor = 4; //0.1 meters  
+    public static final double kAlgaeL2 = 9; //0.81 meters
+    public static final double kAlgaeL3 = 24; //1.21 meters
+    public static final double kAlgaeBarge = 19; //2.2 meters
+    public static final double kAlgaeProcessor = 24; //0.3 meters
 
     //==================General===================
     //Deadband to determine if the elevator is 'at' a position.

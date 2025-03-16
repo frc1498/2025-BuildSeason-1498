@@ -52,7 +52,7 @@ public class CoralIntakeConfig {
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;
 
         //Slot 0 Configs
-        rotate.Slot0.kP = 400;  // An error of 1 rotation per second results in 2V output
+        rotate.Slot0.kP = 200;  // An error of 1 rotation per second results in 2V output
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
         rotate.Slot0.kD = 0;  // A change of 1 rotation per second squared results in 0.01 volts output
         rotate.Slot0.kS = 0;
@@ -68,9 +68,9 @@ public class CoralIntakeConfig {
         //Fuse the Cancoder here
         rotate.Feedback.FeedbackRemoteSensorID = 31;
         rotate.Feedback.FeedbackRotorOffset = 0;
-        rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;  //MUST be synced due to high backlash
+        rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;  //Changed to Fused CANcoder, because the mechanism has tensioner.
         rotate.Feedback.SensorToMechanismRatio = 1;
-        rotate.Feedback.RotorToSensorRatio = 112.5;
+        rotate.Feedback.RotorToSensorRatio = 150;
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
 
