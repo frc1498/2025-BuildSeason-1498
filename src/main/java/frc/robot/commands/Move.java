@@ -226,16 +226,16 @@ public class Move {
         return wrist.spit(/*endEffectorLocation*/).
         until(wrist.isPartInGripper.negate()).
         andThen(wrist.stop()).
-        andThen(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow());
+        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow()));
     }
 
     public Command wristCoralRollerSpitRearToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return wrist.spit(/*endEffectorLocation*/).
         until(wrist.isPartInGripper.negate()).
-        andThen(wrist.stop()).
-        andThen(arm.armCoralLoadHuman(), wrist.wristCoralStow(), elevator.elevatorRearSafe()).
-        andThen(arm.armCoralStow()).
-        andThen(elevator.elevatorCoralStow());
+        andThen(wrist.stop())
+        .andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(), wrist.wristCoralStow()))
+        .andThen(arm.armCoralStow())
+        .andThen(elevator.elevatorCoralStow());
     }
 
     //======================================================
