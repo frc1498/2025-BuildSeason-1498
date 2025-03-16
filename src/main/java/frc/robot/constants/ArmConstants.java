@@ -36,7 +36,7 @@ public class ArmConstants {
     public static final double  kMax = 0.29;
 
     //==================Sim Values================
-    public static final double kArmRotateGearing = 105.883; //105.883:1 reduction
+    public static final double kArmRotateGearing = 112.5; //112.5:1 reduction
     public static final double kArmRotateMomentOfInertia = 0.01; //kg-m^2 - Absolutely no idea.
     public static final double kArmLength = 0.381; //meters - Guess that the arm is 15 in. long.
     public static final double kArmMinAngle = -100; //radians
