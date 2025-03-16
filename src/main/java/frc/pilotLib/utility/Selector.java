@@ -90,7 +90,7 @@ public class Selector extends SubsystemBase{
         return this.selections;
     }
 
-    private String getCurrentSelectionName() {
+    public String getCurrentSelectionName() {
         return this.currentSelectionName;
     }
 

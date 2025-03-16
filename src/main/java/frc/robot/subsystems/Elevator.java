@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -108,6 +109,11 @@ public class Elevator extends SubsystemBase {
             return this.getCurrentCommand().getName();
         }
     }
+
+    public void addToOrchestra(Orchestra robotOrchestra) {
+        robotOrchestra.addInstrument(this.elevatorDriveFront, 1);
+    }
+
     //======================================================================
     //=====================Public Commands==================================
     //======================================================================

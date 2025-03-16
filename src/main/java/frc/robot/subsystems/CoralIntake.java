@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -168,6 +169,12 @@ public class CoralIntake extends SubsystemBase{
             return this.getCurrentCommand().getName();
         }
     }
+
+    public void addToOrchestra(Orchestra robotOrchestra) {
+        robotOrchestra.addInstrument(this.rotateMotor, 1);
+        robotOrchestra.addInstrument(this.spinMotor, 1);
+    }
+
     //=============================================================
     //====================== Commands==============================
     //=============================================================

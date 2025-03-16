@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
@@ -283,6 +284,11 @@ public class Wrist extends SubsystemBase{
 
     private String getCurrentCanRangeMode () {
         return scoringPosition;
+    }
+
+    public void addToOrchestra(Orchestra robotOrchestra) {
+        robotOrchestra.addInstrument(this.wristRotate, 1);
+        robotOrchestra.addInstrument(this.wristSpin, 1);
     }
 
     //=============================================================

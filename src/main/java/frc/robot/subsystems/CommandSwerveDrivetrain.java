@@ -4,11 +4,15 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.ModuleRequest;
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.ModuleState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -135,6 +139,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        customAudioConfiguration();
     }
 
     /**
@@ -160,6 +165,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        customAudioConfiguration();
     }
 
     /**
@@ -193,6 +199,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        customAudioConfiguration();
     }
 
     private void configureAutoBuilder() {
@@ -218,6 +225,36 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load `ner config and configure AutoBuilder", ex.getStackTrace());
         }
+    }
+
+    public void addToOrchestra(Orchestra robotOrchestra) {
+        for (var module : this.getModules()) {
+            robotOrchestra.addInstrument(module.getDriveMotor(), 1);
+            robotOrchestra.addInstrument(module.getSteerMotor(), 1);
+        }
+    }
+
+    public void customAudioConfiguration() {
+        //Create a current configuration to use for the drive and steer motor of each swerve module.
+        var customAudioConfigs = new AudioConfigs();
+
+        //Iterate through each module.
+        for (var module : this.getModules()) {
+            //Get the Configurator for the current drive motor.
+            var currentDriveConfigurator = module.getDriveMotor().getConfigurator();
+            var currentSteerConfigurator = module.getSteerMotor().getConfigurator();
+
+            //Refresh the audio configuration, since there may be audio parameters that have already been set.
+            currentDriveConfigurator.refresh(customAudioConfigs);
+            currentSteerConfigurator.refresh(customAudioConfigs);
+
+            //Allow the motors to play music while they are disabled.
+            customAudioConfigs.AllowMusicDurDisable = true;
+
+            //Apply the new audio configuration.
+            currentDriveConfigurator.apply(customAudioConfigs);
+            currentSteerConfigurator.apply(customAudioConfigs);
+        }        
     }
 
     /**
