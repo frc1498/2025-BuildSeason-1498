@@ -44,7 +44,7 @@ public class Move {
     //Coral Intake Floor - Front to Front - second draft
     public Command intakeCoralFloorFrontToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
-        andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor())).
+        andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor(), arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(Commands.parallel(wrist.wristCoralLoadFloor(), arm.armCoralLoadFloor())).
         andThen(Commands.parallel(wrist.suck(),intake.rollerSuck())).until(wrist.isPartForwardGripper).
         andThen(wrist.stop()).

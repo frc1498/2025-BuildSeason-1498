@@ -233,7 +233,8 @@ public class CoralIntake extends SubsystemBase{
     public Command clearCoralIntake() {
     return runOnce(
         () -> {spit();}
-    ).withTimeout(1);
+    ).withTimeout(1)
+    .andThen(this.rollerStop());
 
     }
 
