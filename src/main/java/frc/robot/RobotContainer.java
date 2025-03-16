@@ -211,7 +211,7 @@ public class RobotContainer {
             
         //Driver - Spit Coral
             //Rear To Front
-        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.and(wrist.isCanRange).negate()).
+        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).and(wrist.isCanRange).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
 
         //Driver - Climb

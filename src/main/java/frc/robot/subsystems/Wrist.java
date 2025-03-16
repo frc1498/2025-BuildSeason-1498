@@ -230,16 +230,14 @@ public class Wrist extends SubsystemBase{
 
     private boolean checkRange(String localPosition) {
         if ((localPosition == "CoralL1") || (localPosition == "")){
-            range_ok=true;
-        } else if (localPosition == "CoralL2"){  
-            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL2) && 
-                (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
-        } else if (localPosition == "CoralL3"){
-            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3) && 
-            (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
-        } else if (localPosition == "CoralL4"){
+            range_ok = true;
+        } else if (localPosition == "CoralL2") {  
+            range_ok = true;
+        } else if (localPosition == "CoralL3") {
+            range_ok = true;
+        } else if (localPosition == "CoralL4") {
             range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL4) && 
-            (wristReefDistance.getSignalStrength().getValueAsDouble() > 2500));
+            (wristReefDistance.getSignalStrength().getValueAsDouble() > WristConstants.kRangeL4SignalStrength));
         }
         return range_ok;
     }
