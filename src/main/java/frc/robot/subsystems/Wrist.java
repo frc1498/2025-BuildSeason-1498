@@ -149,6 +149,10 @@ public class Wrist extends SubsystemBase{
         }
     }
 
+    private void wristStop() {
+        wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));
+    }
+
     private void wristSpin(/*endEffectorLocation endEffectorLocation*/) {
         //this.endEffectorLocation = endEffectorLocation;
 
@@ -449,7 +453,7 @@ public class Wrist extends SubsystemBase{
     public Command stop() {
 
         return runOnce(
-            () -> {this.wristSpin(/*endEffectorLocation.NONE*/);}
+            () -> {this.wristStop(/*endEffectorLocation.NONE*/);}
         );
     }
 
