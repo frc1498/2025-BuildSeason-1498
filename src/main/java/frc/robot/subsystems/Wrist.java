@@ -161,39 +161,39 @@ public class Wrist extends SubsystemBase{
         if (Constants.kWristSpinMotorEnabled == true) {
             switch(this.endEffectorLocation.get()){
                 case NONE:
-                    this.wristDesiredPosition = WristConstants.kCoralStop;
+                    this.wristDesiredSpeed = WristConstants.kCoralStop;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));                
                 break;
                 case CORAL_GROUND_PICKUP:
-                    this.wristDesiredPosition = WristConstants.kCoralSuck;
+                    this.wristDesiredSpeed = WristConstants.kCoralSuck;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_HUMAN_PICKUP:
-                    this.wristDesiredPosition = WristConstants.kCoralSuck;
+                    this.wristDesiredSpeed = WristConstants.kCoralSuck;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
                 break;
                 case CORAL_L1:
-                    this.wristDesiredPosition = WristConstants.kCoralL1Spit;
+                    this.wristDesiredSpeed = WristConstants.kCoralL1Spit;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));
                 break;
                 case CORAL_L2:
-                    this.wristDesiredPosition = WristConstants.kCoralL2Spit;
+                    this.wristDesiredSpeed = WristConstants.kCoralL2Spit;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL2Spit));
                 break;
                 case CORAL_L3:
-                    this.wristDesiredPosition = WristConstants.kCoralL3Spit;
+                    this.wristDesiredSpeed = WristConstants.kCoralL3Spit;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL3Spit));
                 break;
                 case CORAL_L4:
-                    this.wristDesiredPosition = WristConstants.kCoralL4Spit;
+                    this.wristDesiredSpeed = WristConstants.kCoralL4Spit;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
                 break;
                 case ALGAE_L2:
-                    this.wristDesiredPosition = WristConstants.kAlgaeRemove;
+                    this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
                 case ALGAE_L3:
-                    this.wristDesiredPosition = WristConstants.kAlgaeRemove;
+                    this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
                 break;
            }  
@@ -286,6 +286,10 @@ public class Wrist extends SubsystemBase{
         } else {
             return false;
         }
+    }
+
+    private Double getDesiredWristSpeed() {
+        return this.wristDesiredSpeed;
     }
 
     private String getCurrentCommandName() {
@@ -559,7 +563,7 @@ public class Wrist extends SubsystemBase{
         builder.addStringProperty("Can Range Mode", this::getCurrentCanRangeMode,null);
         builder.addStringProperty("Scoring Position", this::getScoringPosition, null);
         builder.addDoubleProperty("CANrange Signal Strength", this::getSignalStrength, null);
-        builder.addDoubleProperty("Desired Wrist Spit Speed", () -> {return this.wristDesiredSpeed;}, null);
+        builder.addDoubleProperty("Desired Wrist Spit Speed", this::getDesiredWristSpeed, null);
     }  
 
     @Override
