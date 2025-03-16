@@ -48,9 +48,8 @@ public class Move {
         andThen(Commands.parallel(wrist.wristCoralLoadFloor(), arm.armCoralLoadFloor())).
         andThen(Commands.parallel(wrist.suck(),intake.rollerSuck())).until(wrist.isPartForwardGripper).
         andThen(wrist.stop()).
-        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), intake.clearCoralIntake())).
-        andThen(intake.intakeRaised()).
-        andThen(intake.clearCoralIntake());
+        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow())).
+        andThen(intake.intakeRaised());
     }
 
     //Coral Intake Floor - Rear to Front - second draft
@@ -61,9 +60,8 @@ public class Move {
         andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
         andThen(wrist.suck(/*endEffectorLocation*/),intake.rollerSuck()).until(wrist.isPartForwardGripper).
         andThen(wrist.stop()).
-        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), intake.clearCoralIntake())).
-        andThen(intake.intakeRaised()).
-        andThen(intake.clearCoralIntake());
+        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow())).
+        andThen(intake.intakeRaised());
     }
 
     /*

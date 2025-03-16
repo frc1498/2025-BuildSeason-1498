@@ -15,6 +15,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.CoralIntakeConfig;
@@ -209,10 +211,13 @@ public class CoralIntake extends SubsystemBase{
 
     public Command intakeRaised() {
 
-
-        return run(
-            () -> {this.goToPosition(CoralIntakeConstants.kIntakeRaisedPosition);}
-        ).until(isIntakeRaised);
+        return run(() -> {
+            this.goToPosition(CoralIntakeConstants.kIntakeRaisedPosition);
+            this.spit();
+        })
+        .until(isIntakeRaised)
+        .andThen(this.rollerStop());
+        
     }
 
     public Command intakeFloor() {
@@ -231,7 +236,7 @@ public class CoralIntake extends SubsystemBase{
     }
 
     public Command clearCoralIntake() {
-    return runOnce(
+    return run(
         () -> {spit();}
     ).withTimeout(1)
     .andThen(this.rollerStop());
