@@ -152,8 +152,9 @@ public class Move {
 
     //Coral Score L1 - Front to Front - second draft
     public Command coralL1FrontToFront() {
-        return Commands.parallel(wrist.stop(), intake.rollerStop()).
-        andThen(Commands.parallel(elevator.elevatorCoralL1(), arm.armCoralL1(), intake.intakeRaised(), wrist.wristCoralL1()))
+        return Commands.parallel(wrist.stop(), intake.rollerStop())
+        .andThen(Commands.parallel(elevator.elevatorCoralL1(), arm.armCoralL1(), intake.intakeRaised()))
+        .andThen(wrist.wristCoralL1())
         .withName("Coral L1 Front To Front");
     }
 

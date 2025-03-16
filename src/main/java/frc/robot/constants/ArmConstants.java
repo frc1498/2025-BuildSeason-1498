@@ -6,8 +6,8 @@ public class ArmConstants {
     public static final double kCoralStow = -0.250;  //Stow Position - 0 degrees 
     public static final double kCoralLoadFloor = -0.131;  //  Load Coral Floor Position - Changing to real measurements, was: 15 degrees - 0.262 radians - 5.254 rotations
     public static final double kCoralLoadHuman = -0.031;  //  was -.12 Load Coral Floor Position - Changing to real measurements, was:20 degrees - 0.349 radians - 6.999 rotations
-    public static final double kCoralL1 = -0.260; // Level 1 Score Coral Position - Changing to real measurements, was:30 degrees - 0.526 radians - 10.548 rotations
-    public static final double kCoralL2 = -0.271; // Level 2 Score Coral Position - Changing to real measurements, was:45 degrees - 0.785 radians - 15.742 rotations
+    public static final double kCoralL1 = -0.240; // Level 1 Score Coral Position - Changing to real measurements, was:30 degrees - 0.526 radians - 10.548 rotations
+    public static final double kCoralL2 = -0.250; // Level 2 Score Coral Position - Changing to real measurements, was:45 degrees - 0.785 radians - 15.742 rotations
     public static final double kCoralL3 = 0.279; // Level 3 Score Coral Position - Changing to real measurements, was:60 degrees - 1.047 radians - 20.996 rotations
     public static final double kCoralL4 = 0.279; // Level 4 Score Coral Position - Changing to real measurements, was:75 degrees - 1.309 radians - 26.250 rotations
     public static final double kStowOverIntake = 1;
