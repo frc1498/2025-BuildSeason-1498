@@ -44,11 +44,11 @@ public class ArmConfig {
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;
 
         //Slot 0 Configs
-        rotate.Slot0.kP = 275;  // An error of 1 rotation per second results in 2V output
+        rotate.Slot0.kP = 130;  // An error of 1 rotation per second results in 2V output
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
-        rotate.Slot0.kD = 3;  // A change of 1 rotation per second squared results in 0.01 volts output
-        rotate.Slot0.kS = 0.1;
-        rotate.Slot0.kV = 20;  // KV for a Kraken X60 is 490 rpm/V. 490/60 is 8.1667 rps/V.  The inverse is 0.122449 V/rps.
+        rotate.Slot0.kD = 4;  // A change of 1 rotation per second squared results in 0.01 volts output
+        rotate.Slot0.kS = 0;
+        rotate.Slot0.kV = 15;  // KV for a Kraken X60 is 490 rpm/V. 490/60 is 8.1667 rps/V.  The inverse is 0.122449 V/rps.
         rotate.Slot0.kA = 1;
         rotate.Slot0.kG = 0.18;
         rotate.Slot0.GravityType = GravityTypeValue.Arm_Cosine;

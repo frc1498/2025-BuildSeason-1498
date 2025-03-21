@@ -37,7 +37,7 @@ public class ClimberConfig {
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
         rotate.Slot0.kD = 0;  // A change of 1 rotation per second squared results in 0.01 volts output
         rotate.Slot0.kG = 0;
-        rotate.Slot0.kV = .125;  // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        rotate.Slot0.kV = .133;  // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
         rotate.Slot0.kA = .008;
         rotate.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
     }

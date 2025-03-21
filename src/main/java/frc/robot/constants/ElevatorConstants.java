@@ -15,7 +15,8 @@ public class ElevatorConstants {
     public static final double kCoralLoadFloor = 0; //was 5, changing to 2 for testing
     public static final double kCoralLoadHuman = 17.5; //0.1 meters
     public static final double kCoralL1 = 11; //0.46 meters
-    public static final double kCoralL2 = 31; //0.81 meters
+    public static final double kCoralL2 = 30
+    ; //0.81 meters
     public static final double kCoralL3 = 3; //1.21 meters
     public static final double kCoralL4 = 33; //1.83 meters
 
@@ -23,7 +24,7 @@ public class ElevatorConstants {
     public static final double kAlgaeStow = 0.0;
     public static final double kAlgaeLoadFloor = 4; //0.1 meters  
     public static final double kAlgaeL2 = 9; //0.81 meters
-    public static final double kAlgaeL3 = 24; //1.21 meters
+    public static final double kAlgaeL3 = 26; //1.21 meters
     public static final double kAlgaeBarge = 19; //2.2 meters
     public static final double kAlgaeProcessor = 24; //0.3 meters
 

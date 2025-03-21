@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Test Path 1"
+            "pathName": "Red Left 1st"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Red Test Path 2"
+            "name": "toCoralL4FrontToRear"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "spitRearToFront"
           }
         }
       ]

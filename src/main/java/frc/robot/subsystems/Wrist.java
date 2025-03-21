@@ -15,8 +15,10 @@ import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -42,6 +44,7 @@ public class Wrist extends SubsystemBase{
 
     public TalonFX wristSpin;
     public VelocityVoltage spinControl;
+    public PositionVoltage spinPositionVoltage;
     
     TalonFXSimState wristRotateSim;
     CANcoderSimState wristEncoderSim;
@@ -80,6 +83,7 @@ public class Wrist extends SubsystemBase{
 
         wristSpin = new TalonFX(config.kSpinCANID, "canivore");
         spinControl = new VelocityVoltage(WristConstants.kCoralStop);
+        spinPositionVoltage = new PositionVoltage(0);
 
         this.configureMechanism(wristSpin, config.wristSpinConfig);  //Fill in framework
         this.configureMechanism(wristRotate, config.wristRotateConfig);  //Fill in framework
@@ -152,7 +156,9 @@ public class Wrist extends SubsystemBase{
     }
 
     private void wristStop() {
-        wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));
+        wristSpin.setPosition(0);
+        wristSpin.setControl(spinPositionVoltage.withPosition(0).withSlot(1));
+        
     }
 
     private void wristSpin(/*endEffectorLocation endEffectorLocation*/) {
@@ -162,39 +168,39 @@ public class Wrist extends SubsystemBase{
             switch(this.endEffectorLocation.get()){
                 case NONE:
                     this.wristDesiredSpeed = WristConstants.kCoralStop;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop));                
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralStop).withSlot(0));                
                 break;
                 case CORAL_GROUND_PICKUP:
                     this.wristDesiredSpeed = WristConstants.kCoralSuck;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck).withSlot(0));
                 break;
                 case CORAL_HUMAN_PICKUP:
                     this.wristDesiredSpeed = WristConstants.kCoralSuck;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck).withSlot(0));
                 break;
                 case CORAL_L1:
                     this.wristDesiredSpeed = WristConstants.kCoralL1Spit;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL1Spit).withSlot(0));
                 break;
                 case CORAL_L2:
                     this.wristDesiredSpeed = WristConstants.kCoralL2Spit;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL2Spit));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL2Spit).withSlot(0));
                 break;
                 case CORAL_L3:
                     this.wristDesiredSpeed = WristConstants.kCoralL3Spit;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL3Spit));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL3Spit).withSlot(0));
                 break;
                 case CORAL_L4:
                     this.wristDesiredSpeed = WristConstants.kCoralL4Spit;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralL4Spit).withSlot(0));
                 break;
                 case ALGAE_L2:
                     this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove).withSlot(0));
                 break;
                 case ALGAE_L3:
                     this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove).withSlot(0));
                 break;
            }  
         }
@@ -242,22 +248,6 @@ public class Wrist extends SubsystemBase{
         return range_ok;
     }
 
-
-/*
-    private void positionCoral(){
-
-         //   System.out.println("=============Private Wrist wristDriveToPosition===============");
-        
-
-        if (isPartForwardGripper()){ //front beam break is made
-            wristSpin.set(WristConstants.kCoralSlowBackward); //move coral backward slowly
-        } else if (isPartRearwardGripper()){ //rear beam break is made
-            wristSpin.set(WristConstants.kCoralSlowForward);//move coral forward slowly
-        } else if (isPartForwardGripper() && isPartRearwardGripper()){ // both beam breaks are made
-            wristSpin.set(WristConstants.kCoralStop); //stop motor
-        }
-    }
-*/
 
     private boolean isPartForwardGripper() {
         //If either beam break is made, part is in gripper
@@ -461,7 +451,7 @@ public class Wrist extends SubsystemBase{
     public Command clearWristCoral() {
 
         return run(
-            () -> {wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralClear));}
+            () -> {wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralClear).withSlot(0));}
         ).withTimeout(2);
     }
 
@@ -479,33 +469,6 @@ public class Wrist extends SubsystemBase{
         );
     }
 
-    /*
-    public Command wristCoralLoadFloorBetterInitial() {
-        
-        return run(
-            () -> {this.wristDriveToPosition(WristConstants.kCoralLoadFloorBetterInitial);}
-        ).until(this.isCoralWristLoadFloorBetterInitial)
-        .withName("wristCoralLoadFloorBetterInitial");
-    }
-    */
-
-    /*
-    public Command wristCoralLoadFloorBetterFinal() {
-        
-        return run(
-            () -> {this.wristDriveToPosition(WristConstants.kCoralLoadFloorBetterFinal);}
-        ).until(this.isCoralWristLoadFloorBetterFinal)
-        .withName("wristCoralLoadFloorBetterFinal");
-    }
-    */
-
-    /*
-    public Command isCanAtRange(String localposition) {
-        return run(
-            () -> {this.checkRange(localposition);}
-        );
-    }
-     */
 
     //===============================================
     //=================Suppliers=====================
@@ -590,8 +553,10 @@ public class Wrist extends SubsystemBase{
             break;
             case CORAL_L4:
                 scoringPosition = "CoralL4";
+            break;
             case ALGAE_L2:
                 scoringPosition = "";
+            break;
             case ALGAE_L3:
                 scoringPosition = "";
             break;

@@ -70,15 +70,18 @@ public class WristConfig {
         rotate.CurrentLimits.SupplyCurrentLowerTime = 1;
 
         //Slot 0 Configs
-        rotate.Slot0.kP = 15;  // An error of 1 rotation per second results in 2V output
+        rotate.Slot0.kP = 60;  // An error of 1 rotation per second results in 2V output
         rotate.Slot0.kI = 0;  // An error of 1 rotation per second increases output by 0.5V every second
-        rotate.Slot0.kD = 5;  // A change of 1 rotation per second squared results in 0.01 volts output
+        rotate.Slot0.kD = 2;  // A change of 1 rotation per second squared results in 0.01 volts output
         rotate.Slot0.kS = 0;
-        rotate.Slot0.kV = 9.18;  // KV for a Kraken X60 is 490 rpm/V. 490/60 is 8.1667 rps/V.  The inverse is 0.122449 V/rps.
-        rotate.Slot0.kA = 0.8;
+        rotate.Slot0.kV = 2.5;  // KV for a Kraken X60 is 490 rpm/V. 490/60 is 8.1667 rps/V.  The inverse is 0.122449 V/rps.
+        rotate.Slot0.kA = 0;
         rotate.Slot0.kG = 0;
         rotate.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         rotate.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseVelocitySign;
+
+
+
 
         rotate.Voltage.PeakForwardVoltage = 11;
         rotate.Voltage.PeakReverseVoltage = -11;
@@ -87,11 +90,11 @@ public class WristConfig {
         rotate.Feedback.FeedbackRemoteSensorID = 33;
         rotate.Feedback.FeedbackRotorOffset = 0;
         rotate.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        rotate.Feedback.RotorToSensorRatio = 75;
+        rotate.Feedback.RotorToSensorRatio = 25;
         rotate.Feedback.SensorToMechanismRatio = 1;
 
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
-        rotate.MotionMagic.MotionMagicCruiseVelocity = 0.9;
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 2;
         rotate.MotionMagic.MotionMagicAcceleration = 6.67;
         rotate.MotionMagic.MotionMagicJerk = 66.7;
 
@@ -112,15 +115,20 @@ public class WristConfig {
         spin.Audio.AllowMusicDurDisable = true;
 
         //Slot 0 Configs
-        spin.Slot0.kP = 0; // An error of 1 rotation per second results in 2V output
+        spin.Slot0.kP = 0.45; // An error of 1 rotation per second results in 2V output
         spin.Slot0.kI = 0; // An error of 1 rotation per second increases output by 0.5V every second
         spin.Slot0.kD = 0; // A change of 1 rotation per second squared results in 0.01 volts output
         spin.Slot0.kV = 0.132; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
       
+        spin.Slot1.kP = 10; // An error of 1 rotation per second results in 2V output
+        spin.Slot1.kI = 0; // An error of 1 rotation per second increases output by 0.5V every second
+        spin.Slot1.kD = 0; // A change of 1 rotation per second squared results in 0.01 volts output
+        spin.Slot1.kV = 0; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+
     }
 
     public void configureWristRotateCANcoder(CANcoderConfiguration CANcoderConfig){
-        CANcoderConfig.MagnetSensor.MagnetOffset = 0.43115234375;
+        CANcoderConfig.MagnetSensor.MagnetOffset = -0.234130859375;
         CANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         CANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     }

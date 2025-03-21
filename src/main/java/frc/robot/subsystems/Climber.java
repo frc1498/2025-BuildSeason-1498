@@ -73,7 +73,7 @@ public class Climber extends SubsystemBase{
     //===========================================================
     //=======================Private=============================
     //===========================================================
-
+/*
     private void climberLatch() {
         this.desiredServoPosition = ClimberConstants.kServoLatch;
         climberServo.set(ClimberConstants.kServoLatch);
@@ -83,7 +83,7 @@ public class Climber extends SubsystemBase{
         this.desiredServoPosition = ClimberConstants.kServoUnLatch;
         climberServo.set(ClimberConstants.kServoUnLatch);
     }
-
+*/
 
     private void climberDriveToPosition(double position) {
         if (Constants.kClimberRotateMotorEnabled == true) {
@@ -92,10 +92,10 @@ public class Climber extends SubsystemBase{
     }
 
     private boolean isClimberAtPosition(double position) {
-        /* climber is removed (position-ClimberConstants.kDeadband) <= getClimberPosition()) &&
-         ((position+ClimberConstants.kDeadband) >= getClimberPosition() */
+        return (((position - ClimberConstants.kDeadband) <= getClimberPosition()) &&
+         ((position + ClimberConstants.kDeadband) >= getClimberPosition()));
         
-        return (false);
+        
     }
 
     private double getClimberPosition(){
@@ -121,7 +121,9 @@ public class Climber extends SubsystemBase{
     }
 
     private void climberEnable(){
+        climberRotate.setPosition(0);
         climberEnabled=true;
+
     }
 
     public void addToOrchestra(Orchestra robotOrchestra) {
@@ -131,6 +133,7 @@ public class Climber extends SubsystemBase{
     //===============================================================
     //=====================Commands==================================
     //===============================================================
+/*
     public Command commandClimberLatch() {
         return runOnce(
             () -> {this.climberLatch();}).withName("Climber Latch");
@@ -140,7 +143,7 @@ public class Climber extends SubsystemBase{
         return runOnce(
             () -> {this.climberUnLatch();}).withName("Climber Unlatch");
     }
-
+*/
     public Command toClimberStow() {
         return run(
             () -> {this.climberDriveToPosition(ClimberConstants.kClimberStowed);}).until(isClimberStowed).withName("To Climber Stow");

@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -186,10 +187,11 @@ public class RobotContainer {
 
         // had to remove climber crap and(climber.isClimberReady.negate()).
             //Rear To Front 
-        driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+        /*
+            driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloorRearToFront(endEffector.whatIsEndEffectorLocation())));
-
+*/
 /*
         //Driver - Coral Human Intake
             //Front To Rear
@@ -206,13 +208,17 @@ public class RobotContainer {
 
         //Driver - Spit Coral
             //Front To Front
-        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
+        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).
         onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
-            
+        
+        //removed .and(wrist.isCanRange)
+
         //Driver - Spit Coral
             //Rear To Front
-        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).and(wrist.isCanRange).
+        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+
+        //removed .and(wrist.isCanRange)
 
         //Driver - Climb
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
@@ -316,8 +322,7 @@ public class RobotContainer {
             andThen(move.goToRemoveAlgaeL3RearToRear(endEffector.whatIsEndEffectorLocation())));
 
        //Operator - Climb
-       operator1.x().and(operator1.a()).and(climber.isClimberReady.negate()).onTrue(climber.commandClimberUnLatch().
-       andThen(move.clearClimb()).
+       operator1.x().and(operator1.a()).and(climber.isClimberReady.negate()).onTrue(move.clearClimb().
        andThen(climber.climberTriggered()).
        andThen(climber.toClimberReady()).
        andThen(move.intakeToRaisedForClimb()).withName("Climber Ready"));
@@ -339,20 +344,25 @@ public class RobotContainer {
     }
 
     public void registerAutonCommands() {
-/*
+        NamedCommands.registerCommand("toCoralL4FrontToRear", move.coralL4FrontToRear().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;})));
+        NamedCommands.registerCommand("spitRearToFront", move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+        NamedCommands.registerCommand("toCoralStow", move.coralStowRearToFront().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));        
+        NamedCommands.registerCommand("intake", endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
+        andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())));
+
+
+        /*
         NamedCommands.registerCommand("toCoralL1", move.coralL1().
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;})));
         NamedCommands.registerCommand("toCoralL2", move.coralL2().
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;})));
         NamedCommands.registerCommand("toCoralL3", move.coralL3().
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;})));
-        NamedCommands.registerCommand("toCoralL4", move.coralL4().
-        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;})));
-        NamedCommands.registerCommand("toCoralStow", move.coralStow().
-        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
-        NamedCommands.registerCommand("spit", move.wristCoralRollerSpit(endEffector.whatIsEndEffectorLocation()).
-        until(wrist.isPartInGripper.negate()).
-        andThen(move.coralStow()));
+        
+
+
   */
     }
 

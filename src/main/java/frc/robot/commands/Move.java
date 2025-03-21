@@ -47,16 +47,17 @@ public class Move {
         andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor(), arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(Commands.parallel(wrist.wristCoralLoadFloor(), arm.armCoralLoadFloor())).
         andThen(Commands.parallel(wrist.suck(),intake.rollerSuck())).until(wrist.isPartForwardGripper).
-        andThen(wrist.stop()).
+        andThen(Commands.parallel(wrist.stop(), intake.rollerStop())).
         andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(intake.intakeRaised());
     }
 
     //Coral Intake Floor - Rear to Front - second draft
     public Command intakeCoralFloorRearToFront(Supplier<endEffectorLocation> endEffectorLocation) {
-        return Commands.parallel(wrist.stop(), intake.rollerStop()).
-        andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(), wrist.wristCoralStow())).
-        andThen(Commands.parallel(arm.armCoralStow(), elevator.elevatorCoralStow())). 
+        return Commands.parallel(wrist.stop(), intake.intakeFloor()).
+        andThen(elevator.elevatorRearSafe()).
+        andThen(Commands.parallel(arm.armCoralStow(), elevator.elevatorCoralStow())).
+        andThen(elevator.elevatorCoralLoadFloor()).
         andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
         andThen(wrist.suck(/*endEffectorLocation*/),intake.rollerSuck()).until(wrist.isPartForwardGripper).
         andThen(wrist.stop()).
@@ -91,7 +92,8 @@ public class Move {
 
     //Coral Stow - Front to Front - second draft
     public Command coralStowFrontToFront() {
-        return Commands.parallel(wrist.stop(), intake.rollerStop()). 
+        return Commands.parallel(wrist.stop(), intake.rollerStop()).
+        andThen(arm.armCoralStow()) .
         andThen(Commands.parallel(elevator.elevatorCoralStow(), arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(intake.intakeRaised());
     }    
@@ -134,9 +136,9 @@ public class Move {
 
     //Coral Score L2 - Front to Front - second draft
     public Command coralL2FrontToFront() {
-        return Commands.parallel(wrist.stop(), intake.rollerStop()). 
+        return Commands.parallel(wrist.stop(), intake.rollerStop()).
+        andThen(elevator.elevatorCoralL2()). 
         andThen(Commands.parallel(elevator.elevatorCoralL2(), arm.armCoralL2(), intake.intakeRaised(), wrist.wristCoralL2()))
-        /*.andThen(Commands.parallel(intake.intakeRaised()))*/
         .withName("Coral L2 Front To Front");
     }
 
@@ -223,7 +225,8 @@ public class Move {
     public Command wristCoralRollerSpitFrontToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return wrist.spit(/*endEffectorLocation*/).
         until(wrist.isPartInGripper.negate()).
-        andThen(wrist.stop()).
+        andThen(wrist.stop())
+        .andThen(arm.armCoralStow()).
         andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow()));
     }
 
