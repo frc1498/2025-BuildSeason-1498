@@ -21,6 +21,43 @@
           "data": {
             "name": "spitRearToFront"
           }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red Left 1st Pickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Red Left 1st Return"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toCoralL4FrontToRear"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "spitRearToFront"
+          }
         }
       ]
     }

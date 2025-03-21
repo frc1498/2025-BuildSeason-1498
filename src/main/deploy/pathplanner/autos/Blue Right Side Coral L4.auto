@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Right 1st"
+                  "pathName": "Blue Right 1st"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Right 1st Pickup"
+                  "pathName": "Blue Right 1st Pickup"
                 }
               }
             ]
@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Right 1st Return"
+                  "pathName": "Blue Right 1st Return"
                 }
               },
               {

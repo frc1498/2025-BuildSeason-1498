@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Center Right"
+            "pathName": "Red Center"
           }
         },
         {
@@ -20,6 +20,12 @@
           "type": "named",
           "data": {
             "name": "spitRearToFront"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Leave Red Center"
           }
         }
       ]

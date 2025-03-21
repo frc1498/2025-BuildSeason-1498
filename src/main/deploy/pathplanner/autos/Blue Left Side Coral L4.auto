@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Right 1st"
+                  "pathName": "Blue Left 1st"
                 }
               },
               {
@@ -42,10 +42,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Right 1st Pickup"
+                  "pathName": "Blue Left 1st Pickup"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toCoralL4FrontToRear"
           }
         },
         {
@@ -55,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Right 1st Return"
+                  "pathName": "Blue Left 1st Return"
                 }
               },
               {
