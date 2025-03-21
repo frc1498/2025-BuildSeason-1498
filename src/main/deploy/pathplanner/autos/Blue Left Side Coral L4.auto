@@ -49,12 +49,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "toCoralL4FrontToRear"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [

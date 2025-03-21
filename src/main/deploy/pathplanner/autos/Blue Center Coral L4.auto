@@ -19,14 +19,14 @@
                 "data": {
                   "name": "toCoralL4FrontToRear"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "spitRearToFront"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "spitRearToFront"
           }
         },
         {

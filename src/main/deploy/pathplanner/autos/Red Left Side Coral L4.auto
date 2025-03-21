@@ -5,15 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Red Left 1st"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "toCoralL4FrontToRear"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red Left 1st"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "toCoralL4FrontToRear"
+                }
+              }
+            ]
           }
         },
         {
@@ -42,15 +49,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Red Left 1st Return"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "toCoralL4FrontToRear"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red Left 1st Return"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "toCoralL4FrontToRear"
+                }
+              }
+            ]
           }
         },
         {
