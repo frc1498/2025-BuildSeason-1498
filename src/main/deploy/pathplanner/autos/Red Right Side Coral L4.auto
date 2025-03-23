@@ -59,9 +59,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "toCoralL4FrontToRear"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeReturn"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "toCoralL4FrontToRear"
+                      }
+                    }
+                  ]
                 }
               }
             ]

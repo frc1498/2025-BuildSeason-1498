@@ -240,7 +240,8 @@ public class Wrist extends SubsystemBase{
         } else if (localPosition == "CoralL2") {  
             range_ok = true;
         } else if (localPosition == "CoralL3") {
-            range_ok = true;
+            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3) && 
+            (wristReefDistance.getSignalStrength().getValueAsDouble() > WristConstants.kRangeL3SignalStrength));
         } else if (localPosition == "CoralL4") {
             range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL4) && 
             (wristReefDistance.getSignalStrength().getValueAsDouble() > WristConstants.kRangeL4SignalStrength));
@@ -482,7 +483,7 @@ public class Wrist extends SubsystemBase{
     //=================Triggers for Wrist Coral==============
     //=======================================================
     public final Trigger isPartRearwardGripper = new Trigger(() -> {return this.isPartRearwardGripper();});
-    public final Trigger isPartForwardGripper = new Trigger(() -> {return this.isPartForwardGripper();});
+    public final Trigger isPartForwardGripper = new Trigger(() -> {return this.isPartForwardGripper();}).debounce(0.05);
     public final Trigger isPartInGripper = new Trigger(() -> {return this.isPartGripper();});
     public final Trigger isWristCoralStow = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralStow);});
     public final Trigger isWristCoralLoadFloor = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kCoralLoadFloor);});
@@ -510,7 +511,7 @@ public class Wrist extends SubsystemBase{
     //=====================================================
     public final Trigger isWristFrontSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kFrontSafe);});
     public final Trigger isWristRearSafe = new Trigger(() -> {return this.isWristAtPosition(WristConstants.kRearSafe);});
-    public final Trigger isCanRange = new Trigger(() -> {return this.checkRange(this.getScoringPosition());});
+    public final Trigger isCanRange = new Trigger(() -> {return this.checkRange(this.getScoringPosition());}).debounce(0.05);
 
     @Override
     public void initSendable(SendableBuilder builder) {

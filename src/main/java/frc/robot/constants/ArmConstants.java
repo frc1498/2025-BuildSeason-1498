@@ -25,7 +25,7 @@ public class ArmConstants {
     public static final double kFrontSafe = -0.35;
     public static final double kRearSafe = 0;
     public static final double kIntakeSafe = -.115; //When arm is in middle and moving "through" the intake 
-    public static final double kClearClimb = -0.29; //When arm is in middle and moving "through" the intake 
+    public static final double kClearClimb = -0.31; //Was -0.29 When arm is in middle and moving "through" the intake 
     public static final double kArmAboveIntake45 = 0.125;
 
     //=========================Safeties===================

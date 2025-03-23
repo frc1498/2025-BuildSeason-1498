@@ -13,13 +13,22 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -40,6 +49,7 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.EndEffector;
+import frc.robot.constants.AprilTagConstants;
 import frc.robot.constants.EndEffectorConstants.endEffectorLocation;
 import frc.robot.commands.Move;
 
@@ -47,6 +57,7 @@ public class RobotContainer {
     endEffectorLocation endEffectorlocation;
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double precisionDampener = 1.0; //This makes it sound very cool.
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -126,9 +137,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-(Math.pow(driver.getLeftY(),3)) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-(Math.pow(driver.getLeftX(),3)) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-(Math.pow(driver.getLeftY(),3)) * MaxSpeed * precisionDampener) // Drive forward with negative Y (forward)
+                    .withVelocityY(-(Math.pow(driver.getLeftX(),3)) * MaxSpeed * precisionDampener) // Drive left with negative X (left)
+                    .withRotationalRate(-driver.getRightX() * MaxAngularRate * precisionDampener) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -183,7 +194,8 @@ public class RobotContainer {
             //Front To Front    
         driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
-            andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())));
+            andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())).
+            andThen(move.intakeCoralFloorFrontToFrontReturn()));
 
         // had to remove climber crap and(climber.isClimberReady.negate()).
             //Rear To Front 
@@ -213,10 +225,27 @@ public class RobotContainer {
         
         //removed .and(wrist.isCanRange)
 
+        //Driver - Slow down by 50% while holding the spit button
+        /*driver.rightBumper().onTrue(this.setDampener())
+        .onFalse(this.resetDampener());*/
+
         //Driver - Spit Coral
             //Rear To Front
-        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
+        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).and(wrist.isCanRange).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+
+        //Driver - Spit Coral No Range Sensor
+        //Front To Front
+        driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).
+        onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
+            
+        //removed .and(wrist.isCanRange)
+    
+        //Driver - Spit Coral
+        //Rear To Front
+        driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
+        onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+    
 
         //removed .and(wrist.isCanRange)
 
@@ -250,45 +279,45 @@ public class RobotContainer {
         //Operator - Score Coral L1
             //Front To Front
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
-            move.coralL1FrontToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}).
+            andThen(move.coralL1FrontToFront())); 
             //Rear To Front
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            move.coralL1RearToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}))); 
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}).
+            andThen(move.coralL1RearToFront())); 
 
         //Operator - Score Coral L2
             //Front To Front
         operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
-            move.coralL2FrontToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;})));
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}).
+            andThen(move.coralL2FrontToFront()));
     
             //Rear To Front
         operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            move.coralL2RearToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;})));
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}).    
+            andThen(move.coralL2RearToFront()));
 
         //Operator - Score Coral L3
             //Front To Rear
         operator1.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
-            move.coralL3FrontToRear().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;})));
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;}).
+            andThen(move.coralL3FrontToRear()));
     
             //Rear To Rear
         operator1.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            move.coralL3RearToRear().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;})));
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;}).
+            andThen(move.coralL3RearToRear()));
 
         //Operator - Score Coral L4
             //Front To Rear
         operator1.start().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
-            move.coralL4FrontToRear().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}))); //Score L4
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}).
+            andThen(move.coralL4FrontToRear())); //Score L4
     
             //Rear To Rear
         operator1.start().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            move.coralL4RearToRear().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}))); //Score L4
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}).
+            andThen(move.coralL4RearToRear())); //Score L4
 
         //Operator - Coral Stow
             //Front To Front
@@ -341,6 +370,13 @@ public class RobotContainer {
         
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
+
+        /*driver.start().onTrue(dwive()
+        .onlyWhile(driver.axisMagnitudeGreaterThan(0, 0.1).negate()
+        .and(driver.axisMagnitudeGreaterThan(1, 0.1).negate())
+        .and(driver.axisMagnitudeGreaterThan(4, 0.1).negate())
+        .and(driver.axisMagnitudeGreaterThan(5, 0.1).negate())));
+        */
     }
 
     public void registerAutonCommands() {
@@ -351,11 +387,12 @@ public class RobotContainer {
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));        
         NamedCommands.registerCommand("intake", endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
         andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())));
+        NamedCommands.registerCommand("intakeReturn", move.intakeCoralFloorFrontToFrontReturn());
 
 
+        
         /*
-        NamedCommands.registerCommand("toCoralL1", move.coralL1().
-        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;})));
+
         NamedCommands.registerCommand("toCoralL2", move.coralL2().
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;})));
         NamedCommands.registerCommand("toCoralL3", move.coralL3().
@@ -379,6 +416,18 @@ public class RobotContainer {
         return selectedAuton;
     }
 
+    public Command setDampener() {
+        return Commands.runOnce( () -> {
+            this.precisionDampener = 0.7;
+        });
+    }
+
+    public Command resetDampener() {
+        return Commands.runOnce( () -> {
+            this.precisionDampener = 1.0;
+        });
+    }
+
     public ArrayList<Command> loadAllAutonomous(Supplier<ArrayList<String>> autonList) {
         ArrayList<Command> commandList= new ArrayList<Command>();
         for (var i : autonList.get()) {
@@ -386,6 +435,14 @@ public class RobotContainer {
         }
 
         return commandList;
+    }
+
+    public Command dwive() {
+        return AutoBuilder.pathfindToPose(
+            AprilTagConstants.kRed6,
+            new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+            0
+        );
     }
 
     public Trigger allianceCheck = new Trigger(() -> {return this.hasDeterminedAlliance;});
