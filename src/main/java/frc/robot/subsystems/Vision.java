@@ -178,53 +178,53 @@ public class Vision extends SubsystemBase{
     private void setReefPositions(Alliance alliance) {
         switch (alliance) {
             case Blue:
-                reefA = AprilTagConstants.kBlueTag18Left;
-                reefB = AprilTagConstants.kBlueTag18Right;
-                reefC = AprilTagConstants.kBlueTag17Left;
-                reefD = AprilTagConstants.kBlueTag17Right;
-                reefE = AprilTagConstants.kBlueTag22Left;
-                reefF = AprilTagConstants.kBlueTag22Right;
-                reefG = AprilTagConstants.kBlueTag21Left;
-                reefH = AprilTagConstants.kBlueTag21Right;
-                reefI = AprilTagConstants.kBlueTag20Left;
-                reefJ = AprilTagConstants.kBlueTag20Right;
-                reefK = AprilTagConstants.kBlueTag19Left;
-                reefL = AprilTagConstants.kBlueTag19Right;
+                this.reefA = AprilTagConstants.kBlueTag18Left;
+                this.reefB = AprilTagConstants.kBlueTag18Right;
+                this.reefC = AprilTagConstants.kBlueTag17Left;
+                this.reefD = AprilTagConstants.kBlueTag17Right;
+                this.reefE = AprilTagConstants.kBlueTag22Left;
+                this.reefF = AprilTagConstants.kBlueTag22Right;
+                this.reefG = AprilTagConstants.kBlueTag21Left;
+                this.reefH = AprilTagConstants.kBlueTag21Right;
+                this.reefI = AprilTagConstants.kBlueTag20Left;
+                this.reefJ = AprilTagConstants.kBlueTag20Right;
+                this.reefK = AprilTagConstants.kBlueTag19Left;
+                this.reefL = AprilTagConstants.kBlueTag19Right;
             break;
             case Red:
-                reefA = AprilTagConstants.kRedTag7Left;
-                reefB = AprilTagConstants.kRedTag7Right;
-                reefC = AprilTagConstants.kRedTag8Left;
-                reefD = AprilTagConstants.kRedTag8Right;
-                reefE = AprilTagConstants.kRedTag9Left;
-                reefF = AprilTagConstants.kRedTag9Right;
-                reefG = AprilTagConstants.kRedTag10Left;
-                reefH = AprilTagConstants.kRedTag10Right;
-                reefI = AprilTagConstants.kRedTag11Left;
-                reefJ = AprilTagConstants.kRedTag11Right;
-                reefK = AprilTagConstants.kRedTag6Left;
-                reefL = AprilTagConstants.kRedTag6Right;
+                this.reefA = AprilTagConstants.kRedTag7Left;
+                this.reefB = AprilTagConstants.kRedTag7Right;
+                this.reefC = AprilTagConstants.kRedTag8Left;
+                this.reefD = AprilTagConstants.kRedTag8Right;
+                this.reefE = AprilTagConstants.kRedTag9Left;
+                this.reefF = AprilTagConstants.kRedTag9Right;
+                this.reefG = AprilTagConstants.kRedTag10Left;
+                this.reefH = AprilTagConstants.kRedTag10Right;
+                this.reefI = AprilTagConstants.kRedTag11Left;
+                this.reefJ = AprilTagConstants.kRedTag11Right;
+                this.reefK = AprilTagConstants.kRedTag6Left;
+                this.reefL = AprilTagConstants.kRedTag6Right;
             break;
             default:
-                reefA = AprilTagConstants.kBlueTag18Left;
-                reefB = AprilTagConstants.kBlueTag18Right;
-                reefC = AprilTagConstants.kBlueTag17Left;
-                reefD = AprilTagConstants.kBlueTag17Right;
-                reefE = AprilTagConstants.kBlueTag22Left;
-                reefF = AprilTagConstants.kBlueTag22Right;
-                reefG = AprilTagConstants.kBlueTag21Left;
-                reefH = AprilTagConstants.kBlueTag21Right;
-                reefI = AprilTagConstants.kBlueTag20Left;
-                reefJ = AprilTagConstants.kBlueTag20Right;
-                reefK = AprilTagConstants.kBlueTag19Left;
-                reefL = AprilTagConstants.kBlueTag19Right;
+                this.reefA = AprilTagConstants.kBlueTag18Left;
+                this.reefB = AprilTagConstants.kBlueTag18Right;
+                this.reefC = AprilTagConstants.kBlueTag17Left;
+                this.reefD = AprilTagConstants.kBlueTag17Right;
+                this.reefE = AprilTagConstants.kBlueTag22Left;
+                this.reefF = AprilTagConstants.kBlueTag22Right;
+                this.reefG = AprilTagConstants.kBlueTag21Left;
+                this.reefH = AprilTagConstants.kBlueTag21Right;
+                this.reefI = AprilTagConstants.kBlueTag20Left;
+                this.reefJ = AprilTagConstants.kBlueTag20Right;
+                this.reefK = AprilTagConstants.kBlueTag19Left;
+                this.reefL = AprilTagConstants.kBlueTag19Right;
             break;
             
         }
     }
 
-    private void setDesiredReefPosition(String reefLocation) {
-        switch (reefLocation) {
+    private void setDesiredReefPosition(Supplier<String> reefLocation) {
+        switch (reefLocation.get()) {
             case "A":
                 desiredReefLocation = this.reefA;
             break;
@@ -301,7 +301,8 @@ public class Vision extends SubsystemBase{
     public Command updateLimelightTelemetry() {
         return runOnce(() -> {
             this.visionPose.accept(this.getPose().get());
-        }).ignoringDisable(true);
+        }).ignoringDisable(true)
+        .withName("updateLimelightTelemetry");
     }
 
     public Command addMegaTag2(Supplier<CommandSwerveDrivetrain> drivetrain) {
@@ -325,10 +326,10 @@ public class Vision extends SubsystemBase{
         return runOnce(() -> {this.setLimelightToInternalIMU();}).withName("Setting Limelight to IMU Mode 2").ignoringDisable(true);
     }
 
-    public Command setDesiredReefPosition(Supplier<String> reefLocation) {
+    public Command setReefPosition(Supplier<String> reefLocation) {
         return runOnce(() -> {
-            this.setDesiredReefPosition(reefLocation.get());
-        });
+            this.setDesiredReefPosition(reefLocation);
+        }).withName("setReefPosition");
     }
 
     private Supplier<Pose2d> getPose() {
@@ -350,6 +351,8 @@ public class Vision extends SubsystemBase{
         builder.addDoubleProperty("megaTagPose X", () -> {return this.megaTag2.pose.getX();}, null);
         builder.addDoubleProperty("megaTagPose Y", () -> {return this.megaTag2.pose.getY();}, null);
         builder.addDoubleProperty("megaTagPose Rot", () -> {return this.megaTag2.pose.getRotation().getDegrees();}, null);
+        builder.addDoubleProperty("Reef Pose X", () -> {return this.reefA.getX();}, null);
+        builder.addDoubleProperty("New Reef", () -> {return this.desiredReefLocation.getX();}, null);
 
     }    
     

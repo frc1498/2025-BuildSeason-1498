@@ -371,12 +371,16 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
 
-        driver.start().onTrue(dwive()
+        driver.start().onTrue(dwive(vision.getDesiredReefPose())
         .onlyWhile(driver.axisMagnitudeGreaterThan(0, 0.1).negate()
         .and(driver.axisMagnitudeGreaterThan(1, 0.1).negate())
         .and(driver.axisMagnitudeGreaterThan(4, 0.1).negate())
         .and(driver.axisMagnitudeGreaterThan(5, 0.1).negate())));
         
+        driver.povDown().onTrue(vision.setReefPosition(() -> {return "A";}));
+        driver.back().onTrue(vision.setReefPosition(() -> {return "C";}));
+        driver.povUp().onTrue(vision.setReefPosition(() -> {return "E";}));
+        driver.povLeft().onTrue(vision.setReefPosition(() -> {return "G";}));
     }
 
     public void registerAutonCommands() {
@@ -437,12 +441,14 @@ public class RobotContainer {
         return commandList;
     }
 
-    public Command dwive() {
-        return AutoBuilder.pathfindToPose(
-            AprilTagConstants.kRedTag10Left,
+    public Command dwive(Supplier<Pose2d> desiredPose) {
+        return Commands.runOnce(() -> {
+            Pose2d reefPose = desiredPose.get();
+            AutoBuilder.pathfindToPose(
+            reefPose,
             new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
             0
-        );
+        ).schedule();});
     }
 
     public Trigger allianceCheck = new Trigger(() -> {return this.hasDeterminedAlliance;});
