@@ -456,6 +456,12 @@ public class Wrist extends SubsystemBase{
         ).withTimeout(2);
     }
 
+    public Command intialSpit() {
+        return run(
+            () -> {this.wristSpin();}
+        ).withTimeout(0.25);
+    }
+
     public Command stop() {
 
         return runOnce(
