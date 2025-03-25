@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Kilo;
+import static edu.wpi.first.units.Units.derive;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -11,6 +14,8 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.LimelightHelpers.RawFiducial;
+import frc.robot.constants.AprilTagConstants;
 import frc.robot.constants.VisionConstants;
 
 public class Vision extends SubsystemBase{
@@ -35,6 +41,21 @@ public class Vision extends SubsystemBase{
     private double latestRobotHeading;
     private double latestRobotRotationRate;
 
+    private Pose2d desiredReefLocation;
+
+    private Pose2d reefA;
+    private Pose2d reefB;
+    private Pose2d reefC;
+    private Pose2d reefD;
+    private Pose2d reefE;
+    private Pose2d reefF;
+    private Pose2d reefG;
+    private Pose2d reefH;
+    private Pose2d reefI;
+    private Pose2d reefJ;
+    private Pose2d reefK;
+    private Pose2d reefL;
+
     public Vision(CommandSwerveDrivetrain drivetrain) {
         //Constructor.
         this.drivetrain = drivetrain;
@@ -48,6 +69,21 @@ public class Vision extends SubsystemBase{
         cameraRoll = 0;
         latestRobotHeading = 0;
         latestRobotRotationRate = 0;
+
+        reefA = AprilTagConstants.kBlueTag18Left;
+        reefB = AprilTagConstants.kBlueTag18Right;
+        reefC = AprilTagConstants.kBlueTag17Left;
+        reefD = AprilTagConstants.kBlueTag17Right;
+        reefE = AprilTagConstants.kBlueTag22Left;
+        reefF = AprilTagConstants.kBlueTag22Right;
+        reefG = AprilTagConstants.kBlueTag21Left;
+        reefH = AprilTagConstants.kBlueTag21Right;
+        reefI = AprilTagConstants.kBlueTag20Left;
+        reefJ = AprilTagConstants.kBlueTag20Right;
+        reefK = AprilTagConstants.kBlueTag19Left;
+        reefL = AprilTagConstants.kBlueTag19Right;
+
+        desiredReefLocation = reefA;
 
         SmartDashboard.putData("Vision", this);
     }
@@ -139,6 +175,102 @@ public class Vision extends SubsystemBase{
         this.cameraRoll++;
     }
 
+    private void setReefPositions(Alliance alliance) {
+        switch (alliance) {
+            case Blue:
+                reefA = AprilTagConstants.kBlueTag18Left;
+                reefB = AprilTagConstants.kBlueTag18Right;
+                reefC = AprilTagConstants.kBlueTag17Left;
+                reefD = AprilTagConstants.kBlueTag17Right;
+                reefE = AprilTagConstants.kBlueTag22Left;
+                reefF = AprilTagConstants.kBlueTag22Right;
+                reefG = AprilTagConstants.kBlueTag21Left;
+                reefH = AprilTagConstants.kBlueTag21Right;
+                reefI = AprilTagConstants.kBlueTag20Left;
+                reefJ = AprilTagConstants.kBlueTag20Right;
+                reefK = AprilTagConstants.kBlueTag19Left;
+                reefL = AprilTagConstants.kBlueTag19Right;
+            break;
+            case Red:
+                reefA = AprilTagConstants.kRedTag7Left;
+                reefB = AprilTagConstants.kRedTag7Right;
+                reefC = AprilTagConstants.kRedTag8Left;
+                reefD = AprilTagConstants.kRedTag8Right;
+                reefE = AprilTagConstants.kRedTag9Left;
+                reefF = AprilTagConstants.kRedTag9Right;
+                reefG = AprilTagConstants.kRedTag10Left;
+                reefH = AprilTagConstants.kRedTag10Right;
+                reefI = AprilTagConstants.kRedTag11Left;
+                reefJ = AprilTagConstants.kRedTag11Right;
+                reefK = AprilTagConstants.kRedTag6Left;
+                reefL = AprilTagConstants.kRedTag6Right;
+            break;
+            default:
+                reefA = AprilTagConstants.kBlueTag18Left;
+                reefB = AprilTagConstants.kBlueTag18Right;
+                reefC = AprilTagConstants.kBlueTag17Left;
+                reefD = AprilTagConstants.kBlueTag17Right;
+                reefE = AprilTagConstants.kBlueTag22Left;
+                reefF = AprilTagConstants.kBlueTag22Right;
+                reefG = AprilTagConstants.kBlueTag21Left;
+                reefH = AprilTagConstants.kBlueTag21Right;
+                reefI = AprilTagConstants.kBlueTag20Left;
+                reefJ = AprilTagConstants.kBlueTag20Right;
+                reefK = AprilTagConstants.kBlueTag19Left;
+                reefL = AprilTagConstants.kBlueTag19Right;
+            break;
+            
+        }
+    }
+
+    private void setDesiredReefPosition(String reefLocation) {
+        switch (reefLocation) {
+            case "A":
+                desiredReefLocation = this.reefA;
+            break;
+            case "B":
+                desiredReefLocation = this.reefB;
+            break;
+            case "C":
+                desiredReefLocation = this.reefC;
+            break;
+            case "D":
+                desiredReefLocation = this.reefD;
+            break;
+            case "E":
+                desiredReefLocation = this.reefE;
+            break;
+            case "F":
+                desiredReefLocation = this.reefF;
+            break;
+            case "G":
+                desiredReefLocation = this.reefG;
+            break;
+            case "H":
+                desiredReefLocation = this.reefH;
+            break;
+            case "I":
+                desiredReefLocation = this.reefI;
+            break;
+            case "J":
+                desiredReefLocation = this.reefJ;
+            break;
+            case "K":
+                desiredReefLocation = this.reefK;
+            break;
+            case "L":
+                desiredReefLocation = this.reefL;
+            break;
+            default:
+                desiredReefLocation = this.reefA;
+            break;   
+        }
+    }
+
+    private Pose2d getDesiredReefPosition() {
+        return this.desiredReefLocation;
+    }
+
     private String getCurrentCommandName() {
         if (this.getCurrentCommand() == null) {
             return "No Command";
@@ -193,8 +325,18 @@ public class Vision extends SubsystemBase{
         return runOnce(() -> {this.setLimelightToInternalIMU();}).withName("Setting Limelight to IMU Mode 2").ignoringDisable(true);
     }
 
+    public Command setDesiredReefPosition(Supplier<String> reefLocation) {
+        return runOnce(() -> {
+            this.setDesiredReefPosition(reefLocation.get());
+        });
+    }
+
     private Supplier<Pose2d> getPose() {
         return this::getCurrentPose;
+    }
+
+    public Supplier<Pose2d> getDesiredReefPose() {
+        return this::getDesiredReefPosition;
     }
 
     @Override
@@ -223,8 +365,12 @@ public class Vision extends SubsystemBase{
             megaTag2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.kLimelightName);
         }
 
+        if(DriverStation.isDSAttached()) {
+            this.setReefPositions(DriverStation.getAlliance().get());
+        }
+
         //Get the raw fiducials.
-        fiducials = LimelightHelpers.getRawFiducials(VisionConstants.kLimelightName);
+        /*fiducials = LimelightHelpers.getRawFiducials(VisionConstants.kLimelightName);
         for (RawFiducial fiducial : fiducials) {
             int id = fiducial.id;                    // Tag ID
             double txnc = fiducial.txnc;             // X offset (no crosshair)
@@ -233,9 +379,9 @@ public class Vision extends SubsystemBase{
             double distToCamera = fiducial.distToCamera;  // Distance to camera
             double distToRobot = fiducial.distToRobot;    // Distance to robot
             double ambiguity = fiducial.ambiguity;   // Tag pose ambiguity
-        }
+        }*/
 
-        this.testPose = new Pose2d(8.5, 4.0, Rotation2d.fromDegrees(this.getRobotHeading()));
+
     }
   
     @Override

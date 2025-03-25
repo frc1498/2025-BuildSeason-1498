@@ -371,12 +371,12 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
 
-        /*driver.start().onTrue(dwive()
+        driver.start().onTrue(dwive()
         .onlyWhile(driver.axisMagnitudeGreaterThan(0, 0.1).negate()
         .and(driver.axisMagnitudeGreaterThan(1, 0.1).negate())
         .and(driver.axisMagnitudeGreaterThan(4, 0.1).negate())
         .and(driver.axisMagnitudeGreaterThan(5, 0.1).negate())));
-        */
+        
     }
 
     public void registerAutonCommands() {
@@ -439,7 +439,7 @@ public class RobotContainer {
 
     public Command dwive() {
         return AutoBuilder.pathfindToPose(
-            AprilTagConstants.kRed6,
+            AprilTagConstants.kRedTag10Left,
             new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
             0
         );
