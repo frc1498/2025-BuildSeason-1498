@@ -28,6 +28,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -371,14 +372,17 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
 
-        driver.start().onTrue(dwive(vision.getDesiredReefPose())
-        .onlyWhile(driver.axisMagnitudeGreaterThan(0, 0.1).negate()
-        .and(driver.axisMagnitudeGreaterThan(1, 0.1).negate())
-        .and(driver.axisMagnitudeGreaterThan(4, 0.1).negate())
-        .and(driver.axisMagnitudeGreaterThan(5, 0.1).negate())));
+        driver.start().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
+        driver.back().onTrue(drivetrain.abortPathPlanner());
+
+        driver.axisMagnitudeGreaterThan(0, 0.1)
+        .or(driver.axisMagnitudeGreaterThan(1, 0.1))
+        .or(driver.axisMagnitudeGreaterThan(4, 0.1))
+        .or(driver.axisMagnitudeGreaterThan(5, 0.1))
+        .onTrue(drivetrain.abortPathPlanner());
         
         driver.povDown().onTrue(vision.setReefPosition(() -> {return "A";}));
-        driver.back().onTrue(vision.setReefPosition(() -> {return "C";}));
+        driver.povRight().onTrue(vision.setReefPosition(() -> {return "C";}));
         driver.povUp().onTrue(vision.setReefPosition(() -> {return "E";}));
         driver.povLeft().onTrue(vision.setReefPosition(() -> {return "G";}));
     }
@@ -441,17 +445,6 @@ public class RobotContainer {
         return commandList;
     }
 
-    public Command dwive(Supplier<Pose2d> desiredPose) {
-        return Commands.runOnce(() -> {
-            Pose2d reefPose = desiredPose.get();
-            AutoBuilder.pathfindToPose(
-            reefPose,
-            new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
-            0
-        ).schedule();});
-    }
-
     public Trigger allianceCheck = new Trigger(() -> {return this.hasDeterminedAlliance;});
-    public Trigger autonomousStarted = new Trigger(RobotState::isAutonomous);
-    
+    public Trigger autonomousStarted = new Trigger(RobotState::isAutonomous);   
 }
