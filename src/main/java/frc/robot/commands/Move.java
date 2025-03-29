@@ -46,23 +46,12 @@ public class Move {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
         andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor(), arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(Commands.parallel(wrist.wristCoralLoadFloor(), arm.armCoralLoadFloor())).
-        andThen(Commands.parallel(wrist.suck(),intake.rollerSuck())).until(wrist.isPartForwardGripper).
-        andThen(Commands.parallel(wrist.stop()),intake.rollerStop());
-        /*
-        .
-        andThen(Commands.parallel(wrist.stop(), intake.clearCoralIntake())).
-        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow())).
-        andThen(intake.intakeRaised());
-        */
+        andThen(Commands.parallel(wrist.suck(), intake.rollerSuck())).until(wrist.isPartForwardGripper).
+        andThen(Commands.parallel(wrist.stop(), intake.clearCoralIntake()));
     }
 
-    //Coral Return from Intake Floor
-    public Command intakeCoralFloorFrontToFrontReturn() {
-        return Commands.parallel(intake.clearCoralIntake(), arm.armCoralStow(), wrist.wristCoralStow()).
-        andThen(intake.intakeRaised());
 
-    }
-
+/*
     //Coral Intake Floor - Rear to Front - second draft
     public Command intakeCoralFloorRearToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.intakeFloor()).
@@ -70,25 +59,39 @@ public class Move {
         andThen(Commands.parallel(arm.armCoralStow(), elevator.elevatorCoralStow())).
         andThen(elevator.elevatorCoralLoadFloor()).
         andThen(Commands.parallel(arm.armCoralLoadFloor(),wrist.wristCoralLoadFloor())).
-        andThen(wrist.suck(/*endEffectorLocation*/),intake.rollerSuck()).until(wrist.isPartForwardGripper).
+        andThen(wrist.suck(),intake.rollerSuck()).until(wrist.isPartForwardGripper).
         andThen(wrist.stop()).
         andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(intake.intakeRaised());
     }
+*/
 
-    /*
+    //Coral Return from Intake Floor
+    public Command intakeCoralFloorFrontToFrontReturn() {
+        return Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), intake.rollerStop()).
+        andThen(intake.intakeRaised());
+    
+    }
+    
     //Intake Coral Human - Front to Rear - first draft
-    public Command intakeCoralHumanFrontToRear(Supplier<endEffectorLocation> endEffectorLocation) {
-        return Commands.parallel(intake.rollerStop(), elevator.elevatorRearSafe(), arm.armCoralStow(), wrist.stop()).
+    public Command intakeCoralHumanFrontToRear() {
+        return Commands.parallel(intake.rollerStop(), elevator.elevatorRearSafe(), arm.armCoralStow(), wrist.wristCoralStow()).
         andThen(Commands.parallel(intake.intakeRaised(), arm.armCoralLoadHuman(), wrist.wristCoralLoadHuman())).
-        andThen(Commands.parallel(elevator.elevatorCoralLoadHuman(), wrist.suck(endEffectorLocation))).
+        andThen(Commands.parallel(elevator.elevatorCoralLoadHuman(), wrist.suck())).
         until(wrist.isPartForwardGripper).
         andThen(Commands.parallel(wrist.stop(),elevator.elevatorRearSafe()).
         andThen(Commands.parallel(arm.armCoralStow(),wrist.wristCoralStow())).
         andThen(elevator.elevatorCoralStow()));
     }
 
+    //Intake Coral Human - Rear to Rear - Auto - First Draft
+    public Command intakeCoralHumanRearToRearAuto() {
+        return Commands.parallel(intake.rollerStop(), elevator.elevatorCoralLoadHuman(), wrist.wristCoralLoadHuman(), arm.armCoralLoadHuman()).
+        andThen(wrist.suck().until(wrist.isPartForwardGripper)).
+        andThen(wrist.stop());
+    }
 
+/* 
     //Intake Coral Human - Rear to Rear - first draft
     public Command intakeCoralHumanRearToRear(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(elevator.elevatorRearSafe(), wrist.stop(), intake.rollerStop()).
@@ -121,7 +124,7 @@ public class Move {
     public Command coralL4FrontToRear() {
         return Commands.parallel(wrist.stop(), intake.rollerStop()).
         andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralStow(), wrist.wristCoralStow(), intake.intakeRaised())).
-        andThen(Commands.parallel(arm.armCoralL4(), wrist.wristCoralL4(), elevator.elevatorCoralL4()));
+        andThen(Commands.parallel(arm.armCoralL4(), wrist.wristCoralL4(), elevator.elevatorCoralL4()), intake.rollerStop());
     }
 
     //Coral Score L4 - Rear to Rear - second draft
@@ -212,17 +215,10 @@ public class Move {
 
 
     public Command clearClimb() {
-        return Commands.parallel(elevator.elevatorRearSafe(), wrist.stop()).  
+        return Commands.parallel(elevator.elevatorRearSafe(), wrist.stop(), intake.rollerStop()).  
         andThen(Commands.parallel(intake.intakeRaisedForClimb(), arm.armClearClimb(), wrist.wristCoralStow())).
         andThen(elevator.elevatorCoralLoadFloor());
     }
-
-    /* climber command was:
-              return Commands.parallel(elevator.elevatorRearSafe(), wrist.stop()).  
-        andThen(Commands.parallel(intake.intakeRaisedForClimb(), arm.armClearClimb(), wrist.wristCoralL1())).
-        andThen(elevator.elevatorCoralLoadFloor());
-    
-     */
 
     public Command intakeToRaisedForClimb() {
         return intake.intakeRaisedForClimb();
@@ -232,29 +228,30 @@ public class Move {
         return intake.clearCoralIntake();
     }
 
-    /*
-    public Command clearJams() {
-        return Commands.parallel(elevator.elevatorRearSafe(), intake.intakeRaisedForClimb()).
-        andThen(Commands.parallel(intake.clearCoralIntake(), arm.armCoralL1(), wrist.wristCoralStow())).
-        andThen(wrist.clearWristCoral());
-    }
-    */
-
     public Command wristCoralRollerSpitFrontToFront(Supplier<endEffectorLocation> endEffectorLocation) {
-        return wrist.spit(/*endEffectorLocation*/).
-        until(wrist.isPartInGripper.negate()).
-        andThen(wrist.stop())
-        .andThen(arm.armCoralStow()).
+        return wrist.intialSpit().
+        andThen(wrist.spit(/*endEffectorLocation*/).
+        until(wrist.isPartInGripper.negate())).
+        andThen(wrist.stop()).
+        andThen(arm.armCoralStow()).
         andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), elevator.elevatorCoralStow()));
     }
 
+    public Command spitAuto() {
+        return wrist.intialSpit().
+        andThen(wrist.spit().
+        until(wrist.isPartInGripper.negate())).
+        andThen(wrist.stop());
+    }
+
     public Command wristCoralRollerSpitRearToFront(Supplier<endEffectorLocation> endEffectorLocation) {
-        return wrist.spit(/*endEffectorLocation*/).
-        until(wrist.isPartInGripper.negate()).
-        andThen(wrist.stop())
-        .andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(), wrist.wristCoralStow()))
-        .andThen(arm.armCoralStow())
-        .andThen(elevator.elevatorCoralStow());
+        return wrist.intialSpit().
+        andThen(wrist.spit(/*endEffectorLocation*/).
+        until(wrist.isPartInGripper.negate())).
+        andThen(wrist.stop()).
+        andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(), wrist.wristCoralStow())).
+        andThen(arm.armCoralStow()).
+        andThen(elevator.elevatorCoralStow());
     }
 
     //======================================================

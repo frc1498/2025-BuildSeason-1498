@@ -176,7 +176,7 @@ public class Wrist extends SubsystemBase{
                 break;
                 case CORAL_HUMAN_PICKUP:
                     this.wristDesiredSpeed = WristConstants.kCoralSuck;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kCoralSuck).withSlot(0));
+                    wristSpin.setControl(spinControl.withVelocity(7).withSlot(0));
                 break;
                 case CORAL_L1:
                     this.wristDesiredSpeed = WristConstants.kCoralL1Spit;
@@ -456,6 +456,12 @@ public class Wrist extends SubsystemBase{
         ).withTimeout(2);
     }
 
+    public Command intialSpit() {
+        return run(
+            () -> {this.wristSpin();}
+        ).withTimeout(0.25);
+    }
+
     public Command stop() {
 
         return runOnce(
@@ -541,7 +547,7 @@ public class Wrist extends SubsystemBase{
                 scoringPosition = "";
             break;
             case CORAL_HUMAN_PICKUP:
-                scoringPosition = "";
+                scoringPosition = "CoralHumanPickup";
             break;
             case CORAL_L1:
                 scoringPosition = "CoralL1";
