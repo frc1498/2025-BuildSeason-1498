@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   public boolean hasDeterminedAlliance = false;
+  public String allianceMismatchWarning = "";
 
 
 
@@ -89,8 +90,12 @@ public class Robot extends TimedRobot {
 
       };
 
+    if(DriverStation.isDSAttached()) {
+        allianceMismatchWarning = (DriverStation.getAlliance().get() != m_robotContainer.allianceColor) ? "REBOOT ROBORIO" : "";
+    }
 
-      }
+    SmartDashboard.putString("Alliance Mismatch Warning", allianceMismatchWarning);
+  }
 
 
   @Override
