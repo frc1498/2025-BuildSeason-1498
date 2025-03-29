@@ -65,7 +65,8 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
+    private final SwerveRequest.RobotCentric slideSideways = new SwerveRequest.RobotCentric()
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     //  <- deadband
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -73,7 +74,7 @@ public class RobotContainer {
     //Instantiate 
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator1 = new CommandXboxController(1);
-    //private final CommandXboxController operator2 = new CommandXboxController(2);
+    private final CommandXboxController operator2 = new CommandXboxController(2);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -143,6 +144,9 @@ public class RobotContainer {
             )
         );
 
+
+
+
         //driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         //driver.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
 
@@ -156,8 +160,8 @@ public class RobotContainer {
             .andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));        
     
         //Auton Selection
-        driver.povLeft().onTrue(autoSelect.decrement().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
-        driver.povRight().onTrue(autoSelect.increment().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));            
+        //driver.povLeft().onTrue(autoSelect.decrement().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
+        //driver.povRight().onTrue(autoSelect.increment().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));            
 
         //Music Selection
         driver.povUp().onTrue(chirpSelect.decrement().andThen(() -> {music.loadMusic(Filesystem.getDeployDirectory() + "/chirp/" + chirpSelect.getCurrentSelectionName() + ".chrp");}).ignoringDisable(true));
@@ -189,21 +193,11 @@ public class RobotContainer {
         //==============================Driver=================================
         //=====================================================================    
         //Drive - Coral Floor Intake
-
-        //had to remove climber.and(climber.isClimberReady.negate())
-            //Front To Front    
+        //Front To Front    
         driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
             andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())).
             andThen(move.intakeCoralFloorFrontToFrontReturn()));
-
-        // had to remove climber crap and(climber.isClimberReady.negate()).
-            //Rear To Front 
-        /*
-            driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
-            andThen(move.intakeCoralFloorRearToFront(endEffector.whatIsEndEffectorLocation())));
-        */
 
         //Driver - Coral Human Intake
             //Front To Rear
@@ -211,14 +205,29 @@ public class RobotContainer {
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
             andThen(move.intakeCoralHumanFrontToRear()));
 
-/*       
-            //Rear To Rear
-        driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
-            andThen(move.intakeCoralHumanRearToRear(endEffector.whatIsEndEffectorLocation())));
- */
-        //
 
+        //Driver - Spit Coral
+        //Slide left Front to Front
+        driver.pov(90).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+        driver.pov(90).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
+        onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
+
+        //Slide left Rear to Front
+        driver.pov(90).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+        driver.pov(90).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).and(wrist.isCanRange).
+        onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+
+        //Slide right front to front
+        driver.pov(270).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
+        driver.pov(270).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
+        onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
+        
+        //Slide right rear to front
+        driver.pov(270).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
+        driver.pov(270).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).and(wrist.isCanRange).
+        onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+
+              
         //Driver - Spit Coral
         //Front To Front
         driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).
@@ -237,7 +246,8 @@ public class RobotContainer {
         //Front to Front
         driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).
         onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
-            
+        
+        
         //Driver - Spit Coral No Range Sensor
         //Rear to Front
         driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
@@ -377,7 +387,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("intake", endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
         andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())));
         NamedCommands.registerCommand("intakeReturn", move.intakeCoralFloorFrontToFrontReturn());
-        NamedCommands.registerCommand("humanIntake", move.intakeCoralHumanRearToRearAuto());
+        NamedCommands.registerCommand("humanIntake", endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
+        andThen(move.intakeCoralHumanRearToRearAuto()));
+        NamedCommands.registerCommand("spit", move.spitAuto());
+        NamedCommands.registerCommand("toCoralL4RearToRear", move.coralL4RearToRear().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;})));
         /*
 
         NamedCommands.registerCommand("toCoralL2", move.coralL2().
