@@ -28,6 +28,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -252,6 +253,9 @@ public class RobotContainer {
         //Rear to Front
         driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+    
+        driver.povUp().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
+        //removed .and(wrist.isCanRange)
 
         //Driver - Climb
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
@@ -370,12 +374,29 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
 
-        /*driver.start().onTrue(dwive()
-        .onlyWhile(driver.axisMagnitudeGreaterThan(0, 0.1).negate()
-        .and(driver.axisMagnitudeGreaterThan(1, 0.1).negate())
-        .and(driver.axisMagnitudeGreaterThan(4, 0.1).negate())
-        .and(driver.axisMagnitudeGreaterThan(5, 0.1).negate())));
-        */
+        driver.start().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
+        driver.back().onTrue(drivetrain.abortPathPlanner());
+
+        driver.axisMagnitudeGreaterThan(0, 0.1)
+        .or(driver.axisMagnitudeGreaterThan(1, 0.1))
+        .or(driver.axisMagnitudeGreaterThan(4, 0.1))
+        .or(driver.axisMagnitudeGreaterThan(5, 0.1))
+        .onTrue(drivetrain.abortPathPlanner());
+        
+        //Auto-Align - setting of the reef positions.
+        operator2.rightBumper().onTrue(vision.setReefPosition(() -> {return "A";}));    //1L
+        operator2.leftBumper().onTrue(vision.setReefPosition(() -> {return "B";}));    //1R
+        operator2.y().onTrue(vision.setReefPosition(() -> {return "C";}));  //6L
+        operator2.x().onTrue(vision.setReefPosition(() -> {return "D";}));  //6R
+        operator2.b().onTrue(vision.setReefPosition(() -> {return "E";}));  //5L
+        operator2.a().onTrue(vision.setReefPosition(() -> {return "F";}));  //5R
+        operator1.a().onTrue(vision.setReefPosition(() -> {return "G";}));  //4L
+        operator1.x().onTrue(vision.setReefPosition(() -> {return "H";}));  //4R
+        operator2.rightStick().onTrue(vision.setReefPosition(() -> {return "I";}));  //3L
+        operator2.leftStick().onTrue(vision.setReefPosition(() -> {return "J";})); //3R
+        operator2.start().onTrue(vision.setReefPosition(() -> {return "K";}));  //2L
+        operator2.back().onTrue(vision.setReefPosition(() -> {return "L";}));   //2R
+
     }
 
     public void registerAutonCommands() {
@@ -438,15 +459,6 @@ public class RobotContainer {
         return commandList;
     }
 
-    public Command dwive() {
-        return AutoBuilder.pathfindToPose(
-            AprilTagConstants.kRed6,
-            new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
-            0
-        );
-    }
-
     public Trigger allianceCheck = new Trigger(() -> {return this.hasDeterminedAlliance;});
-    public Trigger autonomousStarted = new Trigger(RobotState::isAutonomous);
-    
+    public Trigger autonomousStarted = new Trigger(RobotState::isAutonomous);   
 }
