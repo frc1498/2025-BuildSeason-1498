@@ -74,7 +74,7 @@ public class RobotContainer {
     //Instantiate 
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator1 = new CommandXboxController(1);
-    //private final CommandXboxController operator2 = new CommandXboxController(2);
+    private final CommandXboxController operator2 = new CommandXboxController(2);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -247,7 +247,7 @@ public class RobotContainer {
         driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
     
-
+        driver.povUp().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
         //removed .and(wrist.isCanRange)
 
         //Driver - Climb
@@ -381,10 +381,20 @@ public class RobotContainer {
         .or(driver.axisMagnitudeGreaterThan(5, 0.1))
         .onTrue(drivetrain.abortPathPlanner());
         
-        driver.povDown().onTrue(vision.setReefPosition(() -> {return "A";}));
-        driver.povRight().onTrue(vision.setReefPosition(() -> {return "C";}));
-        driver.povUp().onTrue(vision.setReefPosition(() -> {return "E";}));
-        driver.povLeft().onTrue(vision.setReefPosition(() -> {return "G";}));
+        //Auto-Align - setting of the reef positions.
+        operator2.rightBumper().onTrue(vision.setReefPosition(() -> {return "A";}));    //1L
+        operator2.leftBumper().onTrue(vision.setReefPosition(() -> {return "B";}));    //1R
+        operator2.y().onTrue(vision.setReefPosition(() -> {return "C";}));  //6L
+        operator2.x().onTrue(vision.setReefPosition(() -> {return "D";}));  //6R
+        operator2.b().onTrue(vision.setReefPosition(() -> {return "E";}));  //5L
+        operator2.a().onTrue(vision.setReefPosition(() -> {return "F";}));  //5R
+        operator1.a().onTrue(vision.setReefPosition(() -> {return "G";}));  //4L
+        operator1.x().onTrue(vision.setReefPosition(() -> {return "H";}));  //4R
+        operator2.rightStick().onTrue(vision.setReefPosition(() -> {return "I";}));  //3L
+        operator2.leftStick().onTrue(vision.setReefPosition(() -> {return "J";})); //3R
+        operator2.start().onTrue(vision.setReefPosition(() -> {return "K";}));  //2L
+        operator2.back().onTrue(vision.setReefPosition(() -> {return "L";}));   //2R
+
     }
 
     public void registerAutonCommands() {

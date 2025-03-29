@@ -42,6 +42,7 @@ public class Vision extends SubsystemBase{
     private double latestRobotRotationRate;
 
     private Pose2d desiredReefLocation;
+    private String reefLocation;
 
     private Pose2d reefA;
     private Pose2d reefB;
@@ -84,6 +85,7 @@ public class Vision extends SubsystemBase{
         reefL = AprilTagConstants.kBlueTag19Right;
 
         desiredReefLocation = reefA;
+        reefLocation = "A";
 
         SmartDashboard.putData("Vision", this);
     }
@@ -224,7 +226,8 @@ public class Vision extends SubsystemBase{
     }
 
     private void setDesiredReefPosition(Supplier<String> reefLocation) {
-        switch (reefLocation.get()) {
+        this.reefLocation = reefLocation.get();
+        switch (this.reefLocation) {
             case "A":
                 desiredReefLocation = this.reefA;
             break;
@@ -353,6 +356,7 @@ public class Vision extends SubsystemBase{
         builder.addDoubleProperty("megaTagPose Rot", () -> {return this.megaTag2.pose.getRotation().getDegrees();}, null);
         builder.addDoubleProperty("Reef Pose X", () -> {return this.reefA.getX();}, null);
         builder.addDoubleProperty("New Reef", () -> {return this.desiredReefLocation.getX();}, null);
+        builder.addStringProperty("Desired Reef Location", () -> {return this.reefLocation;}, null);
 
     }    
     
