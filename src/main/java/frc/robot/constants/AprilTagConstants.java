@@ -19,14 +19,14 @@ public class AprilTagConstants {
 
     public static final Pose2d kBlueTag17Left = new Pose2d(3.755, 2.977, Rotation2d.fromDegrees(60)); //C
     public static final Pose2d kBlueTag17Right = new Pose2d(4.055, 2.809, Rotation2d.fromDegrees(60)); //D
-    public static final Pose2d kBlueTag18Left = new Pose2d(3.215, 4.162, Rotation2d.fromDegrees(0)); //A
-    public static final Pose2d kBlueTag18Right = new Pose2d(3.228, 3.792, Rotation2d.fromDegrees(0)); //B
-    public static final Pose2d kBlueTag19Left = new Pose2d(3.923, 5.218, Rotation2d.fromDegrees(-60)); //K
+    public static final Pose2d kBlueTag18Left = new Pose2d(3.215, 4.1366, Rotation2d.fromDegrees(0)); //A
+    public static final Pose2d kBlueTag18Right = new Pose2d(3.228, 3.7666, Rotation2d.fromDegrees(0)); //B
+    public static final Pose2d kBlueTag19Left = new Pose2d(3.954, 5.169, Rotation2d.fromDegrees(-60)); //K
     public static final Pose2d kBlueTag19Right = new Pose2d(3.695, 5.050, Rotation2d.fromDegrees(-60)); //L
-    public static final Pose2d kBlueTag20Left = new Pose2d(5.220, 5.000, Rotation2d.fromDegrees(-120)); //I
+    public static final Pose2d kBlueTag20Left = new Pose2d(5.165, 5.030, Rotation2d.fromDegrees(-120)); //I
     public static final Pose2d kBlueTag20Right = new Pose2d(4.906, 5.242, Rotation2d.fromDegrees(-120)); //J
     public static final Pose2d kBlueTag21Left = new Pose2d(5.732, 3.912, Rotation2d.fromDegrees(180)); //G
-    public static final Pose2d kBlueTag21Right = new Pose2d(5.780, 4.259, Rotation2d.fromDegrees(180)); //H
-    public static final Pose2d kBlueTag22Left = new Pose2d(4.942, 2.869, Rotation2d.fromDegrees(120)); //E
-    public static final Pose2d kBlueTag22Right = new Pose2d(5.277, 3.049, Rotation2d.fromDegrees(120)); //F
+    public static final Pose2d kBlueTag21Right = new Pose2d(5.780, 4.291, Rotation2d.fromDegrees(180)); //H
+    public static final Pose2d kBlueTag22Left = new Pose2d(5.007, 2.908, Rotation2d.fromDegrees(120)); //E
+    public static final Pose2d kBlueTag22Right = new Pose2d(5.360, 3.084, Rotation2d.fromDegrees(120)); //F
 }

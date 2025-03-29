@@ -161,8 +161,8 @@ public class RobotContainer {
             .andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));        
     
         //Auton Selection
-        //driver.povLeft().onTrue(autoSelect.decrement().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
-        //driver.povRight().onTrue(autoSelect.increment().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));            
+        driver.povLeft().onTrue(autoSelect.decrement().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));
+        driver.povRight().onTrue(autoSelect.increment().andThen(() -> {selectedAuton = autonCommands.get(autoSelect.currentIndex().get());}).ignoringDisable(true));            
 
         //Music Selection
         driver.povUp().onTrue(chirpSelect.decrement().andThen(() -> {music.loadMusic(Filesystem.getDeployDirectory() + "/chirp/" + chirpSelect.getCurrentSelectionName() + ".chrp");}).ignoringDisable(true));

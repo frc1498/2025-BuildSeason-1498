@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.FollowPathCommand;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.net.PortForwarder;
@@ -47,12 +49,13 @@ public class Robot extends TimedRobot {
     //setup the camera
     
     UsbCamera camera = CameraServer.startAutomaticCapture(0);
-    camera.setResolution(320, 240);
-    camera.setBrightness(80);
-    camera.setExposureManual(10);
-    camera.setFPS(30);
+    //camera.setResolution(320, 240);
+    //camera.setBrightness(80);
+    //camera.setExposureManual(10);
+    //camera.setFPS(30);
 
-
+    FollowPathCommand.warmupCommand().schedule();
+    
   }
 
   @Override
