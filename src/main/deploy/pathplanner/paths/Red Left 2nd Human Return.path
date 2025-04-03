@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.063524590163933,
-        "y": 7.339600409836065
+        "x": 16.18340163934426,
+        "y": 7.36357581967213
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.24851187804146,
-        "y": 6.795286052932633
+        "x": 15.368388927221789,
+        "y": 6.819261462768698
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red 1st Human Pickup"
     },
     {
       "anchor": {
@@ -28,17 +28,12 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": -120.42345071448003
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 270.0,
     "maxAngularAcceleration": 720.0,
@@ -53,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -125.8698235177214
+    "rotation": -126.86989764584415
   },
   "useDefaultConstraints": true
 }

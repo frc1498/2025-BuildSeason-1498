@@ -3,58 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.547911382100407,
-        "y": 5.1763988842228095
+        "x": 13.50786710581634,
+        "y": 5.2366775339723475
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.09194010842963,
-        "y": 5.693495495387218
+        "x": 14.051895832145563,
+        "y": 5.753774145136756
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red Left 1st Human Return"
     },
     {
       "anchor": {
-        "x": 14.641355257791814,
-        "y": 6.172887145320889
+        "x": 16.18340163934426,
+        "y": 7.36357581967213
       },
       "prevControl": {
-        "x": 14.13503149269333,
-        "y": 5.758132571782769
-      },
-      "nextControl": {
-        "x": 15.239992725739365,
-        "y": 6.663260390341755
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 16.061947947346095,
-        "y": 7.4660678020125575
-      },
-      "prevControl": {
-        "x": 15.447148438127956,
-        "y": 6.8072695791328615
+        "x": 15.568602130126122,
+        "y": 6.704777596792434
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red 1st Human Pickup"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": -131.73165777473383
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 270.0,
     "maxAngularAcceleration": 720.0,
@@ -69,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -121.38271357080473
+    "rotation": -119.38060786128939
   },
   "useDefaultConstraints": true
 }

@@ -13,7 +13,7 @@ public class ElevatorConstants {
     //===========Coral Positions===================
     public static final double kCoralStow = 6; //Keep this the same as KCoral Load Floor to save motion
     public static final double kCoralLoadFloor = 0; //was 5, changing to 2 for testing
-    public static final double kCoralLoadHuman = 19.5; //0.1 meters
+    public static final double kCoralLoadHuman = 18.5; //0.1 meters
     public static final double kCoralL1 = 11; //0.46 meters
     public static final double kCoralL2 = 30; //0.81 meters
     public static final double kCoralL3 = 3; //1.21 meters

@@ -202,10 +202,9 @@ public class RobotContainer {
 
         //Driver - Coral Human Intake
             //Front To Rear
-        driver.leftTrigger().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+        driver.povUp().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
             andThen(move.intakeCoralHumanFrontToRear()));
-
 
         //Driver - Spit Coral
         //Slide left Front to Front
@@ -254,8 +253,7 @@ public class RobotContainer {
         driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
     
-        driver.povUp().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
-        //removed .and(wrist.isCanRange)
+        driver.leftTrigger(.1).onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
 
         //Driver - Climb
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
@@ -354,7 +352,7 @@ public class RobotContainer {
             andThen(move.goToRemoveAlgaeL3RearToRear(endEffector.whatIsEndEffectorLocation())));
 
        //Operator - Climb
-       operator1.x().and(operator1.a()).and(climber.isClimberReady.negate()).onTrue(move.clearClimb().
+       operator2.x().and(operator2.start()).and(climber.isClimberReady.negate()).onTrue(move.clearClimb().
        andThen(climber.climberTriggered()).
        andThen(climber.toClimberReady()).
        andThen(move.intakeToRaisedForClimb()).withName("Climber Ready"));

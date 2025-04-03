@@ -47,7 +47,7 @@ public class Move {
         andThen(Commands.parallel(intake.intakeFloor(), elevator.elevatorCoralLoadFloor(), arm.armCoralStow(), wrist.wristCoralStow())).
         andThen(Commands.parallel(wrist.wristCoralLoadFloor(), arm.armCoralLoadFloor())).
         andThen(Commands.parallel(wrist.suck(), intake.rollerSuck())).until(wrist.isPartForwardGripper).
-        andThen(Commands.parallel(wrist.stop(), intake.clearCoralIntake()));
+        andThen(Commands.parallel(wrist.stop(), intake.rollerStop()));
     }
 
 
@@ -68,8 +68,9 @@ public class Move {
 
     //Coral Return from Intake Floor
     public Command intakeCoralFloorFrontToFrontReturn() {
-        return Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow(), intake.rollerStop()).
-        andThen(intake.intakeRaised());
+        return Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow()).
+        andThen(intake.intakeRaised()).
+        andThen(intake.clearCoralIntake());
     
     }
     
