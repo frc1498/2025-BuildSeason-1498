@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Left 1st Score"
+                  "pathName": "Blue Left 1st Score"
                 }
               },
               {
@@ -26,7 +26,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.02
           }
         },
         {
@@ -40,15 +40,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "humanIntake"
+                  "pathName": "Blue Left 1st Human Pickup"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Red Left 1st Human Pickup"
+                  "name": "humanIntake"
                 }
               }
             ]
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Left 1st Human Return"
+                  "pathName": "Blue Left 1st Human Return"
                 }
               },
               {
@@ -92,7 +92,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Left 2nd Human Pickup"
+                  "pathName": "Blue Left 2nd Human Pickup"
                 }
               },
               {
@@ -111,7 +111,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Left 2nd Human Return"
+                  "pathName": "Blue Left 2nd Human Return"
                 }
               },
               {

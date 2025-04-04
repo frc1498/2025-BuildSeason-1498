@@ -307,7 +307,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command pathPlannerToPose(Supplier<Pose2d> targetPose) {
         return Commands.runOnce(() -> {
             AutoBuilder.pathfindToPose(targetPose.get(),
-            new PathConstraints(1.5, 3.0, Units.degreesToRadians(270), Units.degreesToRadians(720)),
+            new PathConstraints(1.5, 2.5, Units.degreesToRadians(270), Units.degreesToRadians(720)),
             0).schedule();});
     }
 

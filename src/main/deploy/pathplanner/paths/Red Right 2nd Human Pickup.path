@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.543,
-        "y": 2.893
+        "x": 13.56539705080679,
+        "y": 2.866400894474009
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.861135903598758,
-        "y": 3.6191253562925674
+        "x": 14.410934755311388,
+        "y": 2.1750850918797506
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red Right 2nd Score"
     },
     {
       "anchor": {
-        "x": 15.109030083803889,
-        "y": 3.0424534391987277
+        "x": 16.037522708260227,
+        "y": 0.691026363753491
       },
       "prevControl": {
-        "x": 17.60167844522968,
-        "y": 2.6761925795053
+        "x": 15.316995708943935,
+        "y": 1.3253331099226386
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red Right Human Return"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.16680318991862
+    "rotation": 126.38834793634474
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 124.97515495438478
+    "rotation": 120.96375653207342
   },
   "useDefaultConstraints": true
 }
