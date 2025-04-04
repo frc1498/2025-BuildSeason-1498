@@ -326,9 +326,6 @@ public class Wrist extends SubsystemBase{
 
     public Command wristCoralStow() {
 
-        //    System.out.println("=============Command wrist wristCoralStow===============");
-        
-
         return run(
             () -> {this.wristDriveToPosition(WristConstants.kCoralStow);}
         ).until(this.isWristCoralStow);

@@ -17,7 +17,7 @@ public class CoralIntakeConstants {
     public static final double kStopSpeed = 0.0;
 
     //Units are in rotations.
-    public static final double kDeadband = 0.01;
+    public static final double kDeadband = 0.02;
 
 
     //==================Sim Values================
