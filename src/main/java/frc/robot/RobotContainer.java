@@ -242,11 +242,11 @@ public class RobotContainer {
         driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).
         onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
 
-        /*
+        
         //Driver - Slow down by 50% while holding the spit button
         driver.rightBumper().onTrue(this.setDampener())
         .onFalse(this.resetDampener());
-        */
+        
 
         //Driver - Spit Coral
         //Rear To Front
