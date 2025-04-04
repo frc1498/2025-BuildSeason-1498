@@ -208,7 +208,9 @@ public class RobotContainer {
 
         //Driver - Spit Coral
         //Slide left 
-        driver.pov(90).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+        //driver.pov(90).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+
+        driver.b().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
 
         //Front to Front
         /*
@@ -223,7 +225,7 @@ public class RobotContainer {
         */
 
         //Slide right
-        driver.pov(270).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
+        driver.x().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
 
         //Front to Front
         /*
@@ -270,7 +272,7 @@ public class RobotContainer {
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
           
         //Driver - Rezero Gyro
-        driver.b().and(driver.x()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.y().and(driver.a()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //=====================================================================
         //=============================Operator 1==============================
