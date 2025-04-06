@@ -18,6 +18,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -55,6 +56,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     //Added for PathPlanner functionality.
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+
+    private final PPHolonomicDriveController m_driveController = new PPHolonomicDriveController(
+        new PIDConstants(10, 0, 0), 
+        new PIDConstants(7, 0, 0)
+    );
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -308,7 +314,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return Commands.runOnce(() -> {
             AutoBuilder.pathfindToPose(targetPose.get(),
             new PathConstraints(1.5, 2.5, Units.degreesToRadians(270), Units.degreesToRadians(720)),
-            0).schedule();});
+            0)
+            .andThen(this.poseCorrection(targetPose)).schedule();});
+    }
+
+    public Command poseCorrection(Supplier<Pose2d> targetPose) {
+        return run(() -> {
+            PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
+            targetState.pose = targetPose.get();
+            this.setControl(
+                m_pathApplyRobotSpeeds.withSpeeds(m_driveController.calculateRobotRelativeSpeeds(this.getState().Pose, targetState))
+            );
+        });
     }
 
     @Override
