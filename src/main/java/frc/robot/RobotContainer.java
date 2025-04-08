@@ -207,35 +207,48 @@ public class RobotContainer {
             andThen(move.intakeCoralHumanFrontToRear()));
 
         //Driver - Spit Coral
-        //Slide left Front to Front
-        driver.pov(90).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+        //Slide left 
+        //driver.pov(90).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+
+        driver.b().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+
+        //Front to Front
+        /*
         driver.pov(90).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
         onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
+        */
 
-        //Slide left Rear to Front
-        driver.pov(90).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0.015).withVelocityY(-.3)));
+        //Rear to Front
+        /*
         driver.pov(90).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).and(wrist.isCanRange).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
+        */
 
-        //Slide right front to front
-        driver.pov(270).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
+        //Slide right
+        driver.x().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
+
+        //Front to Front
+        /*
         driver.pov(270).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
         onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
-        
-        //Slide right rear to front
-        driver.pov(270).whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
+        */
+
+        //Rear to Front
+        /*
         driver.pov(270).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).and(wrist.isCanRange).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
-
+        */
               
         //Driver - Spit Coral
         //Front To Front
         driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).
         onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
 
+        
         //Driver - Slow down by 50% while holding the spit button
         driver.rightBumper().onTrue(this.setDampener())
         .onFalse(this.resetDampener());
+        
 
         //Driver - Spit Coral
         //Rear To Front
@@ -259,7 +272,7 @@ public class RobotContainer {
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
           
         //Driver - Rezero Gyro
-        driver.b().and(driver.x()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.y().and(driver.a()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //=====================================================================
         //=============================Operator 1==============================
