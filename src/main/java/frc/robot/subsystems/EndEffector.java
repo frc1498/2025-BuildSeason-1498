@@ -25,9 +25,9 @@ public class EndEffector extends SubsystemBase{
         this.m_endEffectorMode = mode;
     }
 
-    private Boolean GetEndEffectorModeHere() {
+    private String GetEndEffectorModeHere() {
 
-        return (this.m_endEffectorMode == "Algae");
+        return this.m_endEffectorMode;
     }
 
     private void setEndEffectorLocationHere(endEffectorLocation location) {
@@ -63,6 +63,10 @@ public class EndEffector extends SubsystemBase{
         return this::GetEndEffectorLocationHere;
     }
 
+    public Supplier<String> getEndEffectorMode() {
+        return this::GetEndEffectorModeHere;
+    }
+
 
     /*
     public Supplier<String> endEffectorMode() {
@@ -73,13 +77,13 @@ public class EndEffector extends SubsystemBase{
     //======================================================
     //===================Triggers===========================
     //======================================================
-    public final Trigger isModeAlgae = new Trigger(() -> {return this.GetEndEffectorModeHere();});
+    public final Trigger isModeAlgae = new Trigger(() -> {return this.GetEndEffectorModeHere() == "Algae";});
 
     @Override
     public void initSendable(SendableBuilder builder) {
         //Sendable data for dashboard debugging will be added here.
         builder.addStringProperty("Current End Effector Location", () -> {return this.GetEndEffectorLocationHere().toString();}, null);
-
+        builder.addStringProperty("Current End Effector Mode", () -> {return this.m_endEffectorMode;}, null);
     }
 
 }

@@ -17,12 +17,12 @@ public class AprilTagConstants {
     public static final Pose2d kRedTag11Left = new Pose2d(12.333, 3.041, Rotation2d.fromDegrees(60)); //I
     public static final Pose2d kRedTag11Right = new Pose2d(12.610, 2.875, Rotation2d.fromDegrees(60)); //J
 
-    public static final Pose2d kRedTag6 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120));
-    public static final Pose2d kRedTag7 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180));
-    public static final Pose2d kRedTag8 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120));
-    public static final Pose2d kRedTag9 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60));
-    public static final Pose2d kRedTag10 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d kRedTag11 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60));
+    public static final Pose2d kRedTag6 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120)); //K-L
+    public static final Pose2d kRedTag7 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180)); //A-B
+    public static final Pose2d kRedTag8 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120)); //C-D
+    public static final Pose2d kRedTag9 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60)); //E-F
+    public static final Pose2d kRedTag10 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)); //G-H
+    public static final Pose2d kRedTag11 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60)); //I-J
 
     public static final Pose2d kBlueTag17Left = new Pose2d(3.742, 3.042, Rotation2d.fromDegrees(60)); //C
     public static final Pose2d kBlueTag17Right = new Pose2d(4.036, 2.863, Rotation2d.fromDegrees(60)); //D
@@ -37,10 +37,13 @@ public class AprilTagConstants {
     public static final Pose2d kBlueTag22Left = new Pose2d(5.007, 2.908, Rotation2d.fromDegrees(120)); //E
     public static final Pose2d kBlueTag22Right = new Pose2d(5.273, 3.042, Rotation2d.fromDegrees(120)); //F
 
-    public static final Pose2d kBlueTag17 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60));
-    public static final Pose2d kBlueTag18 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d kBlueTag19 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60));
-    public static final Pose2d kBlueTag20 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120));
-    public static final Pose2d kBlueTag21 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180));
-    public static final Pose2d kBlueTag22 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120));
+    public static final Pose2d kBlueTag17 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60)); //C-D
+    public static final Pose2d kBlueTag18 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)); //A-B
+    public static final Pose2d kBlueTag19 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60)); //K-L
+    public static final Pose2d kBlueTag20 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120)); //I-J
+    public static final Pose2d kBlueTag21 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180)); //G-H
+    public static final Pose2d kBlueTag22 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120)); //E-F
+
+    public static final Pose2d kBlueBarge = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
+    public static final Pose2d kRedBarge = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180));
 }

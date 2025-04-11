@@ -65,6 +65,8 @@ public class Vision extends SubsystemBase{
     private Pose2d reefIJ;
     private Pose2d reefKL;
 
+    private Pose2d bargeLocation;
+
     public Vision(CommandSwerveDrivetrain drivetrain) {
         //Constructor.
         this.drivetrain = drivetrain;
@@ -98,6 +100,8 @@ public class Vision extends SubsystemBase{
         reefGH = AprilTagConstants.kBlueTag21;
         reefIJ = AprilTagConstants.kBlueTag20;
         reefKL = AprilTagConstants.kBlueTag19;
+
+        bargeLocation = AprilTagConstants.kBlueBarge;
 
         desiredReefLocation = reefA;
         desiredReefAlgaeLocation = reefAB;
@@ -215,6 +219,8 @@ public class Vision extends SubsystemBase{
                 this.reefGH = AprilTagConstants.kBlueTag21;
                 this.reefIJ = AprilTagConstants.kBlueTag20;
                 this.reefKL = AprilTagConstants.kBlueTag19;
+
+                this.bargeLocation = AprilTagConstants.kBlueBarge;
             break;
             case Red:
                 this.reefA = AprilTagConstants.kRedTag7Left;
@@ -236,6 +242,8 @@ public class Vision extends SubsystemBase{
                 this.reefGH = AprilTagConstants.kRedTag10;
                 this.reefIJ = AprilTagConstants.kRedTag11;
                 this.reefKL = AprilTagConstants.kRedTag6;
+
+                this.bargeLocation = AprilTagConstants.kRedBarge;
             break;
             default:
                 this.reefA = AprilTagConstants.kBlueTag18Left;
@@ -257,6 +265,8 @@ public class Vision extends SubsystemBase{
                 this.reefGH = AprilTagConstants.kBlueTag21;
                 this.reefIJ = AprilTagConstants.kBlueTag20;
                 this.reefKL = AprilTagConstants.kBlueTag19;
+
+                this.bargeLocation = AprilTagConstants.kBlueBarge;
             break;
             
         }
@@ -328,6 +338,10 @@ public class Vision extends SubsystemBase{
         return this.desiredReefAlgaeLocation;
     }
 
+    private Pose2d getBargeLocation() {
+        return this.bargeLocation;
+    }
+
     private String getCurrentCommandName() {
         if (this.getCurrentCommand() == null) {
             return "No Command";
@@ -393,12 +407,16 @@ public class Vision extends SubsystemBase{
         return this::getCurrentPose;
     }
 
-    public Supplier<Pose2d> getDesiredReefPose() {
+    public Supplier<Pose2d> getDesiredReefCoralPose() {
         return this::getDesiredReefPosition;
     }
 
     public Supplier<Pose2d> getDesiredReefAlgaePose() {
         return this::getDesiredReefAlgaePosition;
+    }
+
+    public Supplier<Pose2d> getBargePose() {
+        return this::getBargeLocation;
     }
 
     @Override

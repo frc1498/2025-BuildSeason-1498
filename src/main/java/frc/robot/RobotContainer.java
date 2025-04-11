@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -197,6 +198,7 @@ public class RobotContainer {
         //Front To Front    
         driver.rightTrigger(0.1).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_GROUND_PICKUP;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.intakeCoralFloorFrontToFront(endEffector.whatIsEndEffectorLocation())).
             andThen(move.intakeCoralFloorFrontToFrontReturn()));
 
@@ -204,6 +206,7 @@ public class RobotContainer {
             //Front To Rear
         driver.povUp().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_HUMAN_PICKUP;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.intakeCoralHumanFrontToRear()));
 
         //Driver - Spit Coral
@@ -265,8 +268,14 @@ public class RobotContainer {
         //Rear to Front
         driver.leftBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).
         onTrue(move.wristCoralRollerSpitRearToFront(endEffector.whatIsEndEffectorLocation()));
-    
-        driver.leftTrigger(.1).onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
+        
+        //Drive to the 'scoring position' - either a post on the reef, or inbetween two posts for algae.
+        //I'm sure there's a better way to do this check - probably in Vision.java - but this makes the most sense immediately at 9:30 PM.
+        driver.leftTrigger(.1).onTrue(Commands.select(
+            Map.ofEntries(
+                Map.entry("Coral", drivetrain.pathPlannerToPose(vision.getDesiredReefCoralPose())), 
+                Map.entry("Algae", drivetrain.pathPlannerToPose(vision.getDesiredReefAlgaePose()))),
+            endEffector.getEndEffectorMode()));
 
         //Driver - Climb
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
@@ -294,74 +303,88 @@ public class RobotContainer {
             //Front To Front
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.coralL1FrontToFront())); 
             //Rear To Front
         operator1.b().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L1;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.coralL1RearToFront())); 
 
         //Operator - Score Coral L2
             //Front To Front
         operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.coralL2FrontToFront()));
     
             //Rear To Front
         operator1.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}).    
+            endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L2;}).   
+            andThen(endEffector.setEndEffectorMode("Coral")). 
             andThen(move.coralL2RearToFront()));
 
         //Operator - Score Coral L3
             //Front To Rear
         operator1.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.coralL3FrontToRear()));
     
             //Rear To Rear
         operator1.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L3;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.coralL3RearToRear()));
 
         //Operator - Score Coral L4
             //Front To Rear
         operator1.start().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.coralL4FrontToRear())); //Score L4
     
             //Rear To Rear
         operator1.start().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;}).
+            andThen(endEffector.setEndEffectorMode("Coral")).
             andThen(move.coralL4RearToRear())); //Score L4
 
         //Operator - Coral Stow
             //Front To Front
         operator1.rightStick().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             move.coralStowFrontToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})).
+            andThen(endEffector.setEndEffectorMode("Coral")));
 
             //Rear To Front
         operator1.rightStick().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             move.coralStowRearToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})).
+            andThen(endEffector.setEndEffectorMode("Coral")));
 
         //Operator - Remove Algae L2
             //Front To Front
         operator1.back().and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
+            andThen(endEffector.setEndEffectorMode("Algae")).
             andThen(move.goToRemoveAlgaeL2FrontToFront(endEffector.whatIsEndEffectorLocation())));
             //Rear To Front
         operator1.back().and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
+            andThen(endEffector.setEndEffectorMode("Algae")).
             andThen(move.goToRemoveAlgaeL2RearToFront(endEffector.whatIsEndEffectorLocation())));
 
         //Operator - Remove Algae L3
             //Front To Rear
         operator1.leftStick().and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
+            andThen(endEffector.setEndEffectorMode("Algae")).
             andThen(move.goToRemoveAlgaeL3FrontToRear(endEffector.whatIsEndEffectorLocation())));
             //Rear To Rear
         operator1.leftStick().and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
+            andThen(endEffector.setEndEffectorMode("Algae")).
             andThen(move.goToRemoveAlgaeL3RearToRear(endEffector.whatIsEndEffectorLocation())));
 
        //Operator - Climb
@@ -385,7 +408,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
 
-        driver.start().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
+        driver.start().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefCoralPose()));
         driver.back().onTrue(drivetrain.abortPathPlanner());
 
         driver.axisMagnitudeGreaterThan(0, 0.1)
