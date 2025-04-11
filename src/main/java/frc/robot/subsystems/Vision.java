@@ -42,6 +42,7 @@ public class Vision extends SubsystemBase{
     private double latestRobotRotationRate;
 
     private Pose2d desiredReefLocation;
+    private Pose2d desiredReefAlgaeLocation;
     private String reefLocation;
 
     private Pose2d reefA;
@@ -56,6 +57,13 @@ public class Vision extends SubsystemBase{
     private Pose2d reefJ;
     private Pose2d reefK;
     private Pose2d reefL;
+
+    private Pose2d reefAB;
+    private Pose2d reefCD;
+    private Pose2d reefEF;
+    private Pose2d reefGH;
+    private Pose2d reefIJ;
+    private Pose2d reefKL;
 
     public Vision(CommandSwerveDrivetrain drivetrain) {
         //Constructor.
@@ -84,7 +92,15 @@ public class Vision extends SubsystemBase{
         reefK = AprilTagConstants.kBlueTag19Left;
         reefL = AprilTagConstants.kBlueTag19Right;
 
+        reefAB = AprilTagConstants.kBlueTag18;
+        reefCD = AprilTagConstants.kBlueTag17;
+        reefEF = AprilTagConstants.kBlueTag22;
+        reefGH = AprilTagConstants.kBlueTag21;
+        reefIJ = AprilTagConstants.kBlueTag20;
+        reefKL = AprilTagConstants.kBlueTag19;
+
         desiredReefLocation = reefA;
+        desiredReefAlgaeLocation = reefAB;
         reefLocation = "A";
 
         SmartDashboard.putData("Vision", this);
@@ -192,6 +208,13 @@ public class Vision extends SubsystemBase{
                 this.reefJ = AprilTagConstants.kBlueTag20Right;
                 this.reefK = AprilTagConstants.kBlueTag19Left;
                 this.reefL = AprilTagConstants.kBlueTag19Right;
+
+                this.reefAB = AprilTagConstants.kBlueTag18;
+                this.reefCD = AprilTagConstants.kBlueTag17;
+                this.reefEF = AprilTagConstants.kBlueTag22;
+                this.reefGH = AprilTagConstants.kBlueTag21;
+                this.reefIJ = AprilTagConstants.kBlueTag20;
+                this.reefKL = AprilTagConstants.kBlueTag19;
             break;
             case Red:
                 this.reefA = AprilTagConstants.kRedTag7Left;
@@ -206,6 +229,13 @@ public class Vision extends SubsystemBase{
                 this.reefJ = AprilTagConstants.kRedTag11Right;
                 this.reefK = AprilTagConstants.kRedTag6Left;
                 this.reefL = AprilTagConstants.kRedTag6Right;
+
+                this.reefAB = AprilTagConstants.kRedTag7;
+                this.reefCD = AprilTagConstants.kRedTag8;
+                this.reefEF = AprilTagConstants.kRedTag9;
+                this.reefGH = AprilTagConstants.kRedTag10;
+                this.reefIJ = AprilTagConstants.kRedTag11;
+                this.reefKL = AprilTagConstants.kRedTag6;
             break;
             default:
                 this.reefA = AprilTagConstants.kBlueTag18Left;
@@ -220,6 +250,13 @@ public class Vision extends SubsystemBase{
                 this.reefJ = AprilTagConstants.kBlueTag20Right;
                 this.reefK = AprilTagConstants.kBlueTag19Left;
                 this.reefL = AprilTagConstants.kBlueTag19Right;
+
+                this.reefAB = AprilTagConstants.kBlueTag18;
+                this.reefCD = AprilTagConstants.kBlueTag17;
+                this.reefEF = AprilTagConstants.kBlueTag22;
+                this.reefGH = AprilTagConstants.kBlueTag21;
+                this.reefIJ = AprilTagConstants.kBlueTag20;
+                this.reefKL = AprilTagConstants.kBlueTag19;
             break;
             
         }
@@ -230,48 +267,65 @@ public class Vision extends SubsystemBase{
         switch (this.reefLocation) {
             case "A":
                 desiredReefLocation = this.reefA;
+                desiredReefAlgaeLocation = this.reefAB;
             break;
             case "B":
                 desiredReefLocation = this.reefB;
+                desiredReefAlgaeLocation = this.reefAB;
             break;
             case "C":
                 desiredReefLocation = this.reefC;
+                desiredReefAlgaeLocation = this.reefCD;
             break;
             case "D":
                 desiredReefLocation = this.reefD;
+                desiredReefAlgaeLocation = this.reefCD;
             break;
             case "E":
                 desiredReefLocation = this.reefE;
+                desiredReefAlgaeLocation = this.reefEF;
             break;
             case "F":
                 desiredReefLocation = this.reefF;
+                desiredReefAlgaeLocation = this.reefEF;
             break;
             case "G":
                 desiredReefLocation = this.reefG;
+                desiredReefAlgaeLocation = this.reefGH;
             break;
             case "H":
                 desiredReefLocation = this.reefH;
+                desiredReefAlgaeLocation = this.reefGH;
             break;
             case "I":
                 desiredReefLocation = this.reefI;
+                desiredReefAlgaeLocation = this.reefIJ;
             break;
             case "J":
                 desiredReefLocation = this.reefJ;
+                desiredReefAlgaeLocation = this.reefIJ;
             break;
             case "K":
                 desiredReefLocation = this.reefK;
+                desiredReefAlgaeLocation = this.reefKL;
             break;
             case "L":
                 desiredReefLocation = this.reefL;
+                desiredReefAlgaeLocation = this.reefKL;
             break;
             default:
                 desiredReefLocation = this.reefA;
+                desiredReefAlgaeLocation = this.reefAB;
             break;   
         }
     }
 
     private Pose2d getDesiredReefPosition() {
         return this.desiredReefLocation;
+    }
+
+    private Pose2d getDesiredReefAlgaePosition() {
+        return this.desiredReefAlgaeLocation;
     }
 
     private String getCurrentCommandName() {
@@ -341,6 +395,10 @@ public class Vision extends SubsystemBase{
 
     public Supplier<Pose2d> getDesiredReefPose() {
         return this::getDesiredReefPosition;
+    }
+
+    public Supplier<Pose2d> getDesiredReefAlgaePose() {
+        return this::getDesiredReefAlgaePosition;
     }
 
     @Override
