@@ -285,28 +285,28 @@ public class RobotContainer {
         
         //Driver - Score Algae
         driver.start().whileTrue(move.spitAlgae()).onFalse(move.coralStowRearToFront());
-/*
+
         //Driver - Algae Stow - Front to Rear
         driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
-            Commands.parallel(move.AlgaeStowFrontToRear(),drivetrain.pathPlannerToPose(vision.getDesiredReefPose())).
+            Commands.parallel(move.AlgaeStowFrontToRear(),drivetrain.pathPlannerToPose(vision.getDesiredReefAlgaePose())).
             andThen(move.AlgaeScoreRearToRear()).
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L4;})));
 
         //Driver - Algae Stow - Rear to Rear
         driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-            Commands.parallel(move.AlgaeStowFrontToRear(),drivetrain.pathPlannerToPose(vision.getDesiredReefPose())).
+            Commands.parallel(move.AlgaeStowFrontToRear(),drivetrain.pathPlannerToPose(vision.getDesiredReefAlgaePose())).
             andThen(move.AlgaeScoreRearToRear()).
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L4;})));
-*/
 
-//Algae Stow Front to Rear
-driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
-    move.AlgaeStowFrontToRear());
+        /*
+        //Algae Stow Front to Rear
+        driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            move.AlgaeStowFrontToRear());
 
-//Driver - Algae Stow - Rear to Rear
-driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
-    move.AlgaeStowFrontToRear());
-
+        //Driver - Algae Stow - Rear to Rear
+        driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.AlgaeStowFrontToRear());
+        */
 
 
         //Drive - Algae Score - Rear to Rear
