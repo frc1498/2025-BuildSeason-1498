@@ -241,7 +241,7 @@ public class RobotContainer {
               
         //Driver - Spit Coral
         //Front To Front
-        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).
+        driver.rightBumper().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
         onTrue(move.wristCoralRollerSpitFrontToFront(endEffector.whatIsEndEffectorLocation()));
 
         
@@ -272,7 +272,38 @@ public class RobotContainer {
         driver.povDown().and(climber.isClimberReady).onTrue(climber.toClimberComplete());
           
         //Driver - Rezero Gyro
-        driver.y().and(driver.a()).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driver.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        
+        //Driver - Score Algae
+        driver.start().whileTrue(move.spitAlgae()).onFalse(move.coralStowRearToFront());
+/*
+        //Driver - Algae Stow - Front to Rear
+        driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            Commands.parallel(move.AlgaeStowFrontToRear(),drivetrain.pathPlannerToPose(vision.getDesiredReefPose())).
+            andThen(move.AlgaeScoreRearToRear()).
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L4;})));
+
+        //Driver - Algae Stow - Rear to Rear
+        driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            Commands.parallel(move.AlgaeStowFrontToRear(),drivetrain.pathPlannerToPose(vision.getDesiredReefPose())).
+            andThen(move.AlgaeScoreRearToRear()).
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L4;})));
+*/
+
+//Algae Stow Front to Rear
+driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+    move.AlgaeStowFrontToRear());
+
+//Driver - Algae Stow - Rear to Rear
+driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+    move.AlgaeStowFrontToRear());
+
+
+
+        //Drive - Algae Score - Rear to Rear
+        driver.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.AlgaeScoreRearToRear().
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L4;})));
 
         //=====================================================================
         //=============================Operator 1==============================
@@ -385,7 +416,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
         vision.registerTelemetry(logger::visionTelemeterize);
 
-        driver.start().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
+        //driver.start().onTrue(drivetrain.pathPlannerToPose(vision.getDesiredReefPose()));
         driver.back().onTrue(drivetrain.abortPathPlanner());
 
         driver.axisMagnitudeGreaterThan(0, 0.1)
