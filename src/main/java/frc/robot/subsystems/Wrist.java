@@ -196,15 +196,20 @@ public class Wrist extends SubsystemBase{
                 break;
                 case ALGAE_L2:
                     this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
-                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove).withSlot(0));
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove).withSlot(2));
                 break;
                 case ALGAE_L3:
                     this.wristDesiredSpeed = WristConstants.kAlgaeRemove;
+                    wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove).withSlot(2));
+                break;
+                case ALGAE_L4:
+                    this.wristDesiredSpeed = WristConstants.kAlgaeSpit;
                     wristSpin.setControl(spinControl.withVelocity(WristConstants.kAlgaeRemove).withSlot(0));
                 break;
            }  
         }
     }
+
 
     private String getScoringPosition() {
         return this.scoringPosition;
@@ -238,7 +243,10 @@ public class Wrist extends SubsystemBase{
         if ((localPosition == "CoralL1") || (localPosition == "")){
             range_ok = true;
         } else if (localPosition == "CoralL2") {  
-            range_ok = true;
+            range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL2) && 
+            (wristReefDistance.getSignalStrength().getValueAsDouble() > WristConstants.kRangeL2SignalStrength));
+            
+            //range_ok = true;
         } else if (localPosition == "CoralL3") {
             range_ok=((wristReefDistance.getDistance().getValueAsDouble() < WristConstants.krangeL3) && 
             (wristReefDistance.getSignalStrength().getValueAsDouble() > WristConstants.kRangeL3SignalStrength));
@@ -313,7 +321,14 @@ public class Wrist extends SubsystemBase{
             () -> {this.wristDriveToPosition(WristConstants.kFrontSafe);}
         ).until(this.isWristFrontSafe);
     }
-    
+
+    public Command spitAlgae() {
+
+        return run(
+            () -> {wristSpin.setControl(spinControl.withVelocity(-100).withSlot(0));});
+
+    }
+
     public Command wristRearSafe() {
 
         //    System.out.println("=============Command wrist wristRearSafe===============");

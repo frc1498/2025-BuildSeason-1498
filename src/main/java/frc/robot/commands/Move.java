@@ -108,9 +108,9 @@ public class Move {
     //Coral Stow - Front to Front - second draft
     public Command coralStowFrontToFront() {
         return Commands.parallel(wrist.stop(), intake.rollerStop()).
-        andThen(arm.armCoralStow()) .
-        andThen(Commands.parallel(elevator.elevatorCoralStow(), arm.armCoralStow(), wrist.wristCoralStow())).
-        andThen(intake.intakeRaised());
+        andThen(Commands.parallel(arm.armCoralStow(), wrist.wristCoralStow()). /*Added wrist coral stow */
+        andThen(Commands.parallel(elevator.elevatorCoralStow())). /*removed arm coral stow and wrist coral stow */
+        andThen(intake.intakeRaised()));
     }    
 
     //Coral Stow - Rear to Front - second draft
@@ -214,11 +214,33 @@ public class Move {
         andThen(Commands.parallel(elevator.elevatorAlgaeL3(), wrist.spit(/*endEffectorLocation*/)));
     }
 
+    //Algae Stow - Front to Rear - first draft
+    public Command AlgaeStowFrontToRear(){
+        return Commands.parallel(wrist.wristCoralStow(),elevator.elevatorRearSafe()).
+        andThen(Commands.parallel(arm.armAlgaeStow(),wrist.wristAlgaeStow())).
+        andThen(elevator.elevatorAlgaeStow());
+    }
+
+    //Algae Stow - Rear to Front - first draft
+    public Command AlgaeStowRearToRear(){
+        return Commands.parallel(wrist.wristAlgaeStow(), arm.armAlgaeStow(), elevator.elevatorAlgaeStow());
+    }
+
+    //Agae Score - Rear to Rear
+    public Command AlgaeScoreRearToRear(){
+
+        return Commands.parallel(arm.armAlgaeBarge(), elevator.elevatorCoralL4(),wrist.wristAlgaeBarge()).
+        andThen(wrist.stop());
+    }
 
     public Command clearClimb() {
         return Commands.parallel(elevator.elevatorRearSafe(), wrist.stop(), intake.rollerStop()).  
         andThen(Commands.parallel(intake.intakeRaisedForClimb(), arm.armClearClimb(), wrist.wristCoralStow())).
         andThen(elevator.elevatorCoralLoadFloor());
+    }
+
+    public Command spitAlgae() {
+        return wrist.spitAlgae();
     }
 
     public Command intakeToRaisedForClimb() {

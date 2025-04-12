@@ -14,6 +14,7 @@ public class EndEffectorConstants {
     CORAL_GROUND_PICKUP,
     ALGAE_L2,
     ALGAE_L3,
+    ALGAE_L4,
     NONE
     }
 

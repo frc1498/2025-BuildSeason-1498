@@ -56,6 +56,7 @@ public class Vision extends SubsystemBase{
     private Pose2d reefJ;
     private Pose2d reefK;
     private Pose2d reefL;
+    private Pose2d reefZ;
 
     public Vision(CommandSwerveDrivetrain drivetrain) {
         //Constructor.
@@ -83,6 +84,7 @@ public class Vision extends SubsystemBase{
         reefJ = AprilTagConstants.kBlueTag20Right;
         reefK = AprilTagConstants.kBlueTag19Left;
         reefL = AprilTagConstants.kBlueTag19Right;
+        reefZ = AprilTagConstants.kBlueBarge;
 
         desiredReefLocation = reefA;
         reefLocation = "A";
@@ -192,6 +194,7 @@ public class Vision extends SubsystemBase{
                 this.reefJ = AprilTagConstants.kBlueTag20Right;
                 this.reefK = AprilTagConstants.kBlueTag19Left;
                 this.reefL = AprilTagConstants.kBlueTag19Right;
+                this.reefZ = AprilTagConstants.kBlueBarge;
             break;
             case Red:
                 this.reefA = AprilTagConstants.kRedTag7Left;
@@ -206,6 +209,7 @@ public class Vision extends SubsystemBase{
                 this.reefJ = AprilTagConstants.kRedTag11Right;
                 this.reefK = AprilTagConstants.kRedTag6Left;
                 this.reefL = AprilTagConstants.kRedTag6Right;
+                this.reefZ = AprilTagConstants.kRedBarge;
             break;
             default:
                 this.reefA = AprilTagConstants.kBlueTag18Left;
