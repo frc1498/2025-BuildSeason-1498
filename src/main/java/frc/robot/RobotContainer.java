@@ -385,14 +385,12 @@ public class RobotContainer {
             //Front To Front
         operator1.rightStick().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
             move.coralStowFrontToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})).
-            andThen(endEffector.setEndEffectorMode("Coral")));
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
 
             //Rear To Front
         operator1.rightStick().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             move.coralStowRearToFront().
-            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})).
-            andThen(endEffector.setEndEffectorMode("Coral")));
+            andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
 
         //Operator - Remove Algae L2
             //Front To Front
@@ -407,16 +405,16 @@ public class RobotContainer {
             andThen(move.goToRemoveAlgaeL2RearToFront(endEffector.whatIsEndEffectorLocation())));
 
         //Operator - Remove Algae L3
-            //Front To Rear
+            //Front To Front
         operator1.leftStick().and(arm.isArmInFrontOfIntake).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
             andThen(endEffector.setEndEffectorMode("Algae")).
-            andThen(move.goToRemoveAlgaeL3FrontToRear(endEffector.whatIsEndEffectorLocation())));
-            //Rear To Rear
+            andThen(move.goToRemoveAlgaeL3FrontToFront(endEffector.whatIsEndEffectorLocation())));
+            //Rear To Front
         operator1.leftStick().and(arm.isArmInFrontOfIntake.negate()).onTrue(
             endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
             andThen(endEffector.setEndEffectorMode("Algae")).
-            andThen(move.goToRemoveAlgaeL3RearToRear(endEffector.whatIsEndEffectorLocation())));
+            andThen(move.goToRemoveAlgaeL3RearToFront(endEffector.whatIsEndEffectorLocation())));
 
        //Operator - Climb
        operator2.x().and(operator2.start()).and(climber.isClimberReady.negate()).onTrue(move.clearClimb().
@@ -478,6 +476,24 @@ public class RobotContainer {
         NamedCommands.registerCommand("spit", move.spitAuto());
         NamedCommands.registerCommand("toCoralL4RearToRear", move.coralL4RearToRear().
         andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.CORAL_L4;})));
+        NamedCommands.registerCommand("AlgaeStowFrontToRear", move.AlgaeStowFrontToRear());
+        NamedCommands.registerCommand("AlgaeScore", move.AlgaeScoreFrontToRear().
+        andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L4;})));
+        NamedCommands.registerCommand("AlgaeSpit", move.spitAlgae());
+        NamedCommands.registerCommand("AlgaeStowRearToFront", move.coralStowRearToFront());
+        NamedCommands.registerCommand("AlgaeL2FrontToFront", endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
+        andThen(endEffector.setEndEffectorMode("Algae")).
+        andThen(move.goToRemoveAlgaeL2FrontToFront(endEffector.whatIsEndEffectorLocation())));
+        NamedCommands.registerCommand("AlgaeL2RearToFront", endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L2;}).
+        andThen(endEffector.setEndEffectorMode("Algae")).
+        andThen(move.goToRemoveAlgaeL2RearToFront(endEffector.whatIsEndEffectorLocation())));
+        NamedCommands.registerCommand("AlgaeL3FrontToFront", 
+        endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
+        andThen(endEffector.setEndEffectorMode("Algae")).
+        andThen(move.goToRemoveAlgaeL3FrontToFront(endEffector.whatIsEndEffectorLocation())));
+        NamedCommands.registerCommand("AlgaeL3RearToFront", endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L3;}).
+        andThen(endEffector.setEndEffectorMode("Algae")).
+        andThen(move.goToRemoveAlgaeL3RearToFront(endEffector.whatIsEndEffectorLocation())));
         /*
 
         NamedCommands.registerCommand("toCoralL2", move.coralL2().

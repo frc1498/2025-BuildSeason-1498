@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.215621352842718,
-        "y": 4.043450729995154
+        "x": 5.6648755434139275,
+        "y": 4.14
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.454859843509372,
-        "y": 4.0838951913143795
+        "x": 7.336475409836066,
+        "y": 4.176834016393442
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Blue Get First Algae"
     },
     {
       "anchor": {
-        "x": 5.6648755434139275,
-        "y": 4.207521307015261
+        "x": 7.744057377049179,
+        "y": 4.90609631147541
       },
       "prevControl": {
-        "x": 6.3746286350712635,
-        "y": 4.235779802566018
+        "x": 6.744057377049179,
+        "y": 4.90609631147541
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Blue center End"
+      "linkedName": "Blue Barge Score"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 270.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.02011832768397
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.4651874175156
+    "rotation": -179.5144541699918
   },
   "useDefaultConstraints": true
 }

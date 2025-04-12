@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 11.793406351548919,
-        "y": 3.8414463511686314
+        "x": 11.843852459016393,
+        "y": 3.8032274590163935
       },
       "prevControl": {
-        "x": 10.79340635154892,
-        "y": 3.8414463511686314
+        "x": 10.843852459016395,
+        "y": 3.8032274590163935
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red Center Coral End"
     }
   ],
   "rotationTargets": [],

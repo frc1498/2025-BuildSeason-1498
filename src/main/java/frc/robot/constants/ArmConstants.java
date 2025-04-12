@@ -15,8 +15,8 @@ public class ArmConstants {
     //==================Algae Positions====================
     public static final double kAlgaeStow = 0; // Load Algae Floor Position - Changing to real measurements, was:-10 degrees - -0.175 radians - -3.509 rotations
     public static final double kAlgaeLoadFloor = 0; // Load Algae Floor Position - Changing to real measurements, was:-15 degrees - -0.262 radians - -5.254 rotations
-    public static final double kAlgaeL2= -0.350; // Load Algae L2 Position - -45 degrees - Changing to real measurements, was:-0.785 radians - -15.742 rotations
-    public static final double kAlgaeL3 = -0.350; // Load Algae L3 Position - -60 degrees - Changing to real measurements, was:-1.047 radians - -20.996 rotations
+    public static final double kAlgaeL2= -0.319; // Load Algae L2 Position - -45 degrees - Changing to real measurements, was:-0.785 radians - -15.742 rotations
+    public static final double kAlgaeL3 = -0.350; // was 350Load Algae L3 Position - -60 degrees - Changing to real measurements, was:-1.047 radians - -20.996 rotations
     public static final double kAlgaeBarge = 0.25; //Score position for Algae in the Barge - Changing to real measurements, was:-85 degrees - -1.484 radians - -29.759 rotations
     public static final double kAlgaeProcessor = 0; //Score position for Algae in the processor - Changing to real measurements, was:-20 degrees - -0.349 radians - -6.999 rotations
 
@@ -25,7 +25,7 @@ public class ArmConstants {
     public static final double kFrontSafe = -0.35;
     public static final double kRearSafe = 0;
     public static final double kIntakeSafe = -.115; //When arm is in middle and moving "through" the intake 
-    public static final double kClearClimb = -0.31; //Was -0.29 When arm is in middle and moving "through" the intake 
+    public static final double kClearClimb = -0.33; //Was -0.33 When arm is in middle and moving "through" the intake 
     public static final double kArmAboveIntake45 = 0.125;
 
     //=========================Safeties===================

@@ -200,14 +200,14 @@ public class Move {
     }
 
     //Algae Remove L3 - Front to Front - second draft    
-    public Command goToRemoveAlgaeL3FrontToRear(Supplier<endEffectorLocation> endEffectorLocation) {
+    public Command goToRemoveAlgaeL3FrontToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()). 
         andThen(Commands.parallel(wrist.wristAlgaeL3(),arm.armAlgaeL3(),elevator.elevatorAlgaeL3())).
         andThen(wrist.spit(/*endEffectorLocation*/));
     }
 
     //Algae Remove L3 - Rear to Front - first draft
-    public Command goToRemoveAlgaeL3RearToRear(Supplier<endEffectorLocation> endEffectorLocation) {
+    public Command goToRemoveAlgaeL3RearToFront(Supplier<endEffectorLocation> endEffectorLocation) {
         return Commands.parallel(wrist.stop(), intake.rollerStop()).
         andThen(Commands.deadline(elevator.elevatorRearSafe(), arm.armCoralLoadHuman(),wrist.wristCoralStow()).
         andThen(Commands.parallel( wrist.wristAlgaeL3(), arm.armAlgaeL3()))).
@@ -230,6 +230,12 @@ public class Move {
     public Command AlgaeScoreRearToRear(){
 
         return Commands.parallel(arm.armAlgaeBarge(), elevator.elevatorCoralL4(),wrist.wristAlgaeBarge()).
+        andThen(wrist.stop());
+    }
+
+    public Command AlgaeScoreFrontToRear(){
+        return elevator.elevatorCoralL4().
+        andThen(Commands.parallel(arm.armAlgaeBarge(), wrist.wristAlgaeBarge())).
         andThen(wrist.stop());
     }
 
