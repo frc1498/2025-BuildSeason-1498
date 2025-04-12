@@ -120,10 +120,18 @@ public class WristConfig {
         spin.Slot0.kD = 0; // A change of 1 rotation per second squared results in 0.01 volts output
         spin.Slot0.kV = 0.132; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
       
+        //Slot 1 Configs
         spin.Slot1.kP = 10; // An error of 1 rotation per second results in 2V output
         spin.Slot1.kI = 0; // An error of 1 rotation per second increases output by 0.5V every second
         spin.Slot1.kD = 0; // A change of 1 rotation per second squared results in 0.01 volts output
         spin.Slot1.kV = 0; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+
+        //Slot 2 Configs
+        spin.Slot2.kP = 0; // An error of 1 rotation per second results in 2V output
+        spin.Slot2.kI = 0; // An error of 1 rotation per second increases output by 0.5V every second
+        spin.Slot2.kD = 0; // A change of 1 rotation per second squared results in 0.01 volts output
+        spin.Slot2.kV = 0.132; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+
 
     }
 

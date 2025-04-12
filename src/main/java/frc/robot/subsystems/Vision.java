@@ -57,6 +57,7 @@ public class Vision extends SubsystemBase{
     private Pose2d reefJ;
     private Pose2d reefK;
     private Pose2d reefL;
+    private Pose2d reefZ;
 
     private Pose2d reefAB;
     private Pose2d reefCD;
@@ -93,6 +94,7 @@ public class Vision extends SubsystemBase{
         reefJ = AprilTagConstants.kBlueTag20Right;
         reefK = AprilTagConstants.kBlueTag19Left;
         reefL = AprilTagConstants.kBlueTag19Right;
+        reefZ = AprilTagConstants.kBlueBarge;
 
         reefAB = AprilTagConstants.kBlueTag18;
         reefCD = AprilTagConstants.kBlueTag17;

@@ -44,6 +44,6 @@ public class AprilTagConstants {
     public static final Pose2d kBlueTag21 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180)); //G-H
     public static final Pose2d kBlueTag22 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120)); //E-F
 
-    public static final Pose2d kBlueBarge = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    public static final Pose2d kRedBarge = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180));
+    public static final Pose2d kBlueBarge = new Pose2d(7.684, 5.410, Rotation2d.fromDegrees(0));
+    public static final Pose2d kRedBarge = new Pose2d(9.986, 2.688, Rotation2d.fromDegrees(180));
 }
