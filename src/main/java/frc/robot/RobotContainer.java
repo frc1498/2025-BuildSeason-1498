@@ -307,9 +307,18 @@ public class RobotContainer {
         driver.a().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             move.AlgaeStowFrontToRear());
         */
+        
+        //Driver - Algae Stow - Front to Rear
+        driver.povLeft().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).onTrue(
+            move.AlgaeStowFrontToRear()
+            .andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
 
+        //Driver - Algae Stow - Rear to Rear
+        driver.povLeft().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
+            move.AlgaeStowRearToRear()
+            .andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.NONE;})));
 
-        //Drive - Algae Score - Rear to Rear
+        //Drive - Algae Score - Front to Rear
         driver.y().and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake.negate()).onTrue(
             move.AlgaeScoreRearToRear().
             andThen(endEffector.setEndEffectorLocation(() -> {return endEffectorLocation.ALGAE_L4;})));

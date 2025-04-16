@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 11.843852459016393,
-        "y": 3.947092079449074
+        "x": 9.664,
+        "y": 3.148
       },
       "prevControl": null,
       "nextControl": {
-        "x": 10.490348299978521,
-        "y": 3.952536304855461
+        "x": 8.951764860258601,
+        "y": 3.148
       },
       "isLocked": false,
-      "linkedName": "Red Center have First Algae"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 9.664,
-        "y": 3.147644406855215
+        "x": 12.575102459016394,
+        "y": 0.6624487704918033
       },
       "prevControl": {
-        "x": 10.359430426246274,
-        "y": 3.135145955305041
+        "x": 13.263848009590212,
+        "y": 0.6624487704918032
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 270.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.72226639005055
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -0.8716456374202426
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

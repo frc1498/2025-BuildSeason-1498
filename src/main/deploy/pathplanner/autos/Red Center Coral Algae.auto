@@ -104,6 +104,25 @@
               }
             ]
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red After Algae"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "toCoralStow"
+                }
+              }
+            ]
+          }
         }
       ]
     }
