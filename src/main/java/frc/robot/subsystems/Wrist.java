@@ -325,7 +325,7 @@ public class Wrist extends SubsystemBase{
     public Command spitAlgae() {
 
         return run(
-            () -> {wristSpin.setControl(spinControl.withVelocity(-75).withSlot(0));});
+            () -> {wristSpin.setControl(spinControl.withVelocity(-100).withSlot(0));});
 
     }
 
