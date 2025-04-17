@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.168528688524591,
-        "y": 5.397592213114754
+        "x": 6.856967213114754,
+        "y": 6.36859631147541
       },
       "isLocked": false,
       "linkedName": "Blue Barge Score"
@@ -20,8 +20,8 @@
         "y": 7.267674180327869
       },
       "prevControl": {
-        "x": 5.358504098360656,
-        "y": 6.908043032786885
+        "x": 6.305532786885245,
+        "y": 7.183760245901639
       },
       "nextControl": null,
       "isLocked": false,
