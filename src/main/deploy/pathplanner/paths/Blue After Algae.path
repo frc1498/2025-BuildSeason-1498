@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.856967213114754,
-        "y": 6.36859631147541
+        "x": 7.341749999999999,
+        "y": 6.31625
       },
       "isLocked": false,
       "linkedName": "Blue Barge Score"
@@ -29,7 +29,34 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.6223325062034629,
+      "constraints": {
+        "maxVelocity": 50.0,
+        "maxAcceleration": 2.5,
+        "maxAngularVelocity": 270.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.7970223325062032,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 270.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
