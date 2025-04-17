@@ -230,6 +230,9 @@ public class RobotContainer {
         //Slide right
         driver.x().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
 
+        //Slide back
+        driver.povRight().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0).withVelocityY(-0.3)));
+        
         //Front to Front
         /*
         driver.pov(270).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
