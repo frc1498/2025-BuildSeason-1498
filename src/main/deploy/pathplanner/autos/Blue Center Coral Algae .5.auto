@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Blue Left 1st Score"
+                  "pathName": "Blue Center"
                 }
               },
               {
@@ -30,19 +30,25 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.75
+                }
+              },
+              {
                 "type": "path",
                 "data": {
-                  "pathName": "Blue Left 1st Human Pickup"
+                  "pathName": "Blue Get First Algae"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "humanIntake"
+                  "name": "AlgaeL2RearToFront"
                 }
               }
             ]
@@ -55,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Blue Left 1st Human Return"
+                  "pathName": "Blue Score First Algae"
                 }
               },
               {
@@ -65,13 +71,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.1
+                        "waitTime": 0.2
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "toCoralL4RearToRear"
+                        "name": "AlgaeScore"
                       }
                     }
                   ]
@@ -83,29 +89,23 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.1
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "spit"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "Blue Left 2nd Human Pickup"
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "humanIntake"
+                  "name": "AlgaeSpit"
                 }
               }
             ]
@@ -118,41 +118,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Blue Left 2nd Human Return"
+                  "pathName": "Blue to Algae 2"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.1
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "toCoralL4RearToRear"
-                      }
-                    }
-                  ]
+                  "name": "AlgaeL3RearToFront"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "spit"
           }
         }
       ]

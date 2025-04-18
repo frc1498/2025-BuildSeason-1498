@@ -24,6 +24,7 @@ public class Climber extends SubsystemBase{
     public DutyCycleOut rotateDutyCycleControl;
     Servo climberServo;
     double desiredServoPosition;
+    public DutyCycleOut climberBackDrive;
 
     //TalonFX climberSpin;
     //VelocityVoltage spinControl;
@@ -44,6 +45,8 @@ public class Climber extends SubsystemBase{
         climberServo = new Servo(9);
 
         desiredServoPosition = 0;
+
+        climberBackDrive = new DutyCycleOut(0);
 
         //Fill in Instantiation
         this.configureMechanism(climberRotate, config.climberRotateConfig);
@@ -126,6 +129,10 @@ public class Climber extends SubsystemBase{
 
     }
 
+    private void climbBackDrive() {
+        climberRotate.setControl(climberBackDrive.withOutput(0));
+    }
+
     public void addToOrchestra(Orchestra robotOrchestra) {
         robotOrchestra.addInstrument(this.climberRotate, 1);
     }
@@ -154,13 +161,21 @@ public class Climber extends SubsystemBase{
             () -> {this.climberDriveToPosition(ClimberConstants.kClimberReady);}).until(isClimberReady).withName("To Climber Ready");
     }
 
+    public Command allowBackDrive() {
+
+        return run(() -> {this.climbBackDrive();});
+
+    }
+
     public Command toClimberComplete() {
 
         //    System.out.println("=============Command toClimberComplete===============");
 
         
         return run(
-            () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}).until(isClimberComplete).withName("To Climber Complete");
+            () -> {this.climberDriveToPosition(ClimberConstants.kClimberComplete);}).
+            until(isClimberComplete).withName("To Climber Complete").
+            andThen(allowBackDrive());
     }
 
     public Command climberTriggered() {

@@ -27,11 +27,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.pilotLib.utility.Selector;
@@ -77,6 +79,8 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator1 = new CommandXboxController(1);
     private final CommandXboxController operator2 = new CommandXboxController(2);
+
+    private final CommandGenericHID sample = new CommandGenericHID(4);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -145,9 +149,6 @@ public class RobotContainer {
                     .withRotationalRate(-driver.getRightX() * MaxAngularRate * precisionDampener) // Drive counterclockwise with negative X (left)
             )
         );
-
-
-
 
         //driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
         //driver.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
@@ -230,9 +231,6 @@ public class RobotContainer {
         //Slide right
         driver.x().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(.015).withVelocityY(.3)));
 
-        //Slide back
-        driver.povRight().whileTrue(drivetrain.applyRequest(() -> slideSideways.withVelocityX(0).withVelocityY(-0.3)));
-        
         //Front to Front
         /*
         driver.pov(270).and(climber.isClimberReady.negate()).and(arm.isArmInFrontOfIntake).and(wrist.isCanRange).
