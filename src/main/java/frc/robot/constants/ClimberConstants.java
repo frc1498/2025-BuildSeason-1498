@@ -5,7 +5,7 @@ public class ClimberConstants {
     //Climber rotate positions
     public static final double kClimberStowed = 0;
     public static final double kClimberReady = 65;
-    public static final double kClimberComplete = -64;  //Was -71
+    public static final double kClimberComplete = -79;  //started at 79
 
 
     //public static final double kServoLatch = 0.6;
