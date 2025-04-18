@@ -24,7 +24,7 @@ public class ClimberConfig {
         rotate.CurrentLimits.SupplyCurrentLimit = 40;
         rotate.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0;
         rotate.MotionMagic.MotionMagicAcceleration = 75; //was 400
-        rotate.MotionMagic.MotionMagicCruiseVelocity = 100; //was 35
+        rotate.MotionMagic.MotionMagicCruiseVelocity = 50; //Was 100, but was 35 before.
         rotate.Voltage.PeakForwardVoltage = 11;
         rotate.Voltage.PeakReverseVoltage = -11;
         rotate.MotorOutput.NeutralMode = NeutralModeValue.Brake;
