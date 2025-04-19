@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.371301911327952,
-        "y": 4.20699105335887
+        "x": 6.101287220565849,
+        "y": 4.138482399879433
       },
       "isLocked": false,
       "linkedName": "Blue center End"
@@ -20,8 +20,8 @@
         "y": 4.14
       },
       "prevControl": {
-        "x": 6.414393295591652,
-        "y": 4.122176804136025
+        "x": 6.219880738769063,
+        "y": 4.111859365180752
       },
       "nextControl": null,
       "isLocked": false,
